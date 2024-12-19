@@ -134,8 +134,9 @@
         //on("mouseout", function(){})
 
       //symbol map
-      const radius = 10; 
-      
+      const radius = 10;
+      const fillcolor = "#ff5733";
+        
       svg.selectAll("circle")
          .data(geoData.features)
          .join("circle")
@@ -148,7 +149,7 @@
            return centroid[1]
            })
          .attr("r", radius)
-         .attr("fill", "#ff5733")  // Circle color
+         .attr("fill", fillcolor)  // Circle color
          .attr("stroke", "#333");  // Circle border
       
       //for zoom: ...
