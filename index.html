@@ -133,6 +133,22 @@
         //on("mouseover", function(){})
         //on("mouseout", function(){})
 
+      //symbol map
+      svg.selectAll("circle")
+         .data(geoData.features)
+         .join("circle")
+         .attr("cx", function(d) {
+           const centroid = path.centroid(d); 
+           return centroid[0]; 
+           })
+         .attr("cy", function(d) {
+           const centroid = path.centroid(d); 
+           return centroid[1]
+           })
+         //.attr("r", 1)
+         .attr("fill", "#ff5733")  // Circle color
+         .attr("stroke", "#333");  // Circle border
+      
       //for zoom: ...
       //const zoom = d3.zoom()
       //               .scaleExtent([1, 8]) // Limit zoom scale
