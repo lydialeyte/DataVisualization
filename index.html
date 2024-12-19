@@ -137,20 +137,20 @@
       const radius = 1;
       const fillcolor = "#ff5733"; 
         
-      svg.selectAll("circle")
+      svg.selectAll("circle") //render the geojson data as circles
          .data(geoData.features)
          .join("circle")
-         .attr("cx", function(d) {
+         .attr("cx", function(d) { //extract the center of the geojson polygon data d
            const centroid = path.centroid(d); 
-           return centroid[0]; 
+           return centroid[0]; // extract the x coordinate
            })
-         .attr("cy", function(d) {
+         .attr("cy", function(d) { //extract the center of the geojson polygon data d
            const centroid = path.centroid(d); 
-           return centroid[1]
+           return centroid[1] //extract the y coordinate
            })
          .attr("r", radius)
          .attr("fill", fillcolor);  // Circle border
-         .attr("stroke", "#333");  // Circle border
+         //.attr("stroke", "#333");  // Circle border
       
       //for zoom: ...
       //const zoom = d3.zoom()
