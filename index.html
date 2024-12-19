@@ -134,7 +134,7 @@
         //on("mouseout", function(){})
 
       //symbol map
-      const radius = 5;
+      const radius = 1;
       const fillcolor = "#ff5733"; 
         
       svg.selectAll("circle")
@@ -150,6 +150,7 @@
            })
          .attr("r", radius)
          .attr("fill", fillcolor);  // Circle border
+         .attr("stroke", "#333");  // Circle border
       
       //for zoom: ...
       //const zoom = d3.zoom()
