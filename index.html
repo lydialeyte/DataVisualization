@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="livability, netherlands, wealth, moving, internationality">
+  <meta name="author" content="Group 2">
+  <title>Livability in the Netherlands</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/topojson@3"></script>
+  <link rel="stylesheet" href="scrolly.css">
+</head>
+
+<body id="home">
+  <div class="container">
+    <h1>Livability in the Netherlands</h1>
+    <p>Exploring the different factors that influence the livability scores in the Netherlands</p>
+
+    <div class="controls">
+      <label for="granularity">Select Granularity:</label>
+      <select id="granularity">
+        <option value="gemeente">Gemeente - Municipality</option>
+        <option value="wijk">Wijk - District</option>
+        <option value="buurt">Buurt - Neighborhood</option>
+      </select>
+    </div>
+    
+  </div>
+
+
+
+  
+
+  <div class="chart-container">
+    <!-- Placeholder for the Line Graph -->
+    <div id="line-graph" class="chart"></div>
+
+    <!-- Placeholder for the Geographic Map -->
+    <div id="geo-map" class="chart"></div>
+
+  </div>
+  <div id="legend" class="legend-container"></div>
+
+  
+  <script>
+    // State Configurations
+    const state = { //default configuration of the application 
+      year: 2020,
+      city: "GM0014",
+      granularity: "gemeente" // Default granularity
+    };
+
+    // data set paths for geographic maps 
+    const datasets = {
+      buurt: "data/simplified_file.geojson", // Buurt dataset (dummy)
+      wijk: "data/merged_data_reprojected_WK.geojson",  // Wijk dataset
+      gemeente: "data/merged_data_reprojected_GM.geojson"  // Gemeente dataset
+    };
+
+
+
+    // Initial Map Load
+    loadGeoData();
+
+    // Initial load
+    loadLineChart();
+
+    // Load GeoData Based on Granularity
+    function loadGeoData() {
+      //fetch the GeoJSON file based on the selected granularity
+      const selectedGranularity = datasets[state.granularity]; 
+
+      if (state.granularity === 'buurt') {
+        //load the geojson data which is divided over 2 files 
+        Promise.all([
+          d3.json("data/merged_data_part1.geojson"),
+          d3.json("data/merged_data_part2.geojson")
+        ])
+        .then(([geoDataPart1, geoDataPart2]) => {
+          // Combine both parts horizontally
+          const combinedGeoData = {
+            type: "FeatureCollection", //collection of geographical features
+            features: [...geoDataPart1.features, ...geoDataPart2.features] //extract features from the two geojson files and combine into a single array
+          };
+
+          console.log(`Loaded and combined GeoJSON Data (${state.granularity}):`, combinedGeoData);
+
+          // Update Map Visualization
+          updateMap(combinedGeoData);
+        })
+        .catch(error => {
+          console.error(`Error loading GeoJSON data (${state.granularity}):`, error);
+        });
+        
+      } else{ // for gemeente and wijk
+        d3.json(selectedGranularity).then(geoData => {
+          console.log(`Loaded GeoJSON Data (${state.granularity}):`, geoData);
+
+        // Update Map Visualization
+        updateMap(geoData);
+        }).catch(error => {
+          console.error(`Error loading GeoJSON data (${state.granularity}):`, error);
+        });
+      }
+    }
+    // Update Map
+    function updateMap(geoData) {
+      const width = 600, height = 525; //map dimensions
+
+      const projection = d3.geoMercator() //set up map projection 
+                           .center([5.5, 52])
+                           .scale(5000)
+                           .translate([width / 2, height / 2]);
+
+      const path = d3.geoPath().projection(projection); //transform geojson data into a path that can be rendered 
+
+      const geoMap = d3.select("#geo-map"); //selects the html-container for the map
+      geoMap.selectAll("*").remove(); // Clear previous map
+
+      const svg = geoMap.append("svg") //create SVG element
+                        .attr("width", width)
+                        .attr("height", height);
+
+      //render the geojson data as SVG paths 
+      svg.selectAll("path")
+        .data(geoData.features)
+        .join("path")
+        .attr("d", path)
+        .attr("fill", "#e0e0e0") //fill color of the map
+        .attr("stroke", "#333"); //stroke color of the map
+        // for hovering effects: ...
+        //on("mouseover", function(){})
+        //on("mouseout", function(){})
+
+      //for zoom: ...
+      //const zoom = d3.zoom()
+      //               .scaleExtent([1, 8]) // Limit zoom scale
+      //               .translateExtent([[0, 0], [width, height]]) // Limit pan
+      //               .on("zoom", function(event) {
+      //           svg.attr("transform", event.transform);
+      //         });
+      //svg.call(zoom); 
+    }
+
+    function loadLineChart() {
+  let clusterFile;
+
+  if (state.granularity === "buurt") {
+    clusterFile = "data/clustered_BU.csv";
+  } else if (state.granularity === "wijk") {
+    clusterFile = "dat/clustered_WK.csv";
+  } else {
+    clusterFile = "data/clustered_GM.csv";
+  }
+
+  d3.csv(clusterFile).then(data => {
+    console.log("Cluster Data Loaded:", data);
+
+    // Extract years and scores
+    const years = [2002, 2008, 2012, 2014, 2016, 2018, 2020, 2022];
+
+    // Organize data by cluster
+    const clusters = d3.group(data, d => d.cluster);
+
+    // Create Line Chart
+    const lineSvg = d3.select("#line-graph")
+      .html("") // Clear existing chart
+      .append("svg")
+      .attr("width", 600)
+      .attr("height", 500);
+
+    const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+    const width = 600 - margin.left - margin.right;
+    const height = 480 - margin.top - margin.bottom;
+
+    const g = lineSvg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scalePoint()
+      .domain(years)
+      .range([0, width]);
+
+    const y = d3.scaleLinear()
+      .domain([3.8, 4.5]) // Adjust domain based on expected LBM scores
+      .range([height, 0]);
+
+    // Axes
+    g.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x));
+
+    g.append("g")
+      .call(d3.axisLeft(y));
+
+    // Line generator
+    const line = d3.line()
+      .x(d => x(d.year))
+      .y(d => y(d.score));
+
+    // Create an empty object to store line paths
+    const linePaths = {};
+
+    // Add lines for each cluster
+    const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
+
+    clusters.forEach((clusterData, clusterId) => {
+      const avgScores = years.map(year => {
+        const clusterScores = clusterData.map(d => +d[`lbm_${year}`]);
+        return {
+          year: year,
+          score: d3.mean(clusterScores.filter(d => !isNaN(d)))
+        };
+      });
+
+      // Draw the line and store the path in linePaths
+      const path = g.append("path")
+        .datum(avgScores)
+        .attr("fill", "none")
+        .attr("stroke", color(clusterId))
+        .attr("stroke-width", 2)
+        .attr("d", line);
+
+      // Store the path for later use
+      linePaths[clusterId] = path;
+    });
+
+    // Add labels
+    g.append("text")
+      .attr("x", width / 2)
+      .attr("y", -5)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "16px")
+      .text("Average LBM Scores Per Cluster Over Time");
+
+    g.append("text")
+      .attr("x", -height / 2)
+      .attr("y", -35)
+      .attr("transform", "rotate(-90)")
+      .attr("text-anchor", "middle")
+      .attr("font-size", "12px")
+      .text("Average LBM Score");
+
+    g.append("text")
+      .attr("x", width / 2)
+      .attr("y", height + 40)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "12px")
+      .text("Years");
+
+
+    const legendContainer = d3.select("#legend")
+      .html("") // Clear any existing legend
+      .style("display", "flex")
+      .style("justify-content", "center")
+      .style("flex-wrap", "wrap")
+      .style("gap", "20px")
+      .style("margin-top", "20px");
+
+    clusters.forEach((_, clusterId) => {
+      const legendItem = legendContainer.append("div")
+        .attr("class", "legend-item")
+        .style("display", "flex")
+        .style("align-items", "center")
+        .style("margin", "5px");
+
+      legendItem.append("div")
+        .style("width", "20px")
+        .style("height", "20px")
+        .style("background-color", color(clusterId))
+        .style("margin-right", "10px");
+
+      legendItem.append("span")
+        .text(`Cluster ${clusterId}`)
+        .style("font-size", "12px");
+
+      // Add hover interaction for legend
+      legendItem.on("mouseover", function() {
+        // Highlight the corresponding line
+        linePaths[clusterId].attr("stroke-width", 4).attr("stroke", color(clusterId)); // Change stroke on hover
+      }).on("mouseout", function() {
+        // Reset the line to its original color and width
+        linePaths[clusterId].attr("stroke-width", 2).attr("stroke", color(clusterId)); // Reset the line to the original color
+      });
+    });
+
+  }).catch(error => {
+    console.error("Error loading cluster data:", error);
+  });
+}
+
+
+    function updateLineChart() {
+      const granularity = state.granularity;
+      loadLineChart();
+    }
+
+
+    // Event Listener for Granularity Change
+    document.getElementById("granularity").addEventListener("change", event => {
+      state.granularity = event.target.value;
+      loadGeoData();
+      updateLineChart();
+    });
+
+
+
+  </script>
+</body>
+
+</html>
