@@ -133,11 +133,11 @@
         //on("mouseover", function(){})
         //on("mouseout", function(){})
 
-      //symbol map
-      const radius = 1;
+      //symbol map: render the geojson data as circles
+      const radius = 3;
       const fillcolor = "#ff5733"; 
         
-      svg.selectAll("circle") //render the geojson data as circles
+      svg.selectAll("circle") 
          .data(geoData.features)
          .join("circle")
          .attr("cx", function(d) { //extract the center of the geojson polygon data d
@@ -148,9 +148,9 @@
            const centroid = path.centroid(d); 
            return centroid[1] //extract the y coordinate
            })
-         .attr("r", radius)
-         .attr("fill", fillcolor);  // Circle border
-         //.attr("stroke", "#333");  // Circle border
+         .attr("r", radius) //radius
+         .attr("fill", fillcolor);  //fill color
+         //.attr("stroke", "#333");  //Circle border
       
       //for zoom: ...
       //const zoom = d3.zoom()
