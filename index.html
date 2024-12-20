@@ -161,7 +161,7 @@ function renderMap(geoData, clusterMap) {
                        svg.selectAll("path")
                           .attr("transform", event.transform); // Apply zoom and pan to all paths (lines)
                        svg.selectAll("circle")
-                          .attr("transform", event.transform); 
+                          .attr("transform", "translate(" + event.transform.x + "," + event.transform.y + ")"); 
                      });
       svg.call(zoom);
   
