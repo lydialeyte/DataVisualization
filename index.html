@@ -125,7 +125,7 @@
             clusterMap[row.gm_code] += row.cluster; 
           }); 
 
-          renderMap(geoData, ClusterMap); 
+          renderMap(geoData, clusterMap); 
         })
         .catch(error => {
           console.error("error loading clustered CSV data:", error); 
