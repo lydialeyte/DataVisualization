@@ -119,7 +119,7 @@ function updateMap(geoData) {
       
       d3.csv(clusterFile) //load the correct cluster file
         .then(clusterData => {
-          console.log("Cluster Data Loaded:", clusterData);
+          console.log("map cluster Data Loaded:"); 
           
           const clusterMap = {}; //create a map where region ID is coupled to cluster number 
           
@@ -127,7 +127,7 @@ function updateMap(geoData) {
             //console.log("Row data:", row); 
             clusterMap[row.ID] += row.cluster; 
           });
-          //console.log("cluster map:", clusterMap); 
+          console.log("cluster map:", clusterMap); 
 
           renderMap(geoData, clusterMap); 
         })
@@ -191,7 +191,7 @@ function renderMap(geoData, clusterMap) {
          //.attr("fill", fillcolor);  //fill color
          .attr("fill", d => {
            //const regionId = d.properties.gm_code; // Match region ID from GeoJSON
-           const regionId = d.properties.geo_ID; // Match region ID from GeoJSON
+           const regionId = d.properties[geo_ID]; // Match region ID from GeoJSON
            const cluster = clusterMap[regionId];   // Get cluster number from CSV
            console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
            return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
@@ -221,13 +221,14 @@ function loadLineChart() {
     if (state.granularity === "buurt") {
       clusterFile = "data/clustered_BU.csv";
     } else if (state.granularity === "wijk") {
-      clusterFile = "dat/clustered_WK.csv";
+      clusterFile = "data/clustered_WK.csv";
     } else {
       clusterFile = "data/clustered_GM.csv";
     }
   
     d3.csv(clusterFile).then(data => {
-      console.log("Cluster Data Loaded:", data);
+      console.log("line chart cluster data loaded"); 
+      //console.log("Cluster Data Loaded:", data);
 
     // Extract years and scores
     const years = [2002, 2008, 2012, 2014, 2016, 2018, 2020, 2022];
