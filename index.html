@@ -161,7 +161,9 @@ function renderMap(geoData, clusterMap) {
                        svg.selectAll("path")
                           .attr("transform", event.transform); // Apply zoom and pan to all paths (lines)
                        svg.selectAll("circle")
-                          .attr("transform", "translate(" + event.transform.x + "," + event.transform.y + ")"); 
+                          .attr("transform", function(d) {
+                            return "translate(" + event.transform.x + "," + event.transform.y + ")";
+                          });
                      });
       svg.call(zoom);
   
@@ -202,8 +204,7 @@ function renderMap(geoData, clusterMap) {
            return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
          }); 
 
-       
-      geoMap.style("overflow", "hidden"); 
+      geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
     }
 
     // Event Listener for Granularity Change
