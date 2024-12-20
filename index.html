@@ -108,21 +108,17 @@
     // Update Map
     function updateMap(geoData) {
       //load cluster data for coloring the symbol map
-      
-      //if (state.granularity === "buurt") {
-      //  clusterFile = "data/clustered_BU.csv";
-     // } else if (state.granularity === "wijk") {
-      //  clusterFile = "data/clustered_WK.csv";
-      //} else {
+      if (state.granularity === "buurt") {
+        clusterFile = "data/clustered_BU.csv";
+      } else if (state.granularity === "wijk") {
+        clusterFile = "data/clustered_WK.csv";
+      } else {
         clusterFile = "data/clustered_GM.csv";
-      //}
-  
+      }
       d3.csv(clusterFile) //load the correct cluster file
         .then(clusterData => {
           console.log("Cluster Data Loaded:", clusterData);
-
           const clusterMap = {}; //create a map where region ID is coupled to cluster number 
-          
           clusterData.forEach(row => {
             console.log("Row data:", row); 
             clusterMap[row.ID] += row.cluster; 
@@ -184,7 +180,16 @@
          .attr("r", radius) //radius
          //.attr("fill", fillcolor);  //fill color
          .attr("fill", d => {
-           const regionId = d.properties.gm_code; // Match region ID from GeoJSON
+           let geo_ID; 
+           if (state.granularity === "buurt") {
+             geo_ID = "bu_code";
+           } else if (state.granularity === "wijk") {
+             geo_ID = "wk_code";
+           } else {
+             geo_ID = "gm_code";
+           }
+           //const regionId = d.properties.gm_code; // Match region ID from GeoJSON
+           const regionId = d.properties.geo_ID; // Match region ID from GeoJSON
            const cluster = clusterMap[regionId];   // Get cluster number from CSV
            console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
            return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
