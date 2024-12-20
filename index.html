@@ -125,7 +125,7 @@
           
           clusterData.forEach(row => {
             console.log("Row data:", row); 
-            clusterMap[row.gm_code] += row.cluster; 
+            clusterMap[row.ID] += row.cluster; 
           });
           console.log("cluster map:", clusterMap); 
 
@@ -184,7 +184,7 @@
          .attr("r", radius) //radius
          //.attr("fill", fillcolor);  //fill color
          .attr("fill", d => {
-           const regionId = d.properties.region_id; // Match region ID from GeoJSON
+           const regionId = d.properties.gm_code; // Match region ID from GeoJSON
            const cluster = clusterMap[regionId];   // Get cluster number from CSV
            console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
            return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
