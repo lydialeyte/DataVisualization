@@ -164,7 +164,8 @@
       //symbol map: render the geojson data as circles
       const radius = 3;
       const fillcolor = "#ff5733"; 
-        
+      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
+      
       svg.selectAll("circle") 
          .data(geoData.features)
          .join("circle")
