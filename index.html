@@ -122,7 +122,7 @@
 
           const clusterMap = {}; //create a map where region ID is coupled to cluster number 
           clusterData.forEach(row => {
-            clusterMaP[row.gm_code] += row.cluster; 
+            clusterMap[row.gm_code] += row.cluster; 
           }); 
 
           renderMap(geoData, ClusterMap); 
