@@ -153,6 +153,15 @@ function renderMap(geoData, clusterMap) {
                         .attr("width", width)
                         .attr("height", height);
 
+      //zoom behaviour 
+      const zoom = d3.zoom()
+                     .scaleExtent([1, 8]) // Limit zoom scale 
+                     .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
+                     .on("zoom", function(event) {
+                       svg.attr("transform", event.transform); // Apply zoom and pan to the entire svg
+                     });
+      svg.call(zoom); 
+      
       //geographical map: render the geojson data as SVG paths 
       svg.selectAll("path")
         .data(geoData.features)
@@ -167,7 +176,6 @@ function renderMap(geoData, clusterMap) {
       //symbol map: render the geojson data as circles
       const radius = 3;
       const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
-
       const geo_ID = (state.granularity === "buurt") ? "bu_code" : 
                      (state.granularity === "wijk") ? "wk_code" : 
                      "gm_code";
