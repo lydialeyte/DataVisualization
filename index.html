@@ -28,10 +28,6 @@
     
   </div>
 
-
-
-  
-
   <div class="chart-container">
     <!-- Placeholder for the Line Graph -->
     <div id="line-graph" class="chart"></div>
@@ -41,6 +37,7 @@
 
   </div>
   <div id="legend" class="legend-container"></div>
+
 
   
   <script>
@@ -58,27 +55,25 @@
       gemeente: "data/merged_data_reprojected_GM.geojson"  // Gemeente dataset
     };
 
-
-
     // Initial Map Load
     loadGeoData();
 
     // Initial load
     loadLineChart();
 
-    // Load GeoData Based on Granularity and update the map accordingly 
-function loadGeoData() {
+
+
+// Load GeoData Based on Granularity and start function for loading clustered data     
+function loadGeoData() {   
       //fetch the GeoJSON file based on the selected granularity
       const selectedGranularity = datasets[state.granularity]; 
-
+  
       if (state.granularity === 'buurt') {
-        //load the geojson data which is divided over 2 files 
-        Promise.all([
+        Promise.all([ //load the geojson data which is divided over 2 files 
           d3.json("data/merged_data_part1.geojson"),
           d3.json("data/merged_data_part2.geojson")
         ])
-        .then(([geoDataPart1, geoDataPart2]) => {
-          // Combine both parts horizontally
+        .then(([geoDataPart1, geoDataPart2]) => { // Combine both parts horizontally
           const combinedGeoData = {
             type: "FeatureCollection", //collection of geographical features
             features: [...geoDataPart1.features, ...geoDataPart2.features] //extract features from the two geojson files and combine into a single array
@@ -86,19 +81,21 @@ function loadGeoData() {
 
           console.log(`Loaded and combined GeoJSON Data (${state.granularity}):`, combinedGeoData);
 
-          // Update Map Visualization
-          updateMap(combinedGeoData);
+          // load clustered data
+          loadClusteredData(combinedGeoData); 
+          
         })
         .catch(error => {
           console.error(`Error loading GeoJSON data (${state.granularity}):`, error);
         });
         
-      } else{ // for gemeente and wijk
+      } else { // for gemeente and wijk
         d3.json(selectedGranularity).then(geoData => {
           console.log(`Loaded GeoJSON Data (${state.granularity}):`, geoData);
 
-        // Update Map Visualization
-        updateMap(geoData);
+        // load clustered data
+        loadClusteredData(geoData);
+          
         }).catch(error => {
           console.error(`Error loading GeoJSON data (${state.granularity}):`, error);
         });
@@ -106,9 +103,9 @@ function loadGeoData() {
     }
 
     
-    // Update Map
-function updateMap(geoData) {
-      //load cluster data for coloring the symbol map
+    // load the clustered data based on granularity, keep the geographical data, and start rendering the map
+function loadClusteredData(geoData) {
+      //select clustered data based on granularity
       if (state.granularity === "buurt") {
         clusterFile = "data/clustered_BU.csv";
       } else if (state.granularity === "wijk") {
@@ -116,18 +113,19 @@ function updateMap(geoData) {
       } else {
         clusterFile = "data/clustered_GM.csv";
       }
-      
-      d3.csv(clusterFile) //load the correct cluster file
+
+      //load the correct cluster file
+      d3.csv(clusterFile) 
         .then(clusterData => {
-          console.log("map cluster Data Loaded:"); 
+          console.log("Loaded cluster Data for map:", clusterData); 
           
-          const clusterMap = {}; //create a map where region ID is coupled to cluster number 
-          
+          //create a map where region ID is coupled to cluster number 
+          const clusterMap = {}; 
           clusterData.forEach(row => {
             //console.log("Row data:", row); 
             clusterMap[row.ID] += row.cluster; 
           });
-          console.log("cluster map:", clusterMap); 
+          console.log("Cluster Map:", clusterMap); 
 
           renderMap(geoData, clusterMap); 
         })
@@ -155,7 +153,7 @@ function renderMap(geoData, clusterMap) {
                         .attr("width", width)
                         .attr("height", height);
 
-      //render the geojson data as SVG paths 
+      //geographical map: render the geojson data as SVG paths 
       svg.selectAll("path")
         .data(geoData.features)
         .join("path")
@@ -168,13 +166,12 @@ function renderMap(geoData, clusterMap) {
 
       //symbol map: render the geojson data as circles
       const radius = 3;
-      const fillcolor = "#ff5733"; 
       const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
 
       const geo_ID = (state.granularity === "buurt") ? "bu_code" : 
                      (state.granularity === "wijk") ? "wk_code" : 
                      "gm_code";
-      console.log("Geo_ID: ", geo_ID); 
+        console.log("Geo_ID: ", geo_ID); 
       
       svg.selectAll("circle") 
          .data(geoData.features)
@@ -187,13 +184,10 @@ function renderMap(geoData, clusterMap) {
            const centroid = path.centroid(d); 
            return centroid[1] //extract the y coordinate
          })
-         .attr("r", radius) //radius
-         //.attr("fill", fillcolor);  //fill color
+         .attr("r", radius)
          .attr("fill", d => {
-           //const regionId = d.properties.gm_code; // Match region ID from GeoJSON
            const regionId = d.properties[geo_ID]; // Match region ID from GeoJSON
            const cluster = clusterMap[regionId];   // Get cluster number from CSV
-           console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
            return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
          }); 
       
