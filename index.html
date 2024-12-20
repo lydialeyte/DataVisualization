@@ -48,7 +48,7 @@
     const state = { //default configuration of the application 
       year: 2020,
       city: "GM0014",
-      granularity: "wijk" // Default granularity
+      granularity: "gemeente" // Default granularity
     };
 
     // data set paths for geographic maps 
@@ -168,8 +168,162 @@
       loadGeoData();
       updateLineChart();
     });
+  function loadLineChart() {
+    let clusterFile;
 
+    if (state.granularity === "buurt") {
+      clusterFile = "data/clustered_BU.csv";
+    } else if (state.granularity === "wijk") {
+      clusterFile = "dat/clustered_WK.csv";
+    } else {
+      clusterFile = "data/clustered_GM.csv";
+    }
+  
+    d3.csv(clusterFile).then(data => {
+      console.log("Cluster Data Loaded:", data);
 
+    // Extract years and scores
+    const years = [2002, 2008, 2012, 2014, 2016, 2018, 2020, 2022];
+
+    // Organize data by cluster
+    const clusters = d3.group(data, d => d.cluster);
+
+    // Create Line Chart
+    const lineSvg = d3.select("#line-graph")
+      .html("") // Clear existing chart
+      .append("svg")
+      .attr("width", 600)
+      .attr("height", 500);
+
+    const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+    const width = 600 - margin.left - margin.right;
+    const height = 480 - margin.top - margin.bottom;
+
+    const g = lineSvg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scalePoint()
+      .domain(years)
+      .range([0, width]);
+
+    const y = d3.scaleLinear()
+      .domain([3.8, 4.5]) // Adjust domain based on expected LBM scores
+      .range([height, 0]);
+
+    // Axes
+    g.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x));
+
+    g.append("g")
+      .call(d3.axisLeft(y));
+
+    // Line generator
+    const line = d3.line()
+      .x(d => x(d.year))
+      .y(d => y(d.score));
+
+    // Create an empty object to store line paths
+    const linePaths = {};
+
+    // Add lines for each cluster
+    const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
+
+    clusters.forEach((clusterData, clusterId) => {
+      const avgScores = years.map(year => {
+        const clusterScores = clusterData.map(d => +d[`lbm_${year}`]);
+        return {
+          year: year,
+          score: d3.mean(clusterScores.filter(d => !isNaN(d)))
+        };
+      });
+
+      // Draw the line and store the path in linePaths
+      const path = g.append("path")
+        .datum(avgScores)
+        .attr("fill", "none")
+        .attr("stroke", color(clusterId))
+        .attr("stroke-width", 2)
+        .attr("d", line);
+
+      // Store the path for later use
+      linePaths[clusterId] = path;
+    });
+
+    // Add labels
+    g.append("text")
+      .attr("x", width / 2)
+      .attr("y", -5)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "16px")
+      .text("Average LBM Scores Per Cluster Over Time");
+
+    g.append("text")
+      .attr("x", -height / 2)
+      .attr("y", -35)
+      .attr("transform", "rotate(-90)")
+      .attr("text-anchor", "middle")
+      .attr("font-size", "12px")
+      .text("Average LBM Score");
+
+    g.append("text")
+      .attr("x", width / 2)
+      .attr("y", height + 40)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "12px")
+      .text("Years");
+
+    const legendContainer = d3.select("#legend")
+      .html("") // Clear any existing legend
+      .style("display", "flex")
+      .style("justify-content", "center")
+      .style("flex-wrap", "wrap")
+      .style("gap", "20px")
+      .style("margin-top", "20px");
+
+    clusters.forEach((_, clusterId) => {
+      const legendItem = legendContainer.append("div")
+        .attr("class", "legend-item")
+        .style("display", "flex")
+        .style("align-items", "center")
+        .style("margin", "5px");
+
+      legendItem.append("div")
+        .style("width", "20px")
+        .style("height", "20px")
+        .style("background-color", color(clusterId))
+        .style("margin-right", "10px");
+
+      legendItem.append("span")
+        .text(`Cluster ${clusterId}`)
+        .style("font-size", "12px");
+
+      // Add hover interaction for legend
+      legendItem.on("mouseover", function() {
+        // Highlight the corresponding line
+        linePaths[clusterId].attr("stroke-width", 4).attr("stroke", color(clusterId)); // Change stroke on hover
+        }).on("mouseout", function() {
+        // Reset the line to its original color and width
+        linePaths[clusterId].attr("stroke-width", 2).attr("stroke", color(clusterId)); // Reset the line to the original color
+        });
+      });
+
+      }).catch(error => {
+        console.error("Error loading cluster data:", error);
+      });
+    }
+
+    function updateLineChart() {
+      const granularity = state.granularity;
+      loadLineChart();
+    }
+
+    // Event Listener for Granularity Change
+    document.getElementById("granularity").addEventListener("change", event => {
+      state.granularity = event.target.value;
+      loadGeoData();
+      updateLineChart();
+    });
 
   </script>
 </body>
