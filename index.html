@@ -120,7 +120,7 @@
           console.log("Cluster Data Loaded:", clusterData);
           const clusterMap = {}; //create a map where region ID is coupled to cluster number 
           clusterData.forEach(row => {
-            console.log("Row data:", row); 
+            //console.log("Row data:", row); 
             clusterMap[row.ID] += row.cluster; 
           });
           console.log("cluster map:", clusterMap); 
