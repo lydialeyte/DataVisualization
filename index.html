@@ -155,8 +155,8 @@ function renderMap(geoData, clusterMap) {
 
       //zoom behaviour 
       const zoom = d3.zoom()
-                     .scaleExtent([1, 8]) // Limit zoom scale 
-                     .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
+                     //.scaleExtent([1, 8]) // Limit zoom scale 
+                     //.translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", function(event) {
                        svg.attr("transform", event.transform); // Apply zoom and pan to the entire svg
                      });
