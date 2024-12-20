@@ -103,8 +103,9 @@ function loadGeoData() {
     }
 
     
-    // load the clustered data based on granularity, keep the geographical data, and start rendering the map
+// load the clustered data based on granularity, keep the geographical data, and start rendering the map
 function loadClusteredData(geoData) {
+  
       //select clustered data based on granularity
       if (state.granularity === "buurt") {
         clusterFile = "data/clustered_BU.csv";
@@ -135,6 +136,7 @@ function loadClusteredData(geoData) {
     }
 
 
+// render the geographical/ symbol map
 function renderMap(geoData, clusterMap) {
       
       const width = 600, height = 525; //map dimensions
@@ -151,7 +153,8 @@ function renderMap(geoData, clusterMap) {
 
       const svg = geoMap.append("svg") //create SVG element
                         .attr("width", width)
-                        .attr("height", height);
+                        .attr("height", height)
+                        .append("g"); // for zooming
 
       //zoom behaviour 
       const zoom = d3.zoom()
@@ -161,9 +164,7 @@ function renderMap(geoData, clusterMap) {
                        svg.selectAll("path")
                           .attr("transform", event.transform); // Apply zoom and pan to all paths (lines)
                        svg.selectAll("circle")
-                          .attr("transform", function(d) {
-                            return "translate(" + event.transform.x + "," + event.transform.y + ")";
-                          });
+                          .attr("transform", "translate(" + event.transform.x + "," + event.transform.y + ")");
                      });
       svg.call(zoom);
   
@@ -213,9 +214,11 @@ function renderMap(geoData, clusterMap) {
       loadGeoData();
       updateLineChart();
     });
-      
 
+    
+//create the line chart
 function loadLineChart() {
+  
     let clusterFile;
 
     if (state.granularity === "buurt") {
