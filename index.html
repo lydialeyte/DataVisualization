@@ -66,7 +66,7 @@
     // Initial load
     loadLineChart();
 
-    // Load GeoData Based on Granularity
+    // Load GeoData Based on Granularity and update the map accordingly 
     function loadGeoData() {
       //fetch the GeoJSON file based on the selected granularity
       const selectedGranularity = datasets[state.granularity]; 
@@ -106,7 +106,34 @@
     }
     // Update Map
     function updateMap(geoData) {
+      //load cluster data for coloring the symbol map
       
+      if (state.granularity === "buurt") {
+        clusterFile = "data/clustered_BU.csv";
+      } else if (state.granularity === "wijk") {
+        clusterFile = "data/clustered_WK.csv";
+      } else {
+        clusterFile = "data/clustered_GM.csv";
+      }
+  
+      d3.csv(clusterFile) //load the correct cluster file
+        .then(clusterData => {
+          console.log("Cluster Data Loaded:", clusterData);
+
+          const clusterMap = {}; //create a map where region ID is coupled to cluster number 
+          clusterData.forEach(row => {
+            clusterMaP[row.gm_code] += row.cluster; 
+          }); 
+
+          renderMap(geoData, ClusterMap); 
+        })
+        .catch(error => {
+          console.error("error loading clustered CSV data:", error); 
+        });
+    }
+
+    function renderMap(geoData, clusterMap) {
+        
       const width = 600, height = 525; //map dimensions
 
       const projection = d3.geoMercator() //set up map projection 
@@ -148,9 +175,14 @@
          .attr("cy", function(d) { //extract the center of the geojson polygon data d
            const centroid = path.centroid(d); 
            return centroid[1] //extract the y coordinate
-           })
+         })
          .attr("r", radius) //radius
-         .attr("fill", fillcolor);  //fill color
+         //.attr("fill", fillcolor);  //fill color
+         .attr("fill", d => {
+           const regionId = d.properties.region_id; // Match region ID from GeoJSON
+           const cluster = clusterMap[regionId];   // Get cluster number from CSV
+           return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
+         }) 
          //.attr("stroke", "#333");  //Circle border
       
       //for zoom: ...
@@ -169,6 +201,7 @@
       loadGeoData();
       updateLineChart();
     });
+      
   function loadLineChart() {
     let clusterFile;
 
@@ -208,7 +241,7 @@
       .range([0, width]);
 
     const y = d3.scaleLinear()
-      .domain([3.8, 4.5]) // Adjust domain based on expected LBM scores
+      .domain([3.8, 4.5]) // Adjust domain based on expected LBM scores 
       .range([height, 0]);
 
     // Axes
