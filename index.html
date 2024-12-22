@@ -70,7 +70,7 @@
 
 // Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for loading clustered data     
 function loadData() { 
-      
+      d3.select("#loading-icon").style("display", "block");
     // load GeoJSON data for all granularities
       const GeoPromises = [ // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
         d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
@@ -186,7 +186,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                      .scaleExtent([1, 30]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("start", () => {
-                       d3.select("#geo-map #loading-icon").style("display", "block"); // Show html loading icon at the start of zooming
+                       d3.select("#loading-icon").style("display", "block"); // Show html loading icon at the start of zooming
                      })
                      .on("zoom", (event) => {
                        const zoomLevel = event.transform.k;
@@ -203,7 +203,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                        prevZoomLevel = zoomLevel;
                      })
                      .on("end", () => {
-                       d3.select("#geo-map #loading-icon").style("display", "none"); // Hide html loading icon when zooming ends
+                       d3.select("#loading-icon").style("display", "none"); // Hide html loading icon when zooming ends
                      }); 
   
       svg.call(zoom); //apply zoom behaviour to the svg
@@ -258,8 +258,10 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
   
       console.log("Rendering iterations finished"); 
       showLayer("municipality");
-
-       geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
+  
+      d3.select("#loading-icon").style("display", "none");
+  
+      geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
 }
 
     // Event Listener for Granularity Change
