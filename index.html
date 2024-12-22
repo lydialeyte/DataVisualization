@@ -177,6 +177,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const zoom = d3.zoom()
                      .scaleExtent([1, 30]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
+                     .on("start", () => {
+                       d3.select("#geo-map #loading-icon").style("display", "block"); // Show html loading icon at the start of zooming
+                     })
                      .on("zoom", (event) => {
                        const zoomLevel = event.transform.k;
                        
@@ -190,6 +193,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                          showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                        }
                        prevZoomLevel = zoomLevel;
+                     });
+                     .on("end", () => {
+                       d3.select("#geo-map #loading-icon").style("display", "none"); // Hide html loading icon when zooming ends
                      }); 
   
       svg.call(zoom); //apply zoom behaviour to the svg
