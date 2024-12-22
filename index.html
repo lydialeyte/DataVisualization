@@ -163,14 +163,14 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); //set circle colors
   
       //zoom behaviour 
-      const zoomThreshold1 = 2;
-      const zoomThreshold2 = 5;      
+      const zoomThreshold1 = 5;
+      const zoomThreshold2 = 15;      
   
       const g = svg.append("g"); //create a group for zooming
       let prevZoomLevel = 1; //to track the previous zoom level
   
       const zoom = d3.zoom()
-                     .scaleExtent([1, 20]) // Limit zoom scale 
+                     .scaleExtent([1, 30]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", (event) => {
                        const zoomLevel = event.transform.k;
@@ -239,6 +239,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
   
       console.log("Rendering iterations finished"); 
       showLayer("municipality");
+
+       geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
 }
 
     // Event Listener for Granularity Change
