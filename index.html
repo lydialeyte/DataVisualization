@@ -198,8 +198,7 @@ function renderMap(geoData, clusterMap) {
            const centroid = path.centroid(d); 
            return centroid[0]; // extract the x coordinate
            }) 
-        .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
-         })
+         .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
          .attr("r", radius)
          .attr("fill", d => {
            const regionId = d.properties[geo_ID]; // Match region ID from GeoJSON
