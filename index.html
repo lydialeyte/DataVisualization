@@ -158,9 +158,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .attr("width", width)
                         .attr("height", height)
   
-      const radius = 3; 
+      const radius = 3; //set circle radius
   
-      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
+      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); //set circle colors
   
       //zoom behaviour 
       const g = svg.append("g"); //create a group for zooming
@@ -176,7 +176,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                        g.selectAll("circle") // translate the circle objects (not zoom in order to keep their radius constant)
                          .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
                          .attr("cy", d => event.transform.applyY(path.centroid(d)[1])); 
-                       if (zoomLevel < 2 {
+                       if (zoomLevel < 2) {
                          showLayer("municipality"); 
                        } else if (zoomLevel >= 2 && zoomLevel < 5) {
                          showLayer("district"); 
