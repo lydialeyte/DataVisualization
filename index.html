@@ -163,29 +163,24 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); //set circle colors
   
       //zoom behaviour 
+      const zoomThreshold1 = 2;
+      const zoomThreshold2 = 5;      
+  
       const g = svg.append("g"); //create a group for zooming
-      
+
+      let prevZoomLevel = 1; //track the previous zoom level
       const zoom = d3.zoom()
                      .scaleExtent([1, 20]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", (event) => {
                        const zoomLevel = event.transform.k;
-                       g.attr("transform", event.transform);
-                       g.selectAll("path").attr("stroke-width", 1 / event.transform.k);
-                       g.selectAll("circle").attr("r", radius / event.transform.k);
-                       
-                       //g.selectAll("path") // zoom in on path objects and keep stroke width constant
-                       //  .attr("transform", event.transform)
-                       //  .attr("stroke-width", 1 / event.transform.k);
-                       //g.selectAll("circle") // translate the circle objects (not zoom in order to keep their radius constant)
-                       //  .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
-                       //  .attr("cy", d => event.transform.applyY(path.centroid(d)[1])); 
-                       if (zoomLevel < 2) {
-                         showLayer("municipality"); 
-                       } else if (zoomLevel >= 2 && zoomLevel < 5) {
-                         showLayer("district"); 
-                       } else {
-                         showLayer("neighborhood"); 
+                       g.attr("transform", event.transform); //zoom
+                       g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
+                       g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
+                       if ((prevZoomLevel < zoomThreshold1 && zoomLevel >= zoomThreshold1) || (prevZoomLevel >= zoomThreshold1 && zoomLevel < zoomThreshold1)) { //when the zoomlevel increases or decreases past the first zoom threshold the shown layer is updated
+                         showLayer(zoomLevel < zoomThreshold1 ? "municipality" : "district"); // if zoom is below the threshold, the municipality layer is shown, otherwise the district layer
+                       } else if ((prevZoomLevel < zoomThreshold2 && zoomLevel >= zoomThreshold2) || (prevZoomLevel >= zoomThreshold2 && zoomLevel < zoomThreshold2)) { //when the zoomlevel increases or decreases past the second zoom threshold the shown layer is updated
+                         showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                        }
                      }); 
   
