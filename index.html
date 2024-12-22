@@ -35,8 +35,9 @@
     <!-- Placeholder for the Geographic Map -->
     <div id="geo-map" class="chart">
       
+      <!-- Loading Icon Placeholder -->
       <div id="loading-icon" style="display: none;">
-        <p>Loading...</p>
+        <p>Loading...</p> 
       </div>
       
     </div>
@@ -165,6 +166,13 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const geoMap = d3.select("#geo-map"); //selects the html-container for the map
       geoMap.selectAll("*").remove(); // Clear previous map
 
+      if (geoMap.select("#loading-icon").empty()) {
+        geoMap.append("div")
+        .attr("id", "loading-icon")
+        .style("display", "none") // Hidden by default
+        .html('<p>Loading...</p>'); // Replace with your spinner or text
+      }
+  
       const svg = geoMap.append("svg") //create SVG element
                         .attr("width", width)
                         .attr("height", height)
