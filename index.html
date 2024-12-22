@@ -169,7 +169,7 @@ function renderMap(geoData, clusterMap) {
                        //svg.attr("transform", event.transform); // Apply zoom and pan to all
                        //svg.selectAll("circle") //translate instead of zoom (not working correctly yet)
                          // .attr("transform", "translate(" + event.transform.x + "," + event.transform.y + ")");
-                     });
+                     //});
       svg.call(zoom);
   
       //geographical map: render the geojson data as SVG paths 
@@ -198,9 +198,7 @@ function renderMap(geoData, clusterMap) {
            const centroid = path.centroid(d); 
            return centroid[0]; // extract the x coordinate
            }) 
-        .attr("cy", function(d) { //extract the center of the geojson polygon data d
-           const centroid = path.centroid(d); 
-           return centroid[1] //extract the y coordinate
+        .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
          })
          .attr("r", radius)
          .attr("fill", d => {
