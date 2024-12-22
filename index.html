@@ -130,7 +130,6 @@ function loadData() {
       //check the promises and start the next function
       Promise.all([...GeoPromises, ...clusterPromises]).then(results => {
         const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results.slice(0,3);
-        console.log("All data loaded successfully:");
 
         // Call the next function with all the loaded data
         renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
@@ -139,9 +138,9 @@ function loadData() {
     });
 }
 
-// render the geographical/ symbol map
-function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt) { //renderMap(geoData, clusterMap)
-      console.log("starter renderMap"); 
+// render the geographical/symbol map
+function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt) {
+      console.log("started rendering the map"); 
   
       const width = 600, height = 525; //map dimensions
 
@@ -165,23 +164,25 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                      .scaleExtent([1, 8]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", (event) => {
+                       g.attr("transform", event.transform); 
+                     });
                        //g.selectAll("path") // zoom in on path objects and keep stroke width constant
                        //  .attr("transform", event.transform)
                        //  .attr("stroke-width", 1 / event.transform.k);
                        //g.selectAll("circle") // translate the circle objects (not zoom in order to keep their radius constant)
                        //  .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
                        //  .attr("cy", d => event.transform.applyY(path.centroid(d)[1]));
-                       g.selectAll(".layer").attr("transform", event.transform);
-                         const zoomLevel = event.transform.k;
+                       //g.selectAll(".layer").attr("transform", event.transform);
+                         //const zoomLevel = event.transform.k;
                          // Toggle visibility based on zoom level
-                         if (zoomLevel < 2) {
-                           showLayer("municipality");
-                         } else if (zoomLevel >= 2 && zoomLevel < 5) {
-                           showLayer("district");
-                         } else {
-                           showLayer("neighborhood");
-                         }
-                     });
+                        // if (zoomLevel < 2) {
+                        //   showLayer("municipality");
+                        // } else if (zoomLevel >= 2 && zoomLevel < 5) {
+                        //   showLayer("district");
+                        // } else {
+                        //   showLayer("neighborhood");
+                        // }
+                     //});
       svg.call(zoom); //apply zoom behaviour to the svg
   
       //create groups for each level of zoom
@@ -200,7 +201,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
   
       layers.forEach(layer => {
-        console.log(`iteration: ${layer}`); 
+        console.log(`iteration: layer ${layer.name}`); 
         
         const layerGroup = layer.layerGroup; 
         console.log(`layerGroup = `, layerGroup); 
@@ -213,26 +214,25 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("stroke", "#333"); //stroke color of the map
         
         layerGroup.selectAll("circle") 
-         .data(layer.data.features)
-         .join("circle")
-         .attr("cx", d => path.centroid(d)[0]) //extract the x-coordinate of the center of the geojson polygon data
-         .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
-         .attr("r", radius)
-         .attr("fill", d => {
-           const regionId = d.properties[layer.idKey]; // Match region ID from GeoJSON
-           const cluster = layer.clusterMap[regionId];   // Get cluster number from CSV
-           return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
-         }); 
+                  .data(layer.data.features)
+                  .join("circle")
+                  .attr("cx", d => path.centroid(d)[0]) //extract the x-coordinate of the center of the geojson polygon data
+                  .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
+                  .attr("r", radius)
+                  .attr("fill", d => {
+                    const regionId = d.properties[layer.idKey]; // Match region ID from GeoJSON
+                    const cluster = layer.clusterMap[regionId];   // Get cluster number from CSV
+                    return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
+                  }); 
       });
         
       //function to toggle the layer visibility
-      function showLayer(layer) {
+      function showLayer(layerName) {
         g.selectAll(".layer").style("display", "none"); //select everything of the class layer and show none of them
-        g.select(`.layer.${layer}`).style("display", "block"); //select the specified layer and make it visible
+        g.select(`.layer.${layerName}`).style("display", "block"); //select the specified layer and make it visible
       }
-
       showLayer("municipality"); 
-      geoMap.style("overflow", "hidden");
+      //geoMap.style("overflow", "hidden");
 
       //render the municipality layer
       //g.selectAll("path")//geographical map: render the geojson data as SVG paths 
