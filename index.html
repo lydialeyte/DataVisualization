@@ -174,16 +174,27 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const g = svg.append("g"); //create a group for zooming
   
       let prevZoomLevel = 1; //to track the previous zoom level
+      
+      function throttle(func, limit) {
+        let inThrottle;
+        return function(...args) {
+          if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+          }
+        };
+      }
   
       const zoom = d3.zoom()
                      .scaleExtent([1, 30]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
-                     .on("zoom", (event) => {
+                     .on("zoom", throttle((event) => {
                        const zoomLevel = event.transform.k;
                        
                        g.attr("transform", event.transform); //zoom
-                       //g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
-                      // g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
+                       g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
+                       g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
                        
                        if ((prevZoomLevel < zoomThreshold1 && zoomLevel >= zoomThreshold1) || (prevZoomLevel >= zoomThreshold1 && zoomLevel < zoomThreshold1)) { //when the zoomlevel increases or decreases past the first zoom threshold the shown layer is updated
                          showLayer(zoomLevel < zoomThreshold1 ? "municipality" : "district"); // if zoom is below the threshold, the municipality layer is shown, otherwise the district layer
@@ -191,7 +202,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                          showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                        }
                        prevZoomLevel = zoomLevel;
-                     }); 
+                     }, 50)); 
   
       svg.call(zoom); //apply zoom behaviour to the svg
 
