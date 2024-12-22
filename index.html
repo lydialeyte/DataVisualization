@@ -55,15 +55,15 @@
     };
 
     // Initial Map Load
-    loadGeoData();
+    loadData();
 
     // Initial load
     loadLineChart();
     
 
 // Load GeoData Based on Granularity and start function for loading clustered data     
-function loadGeoData() {   
-      //fetch the GeoJSON file for the granularity 'municipality'
+function loadData() {   
+    //fetch the GeoJSON file for the granularity 'municipality'
       d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => {
         console.log(`Loaded GeoJSON Data (gemeente):`, GeoDataGemeente);
       })
@@ -95,7 +95,7 @@ function loadGeoData() {
           console.error(`Error loading GeoJSON data (wijk):`, error);
         });
 
-      // load the cluster files and create a map where region ID is coupled to cluster number
+    // load the cluster files and create a map where region ID is coupled to cluster number
       const granularities = ["buurt", "wijk", "gemeente"]; //granularities to iterate over
       const clusterFiles = {buurt: "data/clustered_BU.csv", //cluster file per granularity
                             wijk: "data/clustered_WK.csv",
@@ -119,54 +119,21 @@ function loadGeoData() {
               clusterMap[row.ID] += row.cluster; 
             });
             console.log("Cluster Map for ${granularity}:", clusterMap); 
-          })
-          .catch(error => {
-            console.error("error loading clustered CSV data for ${granularity}:", error); 
-          });
-        
-        if (granularity === "buurt") { //store the clustermap in the correct variable
+            
+            if (granularity === "buurt") { //store the clustermap in the correct variable
                 clusterMapBuurt = clusterMap;
             } else if (granularity === "wijk") {
                 clusterMapWijk = clusterMap;
             } else if (granularity === "gemeente") {
                 clusterMapGemeente = clusterMap;
             }
+            
+          })
+          .catch(error => {
+            console.error("error loading clustered CSV data for ${granularity}:", error); 
+          });
       });
 }
-
-    
-// load the clustered data based on granularity, keep the geographical data, and start rendering the map
-function loadClusteredData(geoData) {
-  
-      //select clustered data based on granularity
-      if (state.granularity === "buurt") {
-        clusterFile = "data/clustered_BU.csv";
-      } else if (state.granularity === "wijk") {
-        clusterFile = "data/clustered_WK.csv";
-      } else {
-        clusterFile = "data/clustered_GM.csv";
-      }
-
-      //load the correct cluster file
-      d3.csv(clusterFile) 
-        .then(clusterData => {
-          console.log("Loaded cluster Data for map:", clusterData); 
-          
-          //create a map where region ID is coupled to cluster number 
-          const clusterMap = {}; 
-          clusterData.forEach(row => {
-            //console.log("Row data:", row); 
-            clusterMap[row.ID] += row.cluster; 
-          });
-          console.log("Cluster Map:", clusterMap); 
-
-          renderMap(geoData, clusterMap); 
-        })
-        .catch(error => {
-          console.error("error loading clustered CSV data:", error); 
-        });
-}
-
 
 // render the geographical/ symbol map
 function renderMap(geoData, clusterMap) {
