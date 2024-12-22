@@ -162,6 +162,7 @@ function renderMap(geoData, clusterMap) {
                      .on("zoom", (event) => {
                        g.selectAll("path") // zoom in on path objects
                          .attr("transform", event.transform); 
+                         .attr("stroke-width", 1 / event.transform.k);
                        g.selectAll("circle") // translate the circle objects (to keep their radius constant)
                          .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
                          .attr("cy", d => event.transform.applyY(path.centroid(d)[1]));
