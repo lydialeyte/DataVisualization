@@ -161,7 +161,7 @@ function renderMap(geoData, clusterMap) {
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", (event) => {
                        g.selectAll("path") // zoom in on path objects
-                         .attr("transform", event.transform); 
+                         .attr("transform", event.transform)
                          .attr("stroke-width", 1 / event.transform.k);
                        g.selectAll("circle") // translate the circle objects (to keep their radius constant)
                          .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
