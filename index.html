@@ -165,7 +165,8 @@ function renderMap(geoData, clusterMap) {
                      .on("zoom", (event) => {
                        g.attr("transform", event.transform); // Apply zoom and pan to the entire group
                        g.selectAll("circle")
-                         .attr("transform", `scale(${1 / event.transform.k})`); // Counteract scaling of circles
+                         .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
+                         .attr("cy", d => event.transform.applyY(path.centroid(d)[1])); 
                      });
                        //svg.attr("transform", event.transform); // Apply zoom and pan to all
                        //svg.selectAll("circle") //translate instead of zoom (not working correctly yet)
