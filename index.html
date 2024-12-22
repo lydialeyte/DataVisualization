@@ -141,12 +141,12 @@ function loadData() {
 // render the geographical/symbol map
 function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt) {
       console.log("started rendering the map"); 
-      console.log(`geodataGemeente`, GeoDataGemeente); 
-      console.log(`geodatawijk`, GeoDataWijk); 
-      console.log(`geodatabuurt`, GeoDataBuurt); 
-      console.log(`clustermapgemeente`, clusterMapGemeente); 
-      console.log(`clustermapwijk`, clusterMapWijk); 
-      console.log(`clustermapbuurt`, clusterMapBuurt);
+      //console.log(`geodataGemeente`, GeoDataGemeente); 
+      //console.log(`geodatawijk`, GeoDataWijk); 
+      //console.log(`geodatabuurt`, GeoDataBuurt); 
+      //console.log(`clustermapgemeente`, clusterMapGemeente); 
+      //console.log(`clustermapwijk`, clusterMapWijk); 
+      //console.log(`clustermapbuurt`, clusterMapBuurt);
   
       const width = 600, height = 525; //map dimensions
 
@@ -166,12 +166,12 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
 
       //zoom behaviour 
       const g = svg.append("g"); //create a group for zooming
-      const zoom = d3.zoom()
-                     .scaleExtent([1, 8]) // Limit zoom scale 
-                     .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
-                     .on("zoom", (event) => {
-                       g.attr("transform", event.transform); 
-                     });
+      //const zoom = d3.zoom()
+       //              .scaleExtent([1, 8]) // Limit zoom scale 
+         //            .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
+           //          .on("zoom", (event) => {
+             //          g.attr("transform", event.transform); 
+               //      });
                        //g.selectAll("path") // zoom in on path objects and keep stroke width constant
                        //  .attr("transform", event.transform)
                        //  .attr("stroke-width", 1 / event.transform.k);
@@ -189,7 +189,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         //   showLayer("neighborhood");
                         // }
                      //});
-      svg.call(zoom); //apply zoom behaviour to the svg
+      //svg.call(zoom); //apply zoom behaviour to the svg
   
       //create groups for each level of zoom
       const layer_GM = svg.append("g").attr("class", "layer municipality");
@@ -208,18 +208,20 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
   
       layers.forEach(layer => {
         //console.log(`iteration: layer ${layer.name}`); 
-        
-        const layerGroup = layer.layerGroup; 
+        if (!layer.data || !layer.data.features) {
+            console.warn(`Layer ${layer.name} has no valid data.`);
+            return;
+        }
         //console.log(`layerGroup = `, layerGroup); 
-        
-        layerGroup.selectAll("path") 
+        //add paths
+        layer.layerGroup.selectAll("path") 
                   .data(layer.data.features)
                   .join("path")
                   .attr("d", path)
                   .attr("fill", "#e0e0e0") //fill color of the map
                   .attr("stroke", "#333"); //stroke color of the map
-        
-        layerGroup.selectAll("circle") 
+        //add circles
+        layer.layerGroup.selectAll("circle") 
                   .data(layer.data.features)
                   .join("circle")
                   .attr("cx", d => path.centroid(d)[0]) //extract the x-coordinate of the center of the geojson polygon data
@@ -230,14 +232,13 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const cluster = layer.clusterMap[regionId];   // Get cluster number from CSV
                     return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
                   }); 
+        console.log("one rendering iteration done"); 
       });
-        
-      //function to toggle the layer visibility
-      function showLayer(layerName) {
-        g.selectAll(".layer").style("display", "none"); //select everything of the class layer and show none of them
-        g.select(`.layer.${layerName}`).style("display", "block"); //select the specified layer and make it visible
-      }
-      showLayer("municipality"); 
+      
+      g.selectAll(".layer").style("display", "none"); //select everything of the class layer and show none of them
+      g.select(`.layer.municipality`).style("display", "block"); //select the specified layer and make it visible
+      console.log("finished rendering the map"); 
+       
       //geoMap.style("overflow", "hidden");
 
       //render the municipality layer
