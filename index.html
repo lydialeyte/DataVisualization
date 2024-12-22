@@ -235,48 +235,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   }); 
       });
       console.log("Rendering iterations finished"); 
-      
-      //check layer visiblity 
-      //setTimeout(() => {
-      //  g.selectAll(".layer").style("display", "none"); // Hide all layers
-      //  g.select(".layer.district").style("display", "block"); // Show only the municipality layer
-      //  console.log("Finished rendering; showing final layer: municipality");
-      //}, 0); 
-  
-      //g.selectAll(".layer").style("display", "none"); //select everything of the class layer and show none of them
-      //g.select(`.layer.municipality`).style("display", "block"); //select the specified layer and make it visible
-      
-       
-      //geoMap.style("overflow", "hidden");
-
-      //render the municipality layer
-      //g.selectAll("path")//geographical map: render the geojson data as SVG paths 
-      //  .data(geoData.features)
-      //  .join("path")
-      //  .attr("d", path)
-      //  .attr("fill", "#e0e0e0") //fill color of the map
-      //  .attr("stroke", "#333"); //stroke color of the map
-
-      //const radius = 3; //symbol map: render the geojson data as circles
-      //const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
-      //const geo_ID = (state.granularity === "buurt") ? "bu_code" : 
-        //             (state.granularity === "wijk") ? "wk_code" : 
-          //           "gm_code";
-     //   console.log("Geo_ID: ", geo_ID); 
-      
-      //g.selectAll("circle") 
-       //  .data(geoData.features)
-       //  .join("circle")
-       //  .attr("cx", d => path.centroid(d)[0]) //extract the x-coordinate of the center of the geojson polygon data
-       //  .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
-       //  .attr("r", radius)
-       //  .attr("fill", d => {
-       //    const regionId = d.properties[geo_ID]; // Match region ID from GeoJSON
-       //    const cluster = clusterMap[regionId];   // Get cluster number from CSV
-       //    return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
-        // }); 
-
-      //geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
 }
 
     // Event Listener for Granularity Change
