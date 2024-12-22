@@ -193,7 +193,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                          showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                        }
                        prevZoomLevel = zoomLevel;
-                     });
+                     })
                      .on("end", () => {
                        d3.select("#geo-map #loading-icon").style("display", "none"); // Hide html loading icon when zooming ends
                      }); 
