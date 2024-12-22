@@ -167,21 +167,24 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const zoomThreshold2 = 5;      
   
       const g = svg.append("g"); //create a group for zooming
-
-      let prevZoomLevel = 1; //track the previous zoom level
+      let prevZoomLevel = 1; //to track the previous zoom level
+  
       const zoom = d3.zoom()
                      .scaleExtent([1, 20]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", (event) => {
                        const zoomLevel = event.transform.k;
+                       
                        g.attr("transform", event.transform); //zoom
                        g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
                        g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
+                       
                        if ((prevZoomLevel < zoomThreshold1 && zoomLevel >= zoomThreshold1) || (prevZoomLevel >= zoomThreshold1 && zoomLevel < zoomThreshold1)) { //when the zoomlevel increases or decreases past the first zoom threshold the shown layer is updated
                          showLayer(zoomLevel < zoomThreshold1 ? "municipality" : "district"); // if zoom is below the threshold, the municipality layer is shown, otherwise the district layer
                        } else if ((prevZoomLevel < zoomThreshold2 && zoomLevel >= zoomThreshold2) || (prevZoomLevel >= zoomThreshold2 && zoomLevel < zoomThreshold2)) { //when the zoomlevel increases or decreases past the second zoom threshold the shown layer is updated
                          showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                        }
+                       prevZoomLevel = zoomLevel;
                      }); 
   
       svg.call(zoom); //apply zoom behaviour to the svg
