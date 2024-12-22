@@ -182,8 +182,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                        const zoomLevel = event.transform.k;
                        
                        g.attr("transform", event.transform); //zoom
-                       g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
-                       g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
+                       //g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
+                      // g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
                        
                        if ((prevZoomLevel < zoomThreshold1 && zoomLevel >= zoomThreshold1) || (prevZoomLevel >= zoomThreshold1 && zoomLevel < zoomThreshold1)) { //when the zoomlevel increases or decreases past the first zoom threshold the shown layer is updated
                          showLayer(zoomLevel < zoomThreshold1 ? "municipality" : "district"); // if zoom is below the threshold, the municipality layer is shown, otherwise the district layer
