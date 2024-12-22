@@ -191,7 +191,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                      //});
       //svg.call(zoom); //apply zoom behaviour to the svg
   
-      //create groups for each level of zoom
+      //create groups within the g-group 
       const layer_GM = g.append("g").attr("class", "layer municipality"); //give the GM group the class names layer and municipality
       const layer_WK = g.append("g").attr("class", "layer district");
       const layer_BU = g.append("g").attr("class", "layer neighborhood");      
@@ -249,7 +249,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       //check layer visiblity 
   setTimeout(() => {
     g.selectAll(".layer").style("display", "none"); // Hide all layers
-    g.select(".layer.municipality").style("display", "block"); // Show only the municipality layer
+    g.select(".layer.district").style("display", "block"); // Show only the municipality layer
     console.log("Finished rendering; showing final layer: municipality");
   }, 0); 
   
