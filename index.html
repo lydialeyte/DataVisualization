@@ -61,7 +61,7 @@
     loadLineChart();
     
 
-// Load GeoData Based on Granularity and start function for loading clustered data     
+// Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for loading clustered data     
 function loadData() {   
     //fetch the GeoJSON file for the granularity 'municipality'
       d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => {
@@ -129,10 +129,12 @@ function loadData() {
             console.error(`error loading clustered CSV data for ${granularity}:`, error); 
           });
       });
+
+      renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt)
 }
 
 // render the geographical/ symbol map
-function renderMap(geoData, clusterMap) {
+function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt) { //renderMap(geoData, clusterMap)
       
       const width = 600, height = 525; //map dimensions
 
@@ -152,52 +154,104 @@ function renderMap(geoData, clusterMap) {
 
       //zoom behaviour 
       const g = svg.append("g"); //create a group for zooming
-      
       const zoom = d3.zoom()
                      .scaleExtent([1, 8]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", (event) => {
-                       g.selectAll("path") // zoom in on path objects and keep stroke width constant
-                         .attr("transform", event.transform)
-                         .attr("stroke-width", 1 / event.transform.k);
-                       g.selectAll("circle") // translate the circle objects (not zoom in order to keep their radius constant)
-                         .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
-                         .attr("cy", d => event.transform.applyY(path.centroid(d)[1]));
+                       //g.selectAll("path") // zoom in on path objects and keep stroke width constant
+                       //  .attr("transform", event.transform)
+                       //  .attr("stroke-width", 1 / event.transform.k);
+                       //g.selectAll("circle") // translate the circle objects (not zoom in order to keep their radius constant)
+                       //  .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
+                       //  .attr("cy", d => event.transform.applyY(path.centroid(d)[1]));
+                       g.selectAll(".layer").attr("transform", event.transform);
+                         const zoomLevel = event.transform.k;
+                         // Toggle visibility based on zoom level
+                         if (zoomLevel < 2) {
+                           showLayer("municipality");
+                         } else if (zoomLevel >= 2 && zoomLevel < 5) {
+                           showLayer("district");
+                         } else {
+                           showLayer("neighborhood");
+                         }
                      });
       svg.call(zoom); //apply zoom behaviour to the svg
-  
-      //geographical map: render the geojson data as SVG paths 
-      g.selectAll("path")
-        .data(geoData.features)
-        .join("path")
-        .attr("d", path)
-        .attr("fill", "#e0e0e0") //fill color of the map
-        .attr("stroke", "#333"); //stroke color of the map
-        // for hovering effects: ...
-        //on("mouseover", function(){})
-        //on("mouseout", function(){})
-
-      //symbol map: render the geojson data as circles
-      const radius = 3;
-      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
-      const geo_ID = (state.granularity === "buurt") ? "bu_code" : 
-                     (state.granularity === "wijk") ? "wk_code" : 
-                     "gm_code";
-        console.log("Geo_ID: ", geo_ID); 
       
-      g.selectAll("circle") 
-         .data(geoData.features)
+      //define information on the layers there are
+      const layers = [{ name: "municipality", data: GeoDataGemeente, clusterMap: clusterMapGemeente, idKey: "gm_code" },
+                      { name: "district", data: GeoDataWijk, clusterMap: clusterMapWijk, idKey: "wk_code" },
+                      { name: "neighborhood", data: GeoDataBuurt, clusterMap: clusterMapBuurt, idKey: "bu_code" }];
+
+      //iterate to create layers and render the map
+      const radius = 3; //symbol map: render the geojson data as circles
+      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
+  
+      layers.forEach(layer => {
+        const layerGroup = g.append("g").attr("class", `layer ${layer.name}`);
+
+        layerGroup.selectAll("path")
+                  .data(layer.data.features)
+                  .join("path")
+                  .attr("d", path)
+                  .attr("fill", "#e0e0e0") //fill color of the map
+                  .attr("stroke", "#333"); //stroke color of the map
+        
+        layerGroup.selectAll("circle") 
+         .data(layer.data.features)
          .join("circle")
          .attr("cx", d => path.centroid(d)[0]) //extract the x-coordinate of the center of the geojson polygon data
          .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
          .attr("r", radius)
          .attr("fill", d => {
-           const regionId = d.properties[geo_ID]; // Match region ID from GeoJSON
-           const cluster = clusterMap[regionId];   // Get cluster number from CSV
+           const regionId = d.properties[layer.idKey]; // Match region ID from GeoJSON
+           const cluster = layer.clusterMap[regionId];   // Get cluster number from CSV
            return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
          }); 
+      }
+        
+        
+      //create groups for each level of zoom
+      //const layer_GM = svg.append("g").attr("class", "layer municipality");
+      //const layer_WK = svg.append("g").attr("class", "layer district");
+      //const layer_BU = svg.append("g").attr("class", "layer neighborhood");
 
-      geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
+      //function to toggle the layer visibility
+      function showLayer(layer) {
+        g.selectAll(".layer").style("display", "none");
+        g.select(`.layer.${layer}`).style("display", "block");
+      }
+
+      showLayer("municipality"); 
+      geoMap.style("overflow", "hidden");
+
+      //render the municipality layer
+      //g.selectAll("path")//geographical map: render the geojson data as SVG paths 
+      //  .data(geoData.features)
+      //  .join("path")
+      //  .attr("d", path)
+      //  .attr("fill", "#e0e0e0") //fill color of the map
+      //  .attr("stroke", "#333"); //stroke color of the map
+
+      //const radius = 3; //symbol map: render the geojson data as circles
+      //const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
+      //const geo_ID = (state.granularity === "buurt") ? "bu_code" : 
+        //             (state.granularity === "wijk") ? "wk_code" : 
+          //           "gm_code";
+     //   console.log("Geo_ID: ", geo_ID); 
+      
+      //g.selectAll("circle") 
+       //  .data(geoData.features)
+       //  .join("circle")
+       //  .attr("cx", d => path.centroid(d)[0]) //extract the x-coordinate of the center of the geojson polygon data
+       //  .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
+       //  .attr("r", radius)
+       //  .attr("fill", d => {
+       //    const regionId = d.properties[geo_ID]; // Match region ID from GeoJSON
+       //    const cluster = clusterMap[regionId];   // Get cluster number from CSV
+       //    return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
+        // }); 
+
+      //geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
 }
 
     // Event Listener for Granularity Change
