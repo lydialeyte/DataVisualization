@@ -63,41 +63,38 @@
 
 // Load GeoData Based on Granularity and start function for loading clustered data     
 function loadGeoData() {   
-      //fetch the GeoJSON file based on the selected granularity
-      const selectedGranularity = datasets[state.granularity]; 
+      //fetch the GeoJSON file for the granularity 'municipality'
+      d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => {
+        console.log(`Loaded GeoJSON Data (gemeente):`, GeoDataGemeente);
+      });
+      .catch(error => {
+        console.error(`Error loading GeoJSON data (gemeente):`, error);
+      });
+
+      //fetch the GeoJSON file for the granularity 'wijk'
+      d3.json("data/merged_data_reprojected_WK.geojson").then(GeoDataWijk => {
+        console.log(`Loaded GeoJSON Data (wijk):`, GeoDataWijk);
+      });
+      .catch(error => {
+        console.error(`Error loading GeoJSON data (wijk):`, error);
+      });       
   
-      if (state.granularity === 'buurt') {
-        Promise.all([ //load the geojson data which is divided over 2 files 
+      //fetch GeoJSON file for the granularity 'buurt' 
+      Promise.all([ //load the geojson data which is divided over 2 files 
           d3.json("data/merged_data_part1.geojson"),
           d3.json("data/merged_data_part2.geojson")
         ])
         .then(([geoDataPart1, geoDataPart2]) => { // Combine both parts horizontally
-          const combinedGeoData = {
+          const GeoDataBuurt = {
             type: "FeatureCollection", //collection of geographical features
             features: [...geoDataPart1.features, ...geoDataPart2.features] //extract features from the two geojson files and combine into a single array
           };
-
-          console.log(`Loaded and combined GeoJSON Data (${state.granularity}):`, combinedGeoData);
-
-          // load clustered data
-          loadClusteredData(combinedGeoData); 
-          
+          console.log(`Loaded and combined GeoJSON Data (buurt):`, GeoDataBuurt);
         })
-        .catch(error => {
-          console.error(`Error loading GeoJSON data (${state.granularity}):`, error);
-        });
-        
-      } else { // for gemeente and wijk
-        d3.json(selectedGranularity).then(geoData => {
-          console.log(`Loaded GeoJSON Data (${state.granularity}):`, geoData);
 
-        // load clustered data
-        loadClusteredData(geoData);
-          
-        }).catch(error => {
-          console.error(`Error loading GeoJSON data (${state.granularity}):`, error);
-        });
-      }
+      const combinedGeoData = GeoDataGemeente;
+  
+      loadClusteredData(combinedGeoData); 
 }
 
     
@@ -160,10 +157,10 @@ function renderMap(geoData, clusterMap) {
                      .scaleExtent([1, 8]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", (event) => {
-                       g.selectAll("path") // zoom in on path objects
+                       g.selectAll("path") // zoom in on path objects and keep stroke width constant
                          .attr("transform", event.transform)
                          .attr("stroke-width", 1 / event.transform.k);
-                       g.selectAll("circle") // translate the circle objects (to keep their radius constant)
+                       g.selectAll("circle") // translate the circle objects (not zoom in order to keep their radius constant)
                          .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
                          .attr("cy", d => event.transform.applyY(path.centroid(d)[1]));
                      });
