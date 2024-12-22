@@ -195,6 +195,14 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const layer_GM = svg.append("g").attr("class", "layer municipality"); //give the GM group the class names layer and municipality
       const layer_WK = svg.append("g").attr("class", "layer district");
       const layer_BU = svg.append("g").attr("class", "layer neighborhood");      
+      g.selectAll(".layer").each(function() {
+        console.log(this.className.baseVal, d3.select(this).style("display"));
+      });
+  
+      console.log("Created layers:");
+      g.selectAll(".layer").each(function() {
+        console.log(this.className.baseVal);
+      });
   
       //define information on the layers there are
       const layers = [{ name: "municipality", data: GeoDataGemeente, clusterMap: clusterMapGemeente, idKey: "gm_code", layerGroup: layer_GM },
@@ -237,9 +245,11 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       console.log("finished rendering the map"); 
 
       //check layer visiblity 
-      g.selectAll(".layer").each(function() {
+  setTimeout(() => {
+    g.selectAll(".layer").each(function() {
         console.log(this.className.baseVal, d3.select(this).style("display"));
       });
+  },100); 
   
       //g.selectAll(".layer").style("display", "none"); //select everything of the class layer and show none of them
       //g.select(`.layer.municipality`).style("display", "block"); //select the specified layer and make it visible
