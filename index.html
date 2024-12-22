@@ -33,7 +33,13 @@
     <div id="line-graph" class="chart"></div>
 
     <!-- Placeholder for the Geographic Map -->
-    <div id="geo-map" class="chart"></div>
+    <div id="geo-map" class="chart">
+      
+      <div id="loading-icon" style="display: none;">
+        <p>Loading...</p>
+      </div>
+      
+    </div>
 
   </div>
   <div id="legend" class="legend-container"></div>
@@ -141,8 +147,13 @@ function loadData() {
 // render the geographical/symbol map
 function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt) {
       console.log("started rendering the map"); 
-  
+      
+      //settings
       const width = 600, height = 525; //map dimensions
+      const zoomThreshold1 = 5; // level of zoom at which the map changes granularity from municipality to district
+      const zoomThreshold2 = 15; // level of zoom at which the map changes granularity from district to neighborhood
+      const radius = 3; // circle radius
+      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); // circle colors (identical to those in the line chart)
 
       const projection = d3.geoMercator() //set up map projection 
                            .center([5.5, 52])
@@ -157,16 +168,10 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const svg = geoMap.append("svg") //create SVG element
                         .attr("width", width)
                         .attr("height", height)
-  
-      const radius = 3; //set circle radius
-  
-      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); //set circle colors
-  
+
       //zoom behaviour 
-      const zoomThreshold1 = 5;
-      const zoomThreshold2 = 15;      
-  
       const g = svg.append("g"); //create a group for zooming
+  
       let prevZoomLevel = 1; //to track the previous zoom level
   
       const zoom = d3.zoom()
