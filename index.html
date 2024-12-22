@@ -104,17 +104,17 @@ function loadData() {
       let clusterMapGemeente = {}; //variables to store the clustermaps in
       let clusterMapWijk = {};
       let clusterMapBuurt = {};
-  
-      granularities.forEach(granularity => { //iterate over each granularity
+
+      const loadPromises = granularities.map(granularity => {
+      //granularities.forEach(granularity => { //iterate over each granularity
         const clusterFile = clusterFiles[granularity];
-        d3.csv(clusterFile) 
-          .then(clusterData => {            
+        return d3.csv(clusterFile).then(clusterData => {            
             //create a map where region ID is coupled to cluster number 
             const clusterMap = {}; 
             clusterData.forEach(row => {
               clusterMap[row.ID] += row.cluster; 
             });
-            console.log(`Created Cluster Map (${granularity}):`); 
+            console.log(`Created Cluster Map (${granularity}):`, clusterMap); 
             
             if (granularity === "buurt") { //store the clustermap in the correct variable
                 clusterMapBuurt = clusterMap;
@@ -129,11 +129,16 @@ function loadData() {
             console.error(`error loading clustered CSV data for ${granularity}:`, error); 
           });
       });
-      console.log(`clustmap BU: `, clusterMapBuurt); 
-      console.log(`clustmap WK: `, clusterMapWijk);
-      console.log(`clustmap GM: `, clusterMapGemeente);
-  
-      renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt)
+
+      Promise.all(loadPromises).then(() => {
+        console.log(`clustmap BU: `, clusterMapBuurt); 
+        console.log(`clustmap WK: `, clusterMapWijk);
+        console.log(`clustmap GM: `, clusterMapGemeente);
+    
+        renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt)
+      }).catch(error => {
+        console.error("error in loading cluster maps", error); 
+      });
 }
 
 // render the geographical/ symbol map
