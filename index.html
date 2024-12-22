@@ -38,7 +38,6 @@
   </div>
   <div id="legend" class="legend-container"></div>
 
-
   
   <script>
     // State Configurations
@@ -60,8 +59,7 @@
 
     // Initial load
     loadLineChart();
-
-
+    
 
 // Load GeoData Based on Granularity and start function for loading clustered data     
 function loadGeoData() {   
@@ -100,7 +98,7 @@ function loadGeoData() {
           console.error(`Error loading GeoJSON data (${state.granularity}):`, error);
         });
       }
-    }
+}
 
     
 // load the clustered data based on granularity, keep the geographical data, and start rendering the map
@@ -133,7 +131,7 @@ function loadClusteredData(geoData) {
         .catch(error => {
           console.error("error loading clustered CSV data:", error); 
         });
-    }
+}
 
 
 // render the geographical/ symbol map
@@ -167,8 +165,8 @@ function renderMap(geoData, clusterMap) {
                          .attr("transform", event.transform); 
                        g.selectAll("circle")
                          .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
-                         .attr("cy", d => event.transform.applyY(path.centroid(d)[1]))
-                         .attr("transform", `scale(${1 / event.transform.k})`);
+                         .attr("cy", d => event.transform.applyY(path.centroid(d)[1]));
+                         //.attr("transform", `scale(${1 / event.transform.k})`);
                      });
                        //svg.attr("transform", event.transform); // Apply zoom and pan to all
                        //svg.selectAll("circle") //translate instead of zoom (not working correctly yet)
@@ -198,11 +196,7 @@ function renderMap(geoData, clusterMap) {
       g.selectAll("circle") 
          .data(geoData.features)
          .join("circle")
-         .attr("cx", d => path.centroid(d)[0])
-         //.attr("cx", function(d) { //extract the center of the geojson polygon data d
-          // const centroid = path.centroid(d); 
-          // return centroid[0]; // extract the x coordinate
-          // }) 
+         .attr("cx", d => path.centroid(d)[0]) //extract the x-coordinate of the center of the geojson polygon data
          .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
          .attr("r", radius)
          .attr("fill", d => {
@@ -212,7 +206,7 @@ function renderMap(geoData, clusterMap) {
          }); 
 
       geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
-    }
+}
 
     // Event Listener for Granularity Change
     document.getElementById("granularity").addEventListener("change", event => {
