@@ -141,12 +141,6 @@ function loadData() {
 // render the geographical/symbol map
 function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt) {
       console.log("started rendering the map"); 
-      //console.log(`geodataGemeente`, GeoDataGemeente); 
-      //console.log(`geodatawijk`, GeoDataWijk); 
-      //console.log(`geodatabuurt`, GeoDataBuurt); 
-      //console.log(`clustermapgemeente`, clusterMapGemeente); 
-      //console.log(`clustermapwijk`, clusterMapWijk); 
-      //console.log(`clustermapbuurt`, clusterMapBuurt);
   
       const width = 600, height = 525; //map dimensions
 
@@ -170,18 +164,20 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
   
       //zoom behaviour 
       const g = svg.append("g"); //create a group for zooming
-      //const zoom = d3.zoom()
-       //              .scaleExtent([1, 8]) // Limit zoom scale 
-         //            .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
-           //          .on("zoom", (event) => {
-             //          g.attr("transform", event.transform); 
-               //      });
-                       //g.selectAll("path") // zoom in on path objects and keep stroke width constant
-                       //  .attr("transform", event.transform)
-                       //  .attr("stroke-width", 1 / event.transform.k);
-                       //g.selectAll("circle") // translate the circle objects (not zoom in order to keep their radius constant)
-                       //  .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
-                       //  .attr("cy", d => event.transform.applyY(path.centroid(d)[1]));
+      
+      const zoom = d3.zoom()
+                     .scaleExtent([1, 8]) // Limit zoom scale 
+                     .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
+                     .on("zoom", (event) => {
+                       g.selectAll("path") // zoom in on path objects and keep stroke width constant
+                         .attr("transform", event.transform)
+                         .attr("stroke-width", 1 / event.transform.k);
+                       g.selectAll("circle") // translate the circle objects (not zoom in order to keep their radius constant)
+                         .attr("cx", d => event.transform.applyX(path.centroid(d)[0]))
+                         .attr("cy", d => event.transform.applyY(path.centroid(d)[1])); 
+                     }); 
+                       //g.attr("transform", event.transform); 
+                     //});
                        //g.selectAll(".layer").attr("transform", event.transform);
                          //const zoomLevel = event.transform.k;
                          // Toggle visibility based on zoom level
@@ -193,7 +189,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         //   showLayer("neighborhood");
                         // }
                      //});
-      //svg.call(zoom); //apply zoom behaviour to the svg
+      svg.call(zoom); //apply zoom behaviour to the svg
 
       //create groups within the g-group which will function as layers for the different granularities
       const layer_GM = g.append("g").attr("class", "layer municipality"); //create a group for the municipality layer, and assign the class names layer and municipality
