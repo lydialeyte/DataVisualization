@@ -192,9 +192,10 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       //svg.call(zoom); //apply zoom behaviour to the svg
   
       //create groups for each level of zoom
-      const layer_GM = svg.append("g").attr("class", "layer municipality"); //give the GM group the class names layer and municipality
-      const layer_WK = svg.append("g").attr("class", "layer district");
-      const layer_BU = svg.append("g").attr("class", "layer neighborhood");      
+      const layer_GM = g.append("g").attr("class", "layer municipality"); //give the GM group the class names layer and municipality
+      const layer_WK = g.append("g").attr("class", "layer district");
+      const layer_BU = g.append("g").attr("class", "layer neighborhood");      
+      
       g.selectAll(".layer").each(function() {
         console.log("check the layers are created"); 
         console.log(this.className.baseVal, d3.select(this).style("display"));
