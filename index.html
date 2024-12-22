@@ -89,7 +89,7 @@ function loadGeoData() {
             type: "FeatureCollection", //collection of geographical features
             features: [...geoDataPart1.features, ...geoDataPart2.features] //extract features from the two geojson files and combine into a single array
           };
-          console.log(`Loaded and combined GeoJSON Data (buurt):`, GeoDataBuurt);
+          console.log(`Loaded GeoJSON Data (buurt):`, GeoDataBuurt);
         })
         .catch(error => {
           console.error(`Error loading GeoJSON data (wijk):`, error);
@@ -107,10 +107,11 @@ function loadGeoData() {
   
       granularities.forEach(granularity => { //iterate over each granularity
         const clusterFile = clusterFiles[granularity];
-
+        console.log("iteration ${granularity}"); 
+        console.log(clusterFile); 
         d3.csv(clusterFile) 
           .then(clusterData => {
-            console.log("Loaded cluster Data for ${granularity} map:", clusterData); 
+            console.log("Loaded cluster Data for ${granularity}:", clusterData); 
             
             //create a map where region ID is coupled to cluster number 
             const clusterMap = {}; 
