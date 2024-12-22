@@ -175,7 +175,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
   
       let prevZoomLevel = 1; //to track the previous zoom level
       
-      function throttle(func, limit) {
+      function throttle(func, limit) { //to limit how often the zoom handler runs, reduce CPU load and improve responsiveness
         let inThrottle;
         return function(...args) {
           if (!inThrottle) {
@@ -241,11 +241,15 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("fill", "#e0e0e0") //fill color of the map
                   .attr("stroke", "#333"); //stroke color of the map
         //add circles
+        layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time
+          d.centroid = path.centroid(d);
+        });
+        
         layerGroup.selectAll("circle") 
                   .data(layer.data.features)
                   .join("circle")
-                  .attr("cx", d => path.centroid(d)[0]) //extract the x-coordinate of the center of the geojson polygon data
-                  .attr("cy", d => path.centroid(d)[1]) //extract the y-coordinate of the center of the geojson polygon data
+                  .attr("cx", d => d.centroid[0]) //extract the x-coordinate of the center of the geojson polygon data
+                  .attr("cy", d => d.centroid[1]) //extract the y-coordinate of the center of the geojson polygon data
                   .attr("r", radius)
                   .attr("fill", d => {
                     const regionId = d.properties[layer.idKey]; // Match region ID from GeoJSON
