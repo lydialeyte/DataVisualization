@@ -113,7 +113,7 @@ function loadData() {
           clusterData.forEach(row => {
             clusterMap[row.ID] += row.cluster; 
           });
-          console.log(`Created Cluster Map (${granularity}):`, clusterMap); 
+          console.log(`Created Cluster Map (${granularity}):`); 
           
           if (granularity === "buurt") { //store the clustermap in the correct variable
               clusterMapBuurt = clusterMap;
@@ -141,6 +141,12 @@ function loadData() {
 // render the geographical/symbol map
 function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt) {
       console.log("started rendering the map"); 
+      console.log(`geodataGemeente`, GeoDataGemeente); 
+      console.log(`geodatawijk`, GeoDataWijk); 
+      console.log(`geodatabuurt`, GeoDataBuurt); 
+      console.log(`clustermapgemeente`, clusterMapGemeente); 
+      console.log(`clustermapwijk`, clusterMapWijk); 
+      console.log(`clustermapbuurt`, clusterMapBuurt);
   
       const width = 600, height = 525; //map dimensions
 
@@ -201,10 +207,10 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); 
   
       layers.forEach(layer => {
-        console.log(`iteration: layer ${layer.name}`); 
+        //console.log(`iteration: layer ${layer.name}`); 
         
         const layerGroup = layer.layerGroup; 
-        console.log(`layerGroup = `, layerGroup); 
+        //console.log(`layerGroup = `, layerGroup); 
         
         layerGroup.selectAll("path") 
                   .data(layer.data.features)
