@@ -62,38 +62,41 @@
     
 
 // Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for loading clustered data     
-function loadData() {   
-    //fetch the GeoJSON file for the granularity 'municipality'
-      d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => {
-        console.log(`Loaded GeoJSON Data (gemeente):`);
-      })
-      .catch(error => {
-        console.error(`Error loading GeoJSON data (gemeente):`, error);
-      });
-
-      //fetch the GeoJSON file for the granularity 'wijk'
-      d3.json("data/merged_data_reprojected_WK.geojson").then(GeoDataWijk => {
-        console.log(`Loaded GeoJSON Data (wijk):`);
-      })
-      .catch(error => {
-        console.error(`Error loading GeoJSON data (wijk):`, error);
-      });       
+function loadData() { 
+      //load GeoJSON data for all granularities
+      const GeoPromises = [
+        //fetch the GeoJSON file for the granularity 'municipality'
+        d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => {
+          console.log(`Loaded GeoJSON Data (gemeente):`);
+          return data; 
+        }).catch(error => {
+          console.error(`Error loading GeoJSON data (gemeente):`, error);
+        }), 
   
-      //fetch GeoJSON file for the granularity 'buurt' 
-      Promise.all([ //load the geojson data which is divided over 2 files 
-          d3.json("data/merged_data_part1.geojson"),
-          d3.json("data/merged_data_part2.geojson")
-        ])
-        .then(([geoDataPart1, geoDataPart2]) => { // Combine both parts horizontally
-          const GeoDataBuurt = {
-            type: "FeatureCollection", //collection of geographical features
-            features: [...geoDataPart1.features, ...geoDataPart2.features] //extract features from the two geojson files and combine into a single array
-          };
-          console.log(`Loaded GeoJSON Data (buurt):`);
-        })
-        .catch(error => {
+        //fetch the GeoJSON file for the granularity 'wijk'
+        d3.json("data/merged_data_reprojected_WK.geojson").then(GeoDataWijk => {
+          console.log(`Loaded GeoJSON Data (wijk):`);
+          return data; 
+        }).catch(error => {
           console.error(`Error loading GeoJSON data (wijk):`, error);
-        });
+        }),     
+    
+        //fetch GeoJSON file for the granularity 'buurt' 
+        Promise.all([ //load the geojson data which is divided over 2 files 
+            d3.json("data/merged_data_part1.geojson"),
+            d3.json("data/merged_data_part2.geojson")
+          ])
+          .then(([geoDataPart1, geoDataPart2]) => { // Combine both parts horizontally
+            const GeoDataBuurt = {
+              type: "FeatureCollection", //collection of geographical features
+              features: [...geoDataPart1.features, ...geoDataPart2.features] //extract features from the two geojson files and combine into a single array
+            };
+            console.log(`Loaded GeoJSON Data (buurt):`);
+            return GeoDataBuurt; 
+          }).catch(error => {
+            console.error(`Error loading GeoJSON data (wijk):`, error);
+          })      
+      ];
 
     // load the cluster files and create a map where region ID is coupled to cluster number
       const granularities = ["buurt", "wijk", "gemeente"]; //granularities to iterate over
@@ -123,22 +126,28 @@ function loadData() {
             } else if (granularity === "gemeente") {
                 clusterMapGemeente = clusterMap;
             }
-            
-          })
-          .catch(error => {
+          }).catch(error => {
             console.error(`error loading clustered CSV data for ${granularity}:`, error); 
           });
       });
 
-      Promise.all(loadPromises).then(() => {
-        console.log(`clustmap BU: `, clusterMapBuurt); 
-        console.log(`clustmap WK: `, clusterMapWijk);
-        console.log(`clustmap GM: `, clusterMapGemeente);
-    
-        renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt)
-      }).catch(error => {
-        console.error("error in loading cluster maps", error); 
-      });
+      //check the promises and start the next function
+     Promise.all([...geoJsonPromises, ...clusterPromises]).then(results => {
+        const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results;
+
+        console.log("All data loaded successfully:");
+        console.log("GeoDataGemeente:", GeoDataGemeente);
+        console.log("GeoDataWijk:", GeoDataWijk);
+        console.log("GeoDataBuurt:", GeoDataBuurt);
+        console.log("Cluster Map BU:", clusterMapBuurt);
+        console.log("Cluster Map WK:", clusterMapWijk);
+        console.log("Cluster Map GM:", clusterMapGemeente);
+
+        // Call the next function with all the loaded data
+        renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
+    }).catch(error => {
+        console.error("Error loading all data:", error);
+    });
 }
 
 // render the geographical/ symbol map
