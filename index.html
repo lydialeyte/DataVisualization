@@ -95,9 +95,42 @@ function loadGeoData() {
           console.error(`Error loading GeoJSON data (wijk):`, error);
         });
 
-      const combinedGeoData = GeoDataGemeente;
+      // load the cluster files and create a map where region ID is coupled to cluster number
+      const granularities = ["buurt", "wijk", "gemeente"]; //granularities to iterate over
+      const clusterFiles = {buurt: "data/clustered_BU.csv", //cluster file per granularity
+                            wijk: "data/clustered_WK.csv",
+                            gemeente: "data/clustered_GM.csv"};
+
+      let clusterMapGemeente = {}; //variables to store the clustermaps in
+      let clusterMapWijk = {};
+      let clusterMapBuurt = {};
   
-      loadClusteredData(combinedGeoData); 
+      granularities.forEach(granularity => { //iterate over each granularity
+        const clusterFile = clusterFiles[granularity];
+
+        d3.csv(clusterFile) 
+          .then(clusterData => {
+            console.log("Loaded cluster Data for ${granularity} map:", clusterData); 
+            
+            //create a map where region ID is coupled to cluster number 
+            const clusterMap = {}; 
+            clusterData.forEach(row => {
+              clusterMap[row.ID] += row.cluster; 
+            });
+            console.log("Cluster Map for ${granularity}:", clusterMap); 
+          })
+          .catch(error => {
+            console.error("error loading clustered CSV data for ${granularity}:", error); 
+          });
+        
+        if (granularity === "buurt") { //store the clustermap in the correct variable
+                clusterMapBuurt = clusterMap;
+            } else if (granularity === "wijk") {
+                clusterMapWijk = clusterMap;
+            } else if (granularity === "gemeente") {
+                clusterMapGemeente = clusterMap;
+            }
+      }
 }
 
     
