@@ -68,7 +68,7 @@ function loadData() {
         //fetch the GeoJSON file for the granularity 'municipality'
         d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => {
           console.log(`Loaded GeoJSON Data (gemeente):`);
-          return data; 
+          return GeoDataGemeente; 
         }).catch(error => {
           console.error(`Error loading GeoJSON data (gemeente):`, error);
         }), 
@@ -76,7 +76,7 @@ function loadData() {
         //fetch the GeoJSON file for the granularity 'wijk'
         d3.json("data/merged_data_reprojected_WK.geojson").then(GeoDataWijk => {
           console.log(`Loaded GeoJSON Data (wijk):`);
-          return data; 
+          return GeoDataWijk; 
         }).catch(error => {
           console.error(`Error loading GeoJSON data (wijk):`, error);
         }),     
@@ -94,7 +94,7 @@ function loadData() {
             console.log(`Loaded GeoJSON Data (buurt):`);
             return GeoDataBuurt; 
           }).catch(error => {
-            console.error(`Error loading GeoJSON data (wijk):`, error);
+            console.error(`Error loading GeoJSON data (buurt):`, error);
           })      
       ];
 
@@ -108,7 +108,7 @@ function loadData() {
       let clusterMapWijk = {};
       let clusterMapBuurt = {};
 
-      const loadPromises = granularities.map(granularity => {
+      const clusterPromises = granularities.map(granularity => {
       //granularities.forEach(granularity => { //iterate over each granularity
         const clusterFile = clusterFiles[granularity];
         return d3.csv(clusterFile).then(clusterData => {            
@@ -132,8 +132,8 @@ function loadData() {
       });
 
       //check the promises and start the next function
-     Promise.all([...geoJsonPromises, ...clusterPromises]).then(results => {
-        const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results;
+     Promise.all([...GeoPromises, ...clusterPromises]).then(results => {
+        const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results.slice(0,3);
 
         console.log("All data loaded successfully:");
         console.log("GeoDataGemeente:", GeoDataGemeente);
