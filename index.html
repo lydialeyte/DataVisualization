@@ -207,7 +207,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
            const cluster = layer.clusterMap[regionId];   // Get cluster number from CSV
            return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
          }); 
-      }
+      })
         
         
       //create groups for each level of zoom
