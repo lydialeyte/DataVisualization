@@ -70,7 +70,7 @@
 
 // Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for loading clustered data     
 function loadData() { 
-      d3.select("#loading-icon").style("display", "block");
+      
     // load GeoJSON data for all granularities
       const GeoPromises = [ // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
         d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
@@ -165,13 +165,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
 
       const geoMap = d3.select("#geo-map"); //selects the html-container for the map
       geoMap.selectAll("*").remove(); // Clear previous map
-
-      if (geoMap.select("#loading-icon").empty()) {
-        geoMap.append("div")
-        .attr("id", "loading-icon")
-        .style("display", "none") // Hidden by default
-        .html('<p>Loading...</p>'); // Replace with your spinner or text
-      }
   
       const svg = geoMap.append("svg") //create SVG element
                         .attr("width", width)
@@ -185,9 +178,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const zoom = d3.zoom()
                      .scaleExtent([1, 30]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
-                     .on("start", () => {
-                       d3.select("#loading-icon").style("display", "block"); // Show html loading icon at the start of zooming
-                     })
                      .on("zoom", (event) => {
                        const zoomLevel = event.transform.k;
                        
@@ -201,9 +191,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                          showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                        }
                        prevZoomLevel = zoomLevel;
-                     })
-                     .on("end", () => {
-                       d3.select("#loading-icon").style("display", "none"); // Hide html loading icon when zooming ends
                      }); 
   
       svg.call(zoom); //apply zoom behaviour to the svg
@@ -258,8 +245,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
   
       console.log("Rendering iterations finished"); 
       showLayer("municipality");
-  
-      d3.select("#loading-icon").style("display", "none");
   
       geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
 }
