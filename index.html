@@ -238,7 +238,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     return cluster !== undefined ? clusterColors(cluster) : "#ccc"; // Assign color based on cluster
                   }); 
       });
+  
       console.log("Rendering iterations finished"); 
+      showLayer("municipality");
 }
 
     // Event Listener for Granularity Change
