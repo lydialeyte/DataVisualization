@@ -65,7 +65,7 @@
 function loadData() {   
     //fetch the GeoJSON file for the granularity 'municipality'
       d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => {
-        console.log(`Loaded GeoJSON Data (gemeente):`, GeoDataGemeente);
+        console.log(`Loaded GeoJSON Data (gemeente):`);
       })
       .catch(error => {
         console.error(`Error loading GeoJSON data (gemeente):`, error);
@@ -73,7 +73,7 @@ function loadData() {
 
       //fetch the GeoJSON file for the granularity 'wijk'
       d3.json("data/merged_data_reprojected_WK.geojson").then(GeoDataWijk => {
-        console.log(`Loaded GeoJSON Data (wijk):`, GeoDataWijk);
+        console.log(`Loaded GeoJSON Data (wijk):`);
       })
       .catch(error => {
         console.error(`Error loading GeoJSON data (wijk):`, error);
@@ -89,7 +89,7 @@ function loadData() {
             type: "FeatureCollection", //collection of geographical features
             features: [...geoDataPart1.features, ...geoDataPart2.features] //extract features from the two geojson files and combine into a single array
           };
-          console.log(`Loaded GeoJSON Data (buurt):`, GeoDataBuurt);
+          console.log(`Loaded GeoJSON Data (buurt):`);
         })
         .catch(error => {
           console.error(`Error loading GeoJSON data (wijk):`, error);
@@ -114,7 +114,7 @@ function loadData() {
             clusterData.forEach(row => {
               clusterMap[row.ID] += row.cluster; 
             });
-            console.log(`Created Cluster Map (${granularity}):`, clusterMap); 
+            console.log(`Created Cluster Map (${granularity}):`); 
             
             if (granularity === "buurt") { //store the clustermap in the correct variable
                 clusterMapBuurt = clusterMap;
@@ -129,7 +129,10 @@ function loadData() {
             console.error(`error loading clustered CSV data for ${granularity}:`, error); 
           });
       });
-
+      console.log(`clustmap BU: `, clusterMapBuurt); 
+      console.log(`clustmap WK: `, clusterMapWijk);
+      console.log(`clustmap GM: `, clusterMapGemeente);
+  
       renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt)
 }
 
