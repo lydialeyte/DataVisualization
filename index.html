@@ -63,33 +63,31 @@
 
 // Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for loading clustered data     
 function loadData() { 
-      //load GeoJSON data for all granularities
-      const GeoPromises = [
-        //fetch the GeoJSON file for the granularity 'municipality'
-        d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => {
+      
+    // load GeoJSON data for all granularities
+      const GeoPromises = [ // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
+        d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
           console.log(`Loaded GeoJSON Data (gemeente):`);
           return GeoDataGemeente; 
         }).catch(error => {
           console.error(`Error loading GeoJSON data (gemeente):`, error);
         }), 
-  
-        //fetch the GeoJSON file for the granularity 'wijk'
-        d3.json("data/merged_data_reprojected_WK.geojson").then(GeoDataWijk => {
+        
+        d3.json("data/merged_data_reprojected_WK.geojson").then(GeoDataWijk => { // fetch the GeoJSON file for the granularity 'wijk' and place it in the GeoPromises array
           console.log(`Loaded GeoJSON Data (wijk):`);
           return GeoDataWijk; 
         }).catch(error => {
           console.error(`Error loading GeoJSON data (wijk):`, error);
         }),     
-    
-        //fetch GeoJSON file for the granularity 'buurt' 
-        Promise.all([ //load the geojson data which is divided over 2 files 
+        
+        Promise.all([ // fetch GeoJSON file (wihch is divided over 2 files) for the granularity 'buurt' and place it in the GeoPromises array
             d3.json("data/merged_data_part1.geojson"),
             d3.json("data/merged_data_part2.geojson")
           ])
           .then(([geoDataPart1, geoDataPart2]) => { // Combine both parts horizontally
             const GeoDataBuurt = {
-              type: "FeatureCollection", //collection of geographical features
-              features: [...geoDataPart1.features, ...geoDataPart2.features] //extract features from the two geojson files and combine into a single array
+              type: "FeatureCollection", // collection of geographical features
+              features: [...geoDataPart1.features, ...geoDataPart2.features] // extract features from the two geojson files and combine into a single array
             };
             console.log(`Loaded GeoJSON Data (buurt):`);
             return GeoDataBuurt; 
@@ -99,49 +97,40 @@ function loadData() {
       ];
 
     // load the cluster files and create a map where region ID is coupled to cluster number
-      const granularities = ["buurt", "wijk", "gemeente"]; //granularities to iterate over
-      const clusterFiles = {buurt: "data/clustered_BU.csv", //cluster file per granularity
+      const granularities = ["buurt", "wijk", "gemeente"]; // granularities to iterate over
+      const clusterFiles = {buurt: "data/clustered_BU.csv", // cluster file per granularity
                             wijk: "data/clustered_WK.csv",
                             gemeente: "data/clustered_GM.csv"};
 
-      let clusterMapGemeente = {}; //variables to store the clustermaps in
+      let clusterMapGemeente = {}; // variables to store the clustermaps in
       let clusterMapWijk = {};
       let clusterMapBuurt = {};
 
-      const clusterPromises = granularities.map(granularity => {
-      //granularities.forEach(granularity => { //iterate over each granularity
-        const clusterFile = clusterFiles[granularity];
+      const clusterPromises = granularities.map(granularity => { // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
+        const clusterFile = clusterFiles[granularity]; //get the cluster file
         return d3.csv(clusterFile).then(clusterData => {            
-            //create a map where region ID is coupled to cluster number 
-            const clusterMap = {}; 
-            clusterData.forEach(row => {
-              clusterMap[row.ID] += row.cluster; 
-            });
-            console.log(`Created Cluster Map (${granularity}):`, clusterMap); 
-            
-            if (granularity === "buurt") { //store the clustermap in the correct variable
-                clusterMapBuurt = clusterMap;
-            } else if (granularity === "wijk") {
-                clusterMapWijk = clusterMap;
-            } else if (granularity === "gemeente") {
-                clusterMapGemeente = clusterMap;
-            }
-          }).catch(error => {
-            console.error(`error loading clustered CSV data for ${granularity}:`, error); 
+          const clusterMap = {}; //create a map where region ID is coupled to cluster number 
+          clusterData.forEach(row => {
+            clusterMap[row.ID] += row.cluster; 
           });
+          console.log(`Created Cluster Map (${granularity}):`, clusterMap); 
+          
+          if (granularity === "buurt") { //store the clustermap in the correct variable
+              clusterMapBuurt = clusterMap;
+          } else if (granularity === "wijk") {
+              clusterMapWijk = clusterMap;
+          } else if (granularity === "gemeente") {
+              clusterMapGemeente = clusterMap;
+          }
+        }).catch(error => {
+          console.error(`error loading clustered CSV data for ${granularity}:`, error); 
+        });
       });
 
       //check the promises and start the next function
-     Promise.all([...GeoPromises, ...clusterPromises]).then(results => {
+      Promise.all([...GeoPromises, ...clusterPromises]).then(results => {
         const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results.slice(0,3);
-
         console.log("All data loaded successfully:");
-        console.log("GeoDataGemeente:", GeoDataGemeente);
-        console.log("GeoDataWijk:", GeoDataWijk);
-        console.log("GeoDataBuurt:", GeoDataBuurt);
-        console.log("Cluster Map BU:", clusterMapBuurt);
-        console.log("Cluster Map WK:", clusterMapWijk);
-        console.log("Cluster Map GM:", clusterMapGemeente);
 
         // Call the next function with all the loaded data
         renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
