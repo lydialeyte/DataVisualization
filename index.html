@@ -192,7 +192,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       //svg.call(zoom); //apply zoom behaviour to the svg
   
       //create groups for each level of zoom
-      const layer_GM = svg.append("g").attr("class", "layer municipality");
+      const layer_GM = svg.append("g").attr("class", "layer municipality"); //give the GM group the class names layer and municipality
       const layer_WK = svg.append("g").attr("class", "layer district");
       const layer_BU = svg.append("g").attr("class", "layer neighborhood");      
   
@@ -234,10 +234,16 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   }); 
         console.log("one rendering iteration done"); 
       });
-      
-      g.selectAll(".layer").style("display", "none"); //select everything of the class layer and show none of them
-      g.select(`.layer.municipality`).style("display", "block"); //select the specified layer and make it visible
       console.log("finished rendering the map"); 
+
+      //check layer visiblity 
+      g.selectAll(".layer").each(function() {
+        console.log(this.className.baseVal, d3.select(this).style("display"));
+      });
+  
+      //g.selectAll(".layer").style("display", "none"); //select everything of the class layer and show none of them
+      //g.select(`.layer.municipality`).style("display", "block"); //select the specified layer and make it visible
+      
        
       //geoMap.style("overflow", "hidden");
 
