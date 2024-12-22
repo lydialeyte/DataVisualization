@@ -107,18 +107,18 @@ function loadData() {
   
       granularities.forEach(granularity => { //iterate over each granularity
         const clusterFile = clusterFiles[granularity];
-        console.log("iteration ${granularity}"); 
-        console.log(clusterFile); 
+        console.log(`iteration ${granularity}`); 
+
         d3.csv(clusterFile) 
           .then(clusterData => {
-            console.log("Loaded cluster Data for ${granularity}:", clusterData); 
+            console.log(`Loaded cluster Data for ${granularity}:`, clusterData); 
             
             //create a map where region ID is coupled to cluster number 
             const clusterMap = {}; 
             clusterData.forEach(row => {
               clusterMap[row.ID] += row.cluster; 
             });
-            console.log("Cluster Map for ${granularity}:", clusterMap); 
+            console.log(`Cluster Map for ${granularity}:`, clusterMap); 
             
             if (granularity === "buurt") { //store the clustermap in the correct variable
                 clusterMapBuurt = clusterMap;
@@ -130,7 +130,7 @@ function loadData() {
             
           })
           .catch(error => {
-            console.error("error loading clustered CSV data for ${granularity}:", error); 
+            console.error(`error loading clustered CSV data for ${granularity}:`, error); 
           });
       });
 }
