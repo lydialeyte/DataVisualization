@@ -35,7 +35,7 @@
     <!-- Placeholder for the Geographic Map -->
     <div id="geo-map" class="chart">
       
-      <!-- Loading Icon Placeholder -->
+      <!-- Placeholder for Loading Icon -->
       <div id="loading-icon" style="display: none;">
         <p>Loading...</p> 
       </div>
@@ -57,8 +57,8 @@
     // data set paths for geographic maps 
     const datasets = {
       buurt: "data/simplified_file.geojson", // Buurt dataset (dummy)
-      wijk: "data/merged_data_reprojected_WK.geojson",  // Wijk dataset
-      gemeente: "data/merged_data_reprojected_GM.geojson"  // Gemeente dataset
+      wijk: "data/merged_data_reprojected_WK_1.geojson",  // Wijk dataset
+      gemeente: "data/merged_data_reprojected_GM_1.geojson"  // Gemeente dataset
     };
 
     // Initial Map Load
@@ -68,19 +68,19 @@
     loadLineChart();
     
 
-// Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for loading clustered data     
+// Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for rendering the map     
 function loadData() { 
       
     // load GeoJSON data for all granularities
       const GeoPromises = [ // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
-        d3.json("data/merged_data_reprojected_GM.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
+        d3.json("data/merged_data_reprojected_GM_1.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
           console.log(`Loaded GeoJSON Data (gemeente)`);
           return GeoDataGemeente; 
         }).catch(error => {
           console.error(`Error loading GeoJSON data (gemeente):`, error);
         }), 
         
-        d3.json("data/merged_data_reprojected_WK.geojson").then(GeoDataWijk => { // fetch the GeoJSON file for the granularity 'wijk' and place it in the GeoPromises array
+        d3.json("data/merged_data_reprojected_WK_1.geojson").then(GeoDataWijk => { // fetch the GeoJSON file for the granularity 'wijk' and place it in the GeoPromises array
           console.log(`Loaded GeoJSON Data (wijk)`);
           return GeoDataWijk; 
         }).catch(error => {
@@ -88,8 +88,8 @@ function loadData() {
         }),     
         
         Promise.all([ // fetch GeoJSON file (wihch is divided over 2 files) for the granularity 'buurt' and place it in the GeoPromises array
-            d3.json("data/merged_data_part1.geojson"),
-            d3.json("data/merged_data_part2.geojson")
+            d3.json("data/merged_data_part1_1.geojson"),
+            d3.json("data/merged_data_part2_1.geojson")
           ])
           .then(([geoDataPart1, geoDataPart2]) => { // Combine both parts horizontally
             const GeoDataBuurt = {
@@ -103,7 +103,7 @@ function loadData() {
           })      
       ];
 
-    // load the cluster files and create a map where region ID is coupled to cluster number
+    // load the cluster files and create a map where region ID is coupled to cluster number (perhaps the mapping is not necessary and the data file can be used directly)
       const granularities = ["buurt", "wijk", "gemeente"]; // granularities to iterate over
       const clusterFiles = {buurt: "data/clustered_BU.csv", // cluster file per granularity
                             wijk: "data/clustered_WK.csv",
@@ -134,9 +134,9 @@ function loadData() {
         });
       });
 
-      //check the promises and start the next function
+      //make sure all data is loaded before starting the next function 
       Promise.all([...GeoPromises, ...clusterPromises]).then(results => {
-        const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results.slice(0,3);
+        const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results.slice(0,3); //gives the loaded geo data the correct names
 
         // Call the next function with all the loaded data
         renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
@@ -154,7 +154,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const zoomThreshold1 = 5; // level of zoom at which the map changes granularity from municipality to district
       const zoomThreshold2 = 15; // level of zoom at which the map changes granularity from district to neighborhood
       const radius = 3; // circle radius
-      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); // circle colors (identical to those in the line chart)
+      const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); // circle colors (identical to those in the line chart) 
 
       const projection = d3.geoMercator() //set up map projection 
                            .center([5.5, 52])
@@ -175,7 +175,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
   
       let prevZoomLevel = 1; //to track the previous zoom level
       
-      function throttle(func, limit) { //to limit how often the zoom handler runs, reduce CPU load and improve responsiveness
+      function throttle(func, limit) { //to limit how often the zoom handler runs: reduce CPU load and improve responsiveness
         let inThrottle;
         return function(...args) {
           if (!inThrottle) {
@@ -189,7 +189,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const zoom = d3.zoom()
                      .scaleExtent([1, 30]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
-                     .on("zoom", throttle((event) => {
+                     .on("zoom", throttle((event) => { // work via throttle to reduce CPU load
                        const zoomLevel = event.transform.k;
                        
                        g.attr("transform", event.transform); //zoom
@@ -202,13 +202,13 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                          showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                        }
                        prevZoomLevel = zoomLevel;
-                     }, 50)); 
+                     }, 50)); //throttle limit
   
       svg.call(zoom); //apply zoom behaviour to the svg
 
-      function showLayer(layerName) {
-        g.selectAll(".layer").style("display", "none");
-        g.select(`.layer.${layerName}`).style("display", "block");
+      function showLayer(layerName) { //show a layer
+        g.selectAll(".layer").style("display", "none"); //make sure none are visible
+        g.select(`.layer.${layerName}`).style("display", "block"); //show the correct layer
         console.log(`Switched to layer: ${layerName}`);
       }
   
@@ -220,8 +220,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       //define the information belonging to each layer
       const layers = [{ name: "municipality", data: GeoDataGemeente, clusterMap: clusterMapGemeente, idKey: "gm_code", layerGroup: layer_GM },
                       { name: "district", data: GeoDataWijk, clusterMap: clusterMapWijk, idKey: "wk_code", layerGroup: layer_WK },
-                      { name: "neighborhood", data: GeoDataBuurt, clusterMap: clusterMapBuurt, idKey: "bu_code", layerGroup: layer_BU }];
-      console.log("Defined layer information: ", layers); 
+                      { name: "neighborhood", data: GeoDataBuurt, clusterMap: clusterMapBuurt, idKey: "geo_ID", layerGroup: layer_BU }];
+      console.log("Defined layer information: ", layers);  
   
       //iterate to render the paths/circles belonging to each layer
       layers.forEach(layer => { 
@@ -241,7 +241,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("fill", "#e0e0e0") //fill color of the map
                   .attr("stroke", "#333"); //stroke color of the map
         //add circles
-        layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time
+        layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
           d.centroid = path.centroid(d);
         });
         
