@@ -61,6 +61,7 @@ body {
 .chart-container p {
   margin: 0 auto; 
   padding-bottom: 20px;
+  border-bottom: 1px solid #ddd;
 }
 
 .chart {
