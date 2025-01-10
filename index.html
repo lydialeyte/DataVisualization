@@ -293,7 +293,7 @@ function loadData() {
         // Call the next function with all the loaded data
         renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
         d3.select("#loading-icon").style("display", "none"); //hide the loading icon
-        d3.select("#granularity-display").style("display", "block"); //Show granularity display
+        3.select("#granularity-display").style("display", "block"); //Show granularity displayd
     }).catch(error => {
         console.error("Error loading all data:", error);
         d3.select("#loading-icon").style("display", "none"); //hide the loading icon
@@ -433,37 +433,33 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("fill", "#e0e0e0") //fill color of the map
                   .attr("stroke", "#333") //stroke color of the map
                   .on("mouseover", (event, d) => {
-    const regionId = d.properties[layer.idKey];
-    const cluster = layer.clusterMap[regionId]?.trim();
-    const lbmValues = d.properties;
-    //console.log("Circle mouseover triggered");
-    
-    const tooltipContent = `
-      <strong>Region ID:</strong> ${regionId}<br>
-      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
-      <strong>Cluster:</strong> ${cluster || "Unknown"}
-    `;
-
-    d3.select("#tooltip")
-      .html(tooltipContent)
-      .style("left", `${event.pageX}px`)
-      .style("top", `${event.pageY}px`)
-      .style("display", "block")
-      .style("position", "fixed")
-      .style("background", "white")
-      .style("border", "1px solid black")
-      .style("padding", "10px")
-      .style("z-index", "9999");
-
-
-  })
-  .on("mouseout", () => {
-    d3.select("#tooltip").style("display", "none");
-    // Reset cluster highlighting
-    Object.values(linePaths).forEach(path => {
-      path.attr("stroke-width", 2).attr("opacity", 1);
-    });
-  });
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    const lbmValues = d.properties;
+                    //console.log("Circle mouseover triggered");
+                    const tooltipContent = `
+                      <strong>Region ID:</strong> ${regionId}<br>
+                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
+                      <strong>Cluster:</strong> ${cluster || "Unknown"}
+                    `;
+                    d3.select("#tooltip")
+                      .html(tooltipContent)
+                      .style("left", `${event.pageX}px`)
+                      .style("top", `${event.pageY}px`)
+                      .style("display", "block")
+                      .style("position", "fixed")
+                      .style("background", "white")
+                      .style("border", "1px solid black")
+                      .style("padding", "10px")
+                      .style("z-index", "9999");
+                  })
+                  .on("mouseout", () => {
+                    d3.select("#tooltip").style("display", "none");
+                    // Reset cluster highlighting
+                    Object.values(linePaths).forEach(path => {
+                      path.attr("stroke-width", 2).attr("opacity", 1);
+                    });
+                  });
         //add circles
         layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
           d.centroid = path.centroid(d);
@@ -481,68 +477,65 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     return cluster !== undefined ? color(cluster) : "#ccc"; // Assign color based on cluster
                   })
                   .on("mouseover", (event, d) => {
-    const regionId = d.properties[layer.idKey];
-    const cluster = layer.clusterMap[regionId]?.trim();
-    const lbmValues = d.properties;
-    //console.log("Circle mouseover triggered");
-
-    // Move tooltip div outside scatter plot container
-document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
-  <div id="tooltip" style="
-    position: fixed;
-    display: none;
-    background: white;
-    border: 1px solid #000;
-    padding: 10px;
-    z-index: 9999;
-    pointer-events: none;
-  "></div>
-`);
-
-    const tooltipContent = `
-      <strong>Region ID:</strong> ${regionId}<br>
-      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
-      <strong>Cluster:</strong> ${cluster || "Unknown"}
-    `;
-
-    d3.select("#tooltip")
-      .html(tooltipContent)
-      .style("left", `${event.pageX}px`)
-      .style("top", `${event.pageY}px`)
-      .style("display", "block")
-      .style("position", "fixed")
-      .style("background", "white")
-      .style("border", "1px solid black")
-      .style("padding", "10px")
-      .style("z-index", "9999");
-
-  })
-  .on("mouseout", () => {
-    d3.select("#tooltip").style("display", "none");
-    // Reset cluster highlighting
-    Object.values(linePaths).forEach(path => {
-      path.attr("stroke-width", 2).attr("opacity", 1);
-    });
-  })
-  .on("click", (event, d) => {
-    const regionId = d.properties[layer.idKey];
-    const cluster = layer.clusterMap[regionId]?.trim();
-    if (cluster !== undefined && cluster !== null) {
-      highlightCluster(cluster);
-    }
-    if (regionId !== undefined && regionId !== null) {
-      state.city = regionId;
-      updateFactorList();
-    }
-  });
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    const lbmValues = d.properties;
+                    //console.log("Circle mouseover triggered");
+                    
+                    // Move tooltip div outside scatter plot container
+                    document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
+                      <div id="tooltip" style="
+                        position: fixed;
+                        display: none;
+                        background: white;
+                        border: 1px solid #000;
+                        padding: 10px;
+                        z-index: 9999;
+                        pointer-events: none;
+                      "></div>
+                    `);
+                
+                    const tooltipContent = `
+                      <strong>Region ID:</strong> ${regionId}<br>
+                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
+                      <strong>Cluster:</strong> ${cluster || "Unknown"}
+                    `;
+                
+                    d3.select("#tooltip")
+                      .html(tooltipContent)
+                      .style("left", `${event.pageX}px`)
+                      .style("top", `${event.pageY}px`)
+                      .style("display", "block")
+                      .style("position", "fixed")
+                      .style("background", "white")
+                      .style("border", "1px solid black")
+                      .style("padding", "10px")
+                      .style("z-index", "9999");
+                  })
+                  .on("mouseout", () => {
+                    d3.select("#tooltip").style("display", "none");
+                    // Reset cluster highlighting
+                    Object.values(linePaths).forEach(path => {
+                      path.attr("stroke-width", 2).attr("opacity", 1);
+                    });
+                  })
+                  .on("click", (event, d) => {
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    if (cluster !== undefined && cluster !== null) {
+                      highlightCluster(cluster);
+                    }
+                    if (regionId !== undefined && regionId !== null) {
+                      state.city = regionId;
+                      updateFactorList();
+                    }
+                  });
       });
-  
       console.log("Rendering iterations finished"); 
       showLayer("municipality");
-  
-      geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
       d3.select("#granularity-display").style("display", "block"); //Show granularity display
-    }
+      geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
+}
 
 //create the line chart
 function loadLineChart() {
