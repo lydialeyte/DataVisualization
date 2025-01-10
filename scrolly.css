@@ -1,3 +1,31 @@
+header {
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+  padding: 1rem;
+}
+h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+h3 {
+  margin: 10;
+  padding-left: 20px;
+  font-size: 1rem;
+}
+p {
+  margin: 0.5rem 0 1rem;
+}
+/* Controls Section */
+.controls-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
 
 body {
   font-family: Arial, sans-serif;
@@ -15,7 +43,8 @@ body {
   justify-content: center;
   gap: 50px;
   margin-top: 40px;
-  overflow: hidden; 
+  position: relative;
+  overflow: visible;
 }
 
 .chart {
@@ -25,30 +54,31 @@ body {
   background-color: white;
 }
 
-#tooltip {
-  position: absolute;
-  display: none;
-  background-color: #fff;
+.scatter-plot-container {
   border: 1px solid #ccc;
-  padding: 5px;
-  border-radius: 5px;
-  font-size: 12px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin: 10px;
+  padding: 10px;
+  display: inline-block;
+  vertical-align: top;
+}
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.heatmap-legend div {
+  height: 10px;
+  flex: 1;
+}
+.heatmap-legend span {
+  margin: 0 5px;
 }
 
-#loading-icon {
-    position: relative;
-    width: auto; 
-    height: 100px; 
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgb(139 207 237 / 50%);
-    padding: 10px;
-    border-radius: 10px;
-    z-index: 10;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
+#scatter-plot-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 /* Legend styles */
@@ -76,19 +106,51 @@ body {
   font-size: 12px;
 }
 
-/* Tooltip styles */
-#tooltip {
-  position: absolute;
-  display: none;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 5px;
-  border-radius: 5px;
-  font-size: 12px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+
 
 #controls {
   margin: 20px;
   padding: 30px;
+}
+#tooltip {
+  position: absolute;
+  z-index: 9999;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 1;
+  max-width: 300px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+
+
+
+#progress-bar-container {
+  width: 100%;
+  background-color: #ddd;
+}
+
+#progress-bar {
+  width: 0%;
+  height: 30px;
+  background-color: #4CAF50;
+}
+
+#quiz-container {
+  margin: 20px 0;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
 }
