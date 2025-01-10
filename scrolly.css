@@ -59,6 +59,36 @@ body {
   overflow: visible;
   text-align: center;
 }
+#loading-icon {
+  display: none; /* Hide by default */
+  position: absolute; /* Position it relative to #geo-map */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for the size of the icon */
+  font-size: 18px; /* Optional: Adjust text size */
+  z-index: 1000; /* Ensure it stays above other elements */
+}
+
+#geo-map {
+  position: relative;
+}
+
+.spinner {
+  width: 50px; 
+  height: 50px; 
+  border: 5px solid #f3f3f3; 
+  border-top: 5px solid #3498db; 
+  border-radius: 50%; /*make it circular*/
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); /*Start at 0 degrees*/
+  }
+  100% {
+    transform: rotate(360deg); /*spin for a full circle*/
+  }
+}
 
 .chart-container p {
   margin: 0 auto; 
