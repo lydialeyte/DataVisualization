@@ -292,6 +292,7 @@ function loadData() {
         // Call the next function with all the loaded data
         renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
         d3.select("#loading-icon").style("display", "none"); //hide the loading icon
+        d3.select("#granularity-display").style("display", "block"); //Show granularity display
     }).catch(error => {
         console.error("Error loading all data:", error);
         d3.select("#loading-icon").style("display", "none"); //hide the loading icon
@@ -434,7 +435,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
     const regionId = d.properties[layer.idKey];
     const cluster = layer.clusterMap[regionId]?.trim();
     const lbmValues = d.properties;
-    console.log("Circle mouseover triggered");
+    //console.log("Circle mouseover triggered");
     
     const tooltipContent = `
       <strong>Region ID:</strong> ${regionId}<br>
