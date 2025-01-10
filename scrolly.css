@@ -101,7 +101,7 @@ body {
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 14px;
-  z-index: 1000; /* Ensure it stays above other elements */
+  z-index: 9999; /* Ensure it stays above other elements */
   pointer-events: none; /* Allow interactions with map elements underneath */
 }
 
