@@ -220,7 +220,7 @@
 // Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for rendering the map     
 function loadData() { 
       d3.select("#loading-icon").style("display", "block");  //show the loading icon
-      d3.select("#granularity-display").style("display", "none"); //Hide granularity display
+      d3.select("#granularity-display").style("display", "block"); //Hide granularity display
     // load GeoJSON data for all granularities
       const GeoPromises = [ // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
         d3.json("data/merged_data_reprojected_GM_1.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
