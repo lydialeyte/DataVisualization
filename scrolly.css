@@ -91,6 +91,19 @@ body {
   }
 }
 
+#granularity-display {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  z-index: 1000; /* Ensure it stays above other elements */
+  pointer-events: none; /* Allow interactions with map elements underneath */
+}
+
 .chart-container p {
   margin: 0 auto; 
   padding-bottom: 20px;
