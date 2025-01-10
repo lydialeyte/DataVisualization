@@ -33,21 +33,17 @@
     <p>
       Find your region of interest in the map of the Netherlands below, or look it up. Then, find regions you would like to compare your region to by ... . <br>
     </p>
-    <div id="search-container" class="search-container">
-      <input type="text" id="factor-search" placeholder="Add a factor to the plots" autocomplete="off">
-      <button id="add-button">ADD</button>
-      <div id="suggestions"></div>
-    </div>
     <h3 style="padding-left:50px;" id="current-city">
       Current selected city: <span id="selected-city">No city selected</span>
     </h3>
   </section>
-
+  
+    <div>
+      <p> All regions are clustered based on the trends their livability scores follow over time. In the line graph on the left, the average livability scores of these clusters can be seen. 
+      In the geographical map, regions are collored according to their cluster so you may see what your region belongs to, and compare it </p>
+    </div>
   <div class="chart-container">
-    <p>
-      All regions are clustered based on the trends their livability scores follow over time. In the line graph on the left, the average livability scores of these clusters can be seen. 
-      In the geographical map, regions are collored according to their cluster so you may see what your region belongs to, and compare it 
-    </p>
+
     <!-- Placeholder for the Line Graph -->
     <div id="line-graph" class="chart"></div>
 
@@ -69,6 +65,11 @@
    </div>
 
   <section id="factor-list-container" class="factor-list-container">
+    <div id="search-container" class="search-container">
+      <input type="text" id="factor-search" placeholder="Add a factor to the plots" autocomplete="off">
+      <button id="add-button">ADD</button>
+      <div id="suggestions"></div>
+    </div>
     <h3 style="padding-left:50px;">Selected Factors:</h3>
     <ul style="padding-left:60px;"id="factor-list"></ul>
     <div id="scatter-plot-container"></div>
