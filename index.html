@@ -484,7 +484,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
     const regionId = d.properties[layer.idKey];
     const cluster = layer.clusterMap[regionId]?.trim();
     const lbmValues = d.properties;
-    console.log("Circle mouseover triggered");
+    //console.log("Circle mouseover triggered");
 
     // Move tooltip div outside scatter plot container
 document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
@@ -541,7 +541,7 @@ document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
       showLayer("municipality");
   
       geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
-
+      d3.select("#granularity-display").style("display", "block"); //Show granularity display
     }
 
 //create the line chart
