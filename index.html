@@ -46,6 +46,7 @@
       <div id="loading-icon"> <!-- Placeholder for Loading Icon -->
         <div class="spinner"></div>  
       </div>
+      <div id="granularity-display">Granularity: Municipality</div>
     </div>
   </div>
   
@@ -356,7 +357,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                           showLayer("district");
                           newGranularity = "wijk"; 
                         }
-                        //showLayer(zoomLevel < zoomThreshold1 ? "municipality" : "district"); // if zoom is below the threshold, the municipality layer is shown, otherwise the district layer
                        } else if ((prevZoomLevel < zoomThreshold2 && zoomLevel >= zoomThreshold2) || (prevZoomLevel >= zoomThreshold2 && zoomLevel < zoomThreshold2)) { //when the zoomlevel increases or decreases past the second zoom threshold the shown layer is updated
                           //showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                           if(zoomLevel < zoomThreshold2){
@@ -372,6 +372,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                        if (state.granularity !== newGranularity) {
                             state.granularity = newGranularity;
                             new_factors = true;
+
+                            d3.select("#granularity-display").text(`Granularity: ${newGranularity}`); // Update the text in the granularity display
+                         
                             if (newGranularity == "gemeente") {
                               state.city = "GM0014";
                             }
