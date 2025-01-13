@@ -500,18 +500,20 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         
         //add circles
         layer.data.features.forEach(d => {
-          // Create a GeoJSON feature from your polygon geometry
-          const geoJsonPolygon = {
-            type: 'Feature',
-            geometry: d.geometry,
-            properties: {} // Turf requires a valid GeoJSON feature
-          };
-        
-          // Use Turf.js to calculate a point inside the polygon
-          const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
-        
-          // Project the calculated point's coordinates for rendering on the map
-          d.centroid = projection(interiorPoint.geometry.coordinates);
+          let centroid = path.centroid(d);
+          // Check if the calculated centroid is inside the polygon and If the centroid is outside, use Turf's pointOnFeature for a valid interior point
+          const isInsidePolygon = d3.polygonContains(d.geometry.coordinates[0], projection.invert(centroid));
+          if (!isInsidePolygon) {
+            const geoJsonPolygon = {
+              type: 'Feature',
+              geometry: d.geometry,
+              properties: {} // Turf requires a valid GeoJSON feature
+            };
+            const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
+            centroid = projection(interiorPoint.geometry.coordinates); // Project Turf's centroid to screen coordinates
+          }
+          // Assign the centroid back to the feature for further use
+          d.centroid = centroid;
         });
         //layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
         //  d.centroid = path.centroid(d);
