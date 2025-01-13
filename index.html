@@ -468,9 +468,11 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey];
                     const tooltipCluster = layer.clusterMap[regionId]?.trim(); //cluster number of the selected region
                     const tooltipContent = `
-                      <strong></strong>${tooltipTitle}<br>
-                      <p>Municipality:</p> ${tooltipMunicipality}<br>
-                      <p>Cluster:</p> ${tooltipCluster || "Unknown"}
+                      <div style="text-align: center;">
+                        <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">${tooltipTitle}</div>
+                        <div><strong>Municipality:</strong> ${tooltipMunicipality}</div>
+                        <div style="margin-top: 5px;"><strong>Cluster:</strong> ${tooltipCluster || "Unknown"}</div>
+                      </div>
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
