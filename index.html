@@ -500,20 +500,45 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         
         //add circles
         layer.data.features.forEach(d => {
+          // Calculate the initial centroid using D3's path.centroid
           let centroid = path.centroid(d);
-          // Check if the calculated centroid is inside the polygon and If the centroid is outside, use Turf's pointOnFeature for a valid interior point
-          const isInsidePolygon = d3.polygonContains(d.geometry.coordinates[0], projection.invert(centroid));
+        
+          // Project the polygon to screen coordinates for D3's polygonContains
+          const projectedPolygon = d.geometry.coordinates[0].map(coord => projection(coord));
+        
+          // Check if the centroid is inside the projected polygon
+          const isInsidePolygon = d3.polygonContains(projectedPolygon, centroid);
+        
           if (!isInsidePolygon) {
+            // Create a GeoJSON feature for Turf operations
             const geoJsonPolygon = {
               type: 'Feature',
               geometry: d.geometry,
-              properties: {} // Turf requires a valid GeoJSON feature
+              properties: {}
             };
-            const bufferedPolygon = turf.buffer(geoJsonPolygon, -(radius+1), { units: 'meters' });
-            const interiorPoint = turf.pointOnFeature(bufferedPolygon);
-            centroid = projection(interiorPoint.geometry.coordinates); // Project Turf's centroid to screen coordinates
+        
+            // Attempt to buffer the polygon by -(radius + 1) meters
+            try {
+              const bufferedPolygon = turf.buffer(geoJsonPolygon, -(radius + 1), { units: 'meters' });
+        
+              // Find an interior point within the buffered polygon
+              if (bufferedPolygon && bufferedPolygon.geometry.coordinates.length > 0) {
+                const interiorPoint = turf.pointOnFeature(bufferedPolygon);
+                centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
+              } else {
+                console.warn('Buffering failed or resulted in an invalid polygon. Using original polygon for interior point.');
+                const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
+                centroid = projection(interiorPoint.geometry.coordinates);
+              }
+            } catch (error) {
+              console.error('Error during buffering or centroid calculation:', error);
+              // Fallback to the original polygon if buffering fails
+              const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
+              centroid = projection(interiorPoint.geometry.coordinates);
+            }
           }
-          // Assign the centroid back to the feature for further use
+        
+          // Assign the calculated centroid to the feature
           d.centroid = centroid;
         });
         //layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
