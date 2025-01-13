@@ -548,14 +548,14 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                       updateFactorList();
                     }
                   });
-          });
+      });
   
       console.log("Rendering iterations finished"); 
+      
       showLayer("municipality");
   
       geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
-
-    }
+}
 
 //create the line chart
 function loadLineChart() {
