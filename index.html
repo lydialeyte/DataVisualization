@@ -2,408 +2,408 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="livability, netherlands, wealth, moving, internationality">
-  <meta name="author" content="Group 2">
-  <title>Livability in the Netherlands</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://unpkg.com/topojson@3"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@turf/turf/turf.min.js"></script>
-  <link rel="stylesheet" href="scrolly.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="keywords" content="livability, netherlands, wealth, moving, internationality">
+<meta name="author" content="Group 2">
+<title>Livability in the Netherlands</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf/turf.min.js"></script>
+<link rel="stylesheet" href="scrolly.css">
 </head>
 
 <body id="home">
-  <header>
-    <h1>Livability in the Netherlands</h1>
-    <p>Exploring socioeconomic and geospatial accessibility metrics that influence livability scores in the Netherlands</p>
-  </header>
+<header>
+<h1>Livability in the Netherlands</h1>
+<p>Exploring socioeconomic and geospatial accessibility metrics that influence livability scores in the Netherlands</p>
+</header>
 
-  <section class="introduction">
-    <p>
-      What makes a place truly livable? Livability encompasses various dimensions of quality of life—ranging from access to amenities and public services to social and environmental factors. Understanding these metrics is crucial as they affect not only where people choose to live but also the overall well-being of communities.
+<section class="introduction">
+<p>
+What makes a place truly livable? Livability encompasses various dimensions of quality of life—ranging from access to amenities and public services to social and environmental factors. Understanding these metrics is crucial as they affect not only where people choose to live but also the overall well-being of communities.
 
 This interactive tool allows you to dive deep into livability trends for your region of interest. You can explore data at three levels—municipalities, districts, and neighborhoods—offering flexibility in analysis. Compare up to five regions of the same type to uncover meaningful differences and similarities.
 
 Once you've gained insight into livability patterns, proceed to examine how socioeconomic and geospatial factors—like income levels, housing, and proximity to green spaces—contribute to these scores. By identifying key areas for improvement, you can help pave the way toward creating more vibrant, sustainable, and equitable communities.
-    </p>
-    
-  </section>
-  
-  <section class="controls-container" >
-    <p>
-      Use the interactive tools below to explore livability trends across the Netherlands. The map lets you locate your region of interest and select it directly, or you can search for a specific region using the search bar. Once you’ve selected your region, you can compare it with other regions of the same granularity (municipality, district, or neighborhood) to better understand how they stack up in terms of livability scores.
+</p>
+
+</section>
+
+<section class="controls-container" >
+<p>
+Use the interactive tools below to explore livability trends across the Netherlands. The map lets you locate your region of interest and select it directly, or you can search for a specific region using the search bar. Once you’ve selected your region, you can compare it with other regions of the same granularity (municipality, district, or neighborhood) to better understand how they stack up in terms of livability scores.
 
 On the left, you’ll find a line graph that illustrates the standardized livability trends over time for your selected region and its comparisons. This visualization helps you identify long-term patterns and clusters of regions with similar trajectories.
 
 To the right is the geographic map, where regions are color-coded by cluster. These clusters group regions based on their livability trends, allowing you to easily spot similarities or outliers. Hover over regions on the map for more details, such as the specific cluster they belong to or other regional information.</p>
-    <h3 style="padding-left:50px;" id="current-city">
-      Current selected city: <span id="selected-city">No city selected</span>
-    </h3>
-  </section>
-  
-  <div class="chart-container">
-    <div id="line-graph" class="chart"></div> <!-- Placeholder for the Line Graph -->
-    <div id="geo-map" class="chart" style="z-index: 50;">  <!-- Placeholder for the Geographic Map -->
-      <div id="tooltip" style="position: absolute; z-index: 1000; display: none; background: rgba(255, 255, 255, 0.9); border: 1px solid #ccc; padding: 10px; font-size: 12px; pointer-events: none;"></div>
-      <div id="loading-icon"> <!-- Placeholder for Loading Icon -->
-        <div class="spinner"></div>  
-      </div> 
-      <div id="granularity-display" style="z-index: 9999;">
-        Granularity: Municipality
-      </div>
-    </div>
-  </div>
-  
-  <div class="chart-container">
-  <div id="legend" class="legend-container"></div>
-   </div>
-  
-  <section class="explanation">
-    <p>To help discover patterns in livability, all regions are grouped into clusters based on how their livability scores have changed over time. The clustering algorithm focuses on year-to-year differences, capturing the dynamic changes in livability rather than static values. This ensures that regions with similar trends—whether improving, declining, or stable—are grouped together.
+<h3 style="padding-left:50px;" id="current-city">
+Current selected city: <span id="selected-city">No city selected</span>
+</h3>
+</section>
 
-      Each cluster is represented by a standardized cumulative trend line, which shows how regions in the cluster are evolving relative to their average trends over the years. By examining these trend lines, you can identify whether certain clusters are improving rapidly, experiencing declines, or showing consistent stability.
-      
-      On the geographic map, regions are color-coded by cluster, making it easy to see which regions share similar trajectories. You can hover over any region to reveal additional details, such as its cluster number and other key metrics. This map provides a spatial context to the data, allowing you to visually compare your region of interest with others and explore patterns that emerge across the Netherlands.</p>
-    
-  </section>
-  
-  <section id="factor-list-container" class="factor-list-container">
-    <div id="search-container" class="search-container">
-      <input type="text" id="factor-search" placeholder="Add a factor to the plots" autocomplete="off">
-      <button id="add-button">ADD</button>
-      <div id="suggestions"></div>
-    </div>
-    <h3 style="padding-left:50px;">Selected Factors:</h3>
-    <ul style="padding-left:60px;"id="factor-list"></ul>
-    <div id="scatter-plot-container"></div>
-  </section>
-  
-  
+<div class="chart-container">
+<div id="line-graph" class="chart"></div> <!-- Placeholder for the Line Graph -->
+<div id="geo-map" class="chart" style="z-index: 50;">  <!-- Placeholder for the Geographic Map -->
+<div id="tooltip" style="position: absolute; z-index: 1000; display: none; background: rgba(255, 255, 255, 0.9); border: 1px solid #ccc; padding: 10px; font-size: 12px; pointer-events: none;"></div>
+<div id="loading-icon"> <!-- Placeholder for Loading Icon -->
+<div class="spinner"></div>  
+</div> 
+<div id="granularity-display" style="z-index: 9999;">
+Granularity: Municipality
+</div>
+</div>
+</div>
 
-  <script>
-    // State Configurations    
-    const state = { //default configuration of the application 
-      year: 2020,
-      city: "GM0014",
-      granularity: "gemeente" // Default granularity
-    };
+<div class="chart-container">
+<div id="legend" class="legend-container"></div>
+</div>
 
-    // data set paths for geographic maps 
-    const datasets = {
-      buurt: "data/simplified_file.geojson", // Buurt dataset (dummy)
-      wijk: "data/merged_data_reprojected_WK_1.geojson",  // Wijk dataset
-      gemeente: "data/merged_data_reprojected_GM_1.geojson"  // Gemeente dataset
-    };
-    let currentLayer;
-    const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
+<section class="explanation">
+<p>To help discover patterns in livability, all regions are grouped into clusters based on how their livability scores have changed over time. The clustering algorithm focuses on year-to-year differences, capturing the dynamic changes in livability rather than static values. This ensures that regions with similar trends—whether improving, declining, or stable—are grouped together.
+
+Each cluster is represented by a standardized cumulative trend line, which shows how regions in the cluster are evolving relative to their average trends over the years. By examining these trend lines, you can identify whether certain clusters are improving rapidly, experiencing declines, or showing consistent stability.
+
+On the geographic map, regions are color-coded by cluster, making it easy to see which regions share similar trajectories. You can hover over any region to reveal additional details, such as its cluster number and other key metrics. This map provides a spatial context to the data, allowing you to visually compare your region of interest with others and explore patterns that emerge across the Netherlands.</p>
+
+</section>
+
+<section id="factor-list-container" class="factor-list-container">
+<div id="search-container" class="search-container">
+<input type="text" id="factor-search" placeholder="Add a factor to the plots" autocomplete="off">
+<button id="add-button">ADD</button>
+<div id="suggestions"></div>
+</div>
+<h3 style="padding-left:50px;">Selected Factors:</h3>
+<ul style="padding-left:60px;"id="factor-list"></ul>
+<div id="scatter-plot-container"></div>
+</section>
 
 
-    let factor_watch_list = [];
-    let collumns_file = [];
 
-    let new_factors = true;
-    let newGranularity = "gemeente";
-    const column_descriptions = {
-      "a_inw": "Number of inhabitants",
-      "a_man": "Number of male inhabitants",
-      "a_vrouw": "Number of female inhabitants",
-      "a_00_14": "Number of inhabitants aged 0 to 14 years",
-      "a_15_24": "Number of inhabitants aged 15 to 24 years",
-      "a_25_44": "Number of inhabitants aged 25 to 44 years",
-      "a_45_64": "Number of inhabitants aged 45 to 64 years",
-      "a_65_oo": "Number of inhabitants aged 65 years or older",
-      "a_ongeh": "Number of unmarried individuals",
-      "a_gehuwd": "Number of married individuals",
-      "a_gesch": "Number of divorced individuals",
-      "a_verwed": "Number of widowed individuals",
-      "a_w_all": "Western migration background total",
-      "a_nw_all": "Non-Western migration background total",
-      "a_marok": "Migration background: Morocco",
-      "a_antaru": "Migration background: Netherlands Antilles and Aruba",
-      "a_suri": "Migration background: Suriname",
-      "a_tur": "Migration background: Turkey",
-      "a_ov_nw": "Migration background: Other non-Western countries",
-      "a_geb": "Total births",
-      "p_geb": "Birth rate per 1,000 inhabitants",
-      "a_ste": "Total deaths",
-      "p_ste": "Mortality rate per 1,000 inhabitants",
-      "a_hh": "Total number of households",
-      "a_1p_hh": "Number of single-person households",
-      "a_hh_z_k": "Households without children",
-      "a_hh_m_k": "Households with children",
-      "g_hhgro": "Average household size",
-      "bev_dich": "Population density (inhabitants per km²)",
-      "a_woning": "Total housing stock",
-      "g_wozbag": "Average property value (WOZ)",
-      "p_1gezw": "Percentage of single-family homes",
-      "p_mgezw": "Percentage of multi-family homes",
-      "p_bewndw": "Percentage of occupied dwellings",
-      "p_leegsw": "Percentage of unoccupied dwellings",
-      "p_koopw": "Percentage of owner-occupied homes",
-      "p_huurw": "Percentage of rented homes",
-      "p_wcorpw": "Percentage of homes owned by housing corporations",
-      "p_ov_hw": "Percentage of homes owned by other landlords",
-      "p_e_o_w": "Percentage of homes with unknown ownership",
-      "p_bjj2k": "Percentage of homes built before 2000",
-      "p_bjo2k": "Percentage of homes built from 2000 onwards",
-      "g_ele": "Average electricity consumption (total)",
-      "g_ele_ap": "Electricity consumption: Apartments",
-      "g_ele_tw": "Electricity consumption: Terraced houses",
-      "g_ele_hw": "Electricity consumption: Corner houses",
-      "g_ele_2w": "Electricity consumption: Semi-detached houses",
-      "g_ele_vw": "Electricity consumption: Detached houses",
-      "g_ele_hu": "Electricity consumption: Rental homes",
-      "g_ele_ko": "Electricity consumption: Owner-occupied homes",
-      "g_gas": "Average gas consumption (total)",
-      "g_gas_ap": "Gas consumption: Apartments",
-      "g_gas_tw": "Gas consumption: Terraced houses",
-      "g_gas_hw": "Gas consumption: Corner houses",
-      "g_gas_2w": "Gas consumption: Semi-detached houses",
-      "g_gas_vw": "Gas consumption: Detached houses",
-      "g_gas_hu": "Gas consumption: Rental homes",
-      "g_gas_ko": "Gas consumption: Owner-occupied homes",
-      "p_stadsv": "Percentage of homes with district heating",
-      "ste_mvs": "Degree of urbanization",
-      "ste_oad": "Address density",
-      "pst_mvp": "Most common postal code",
-      "pst_dekp": "Postal code coverage percentage",
-      "a_opp_ha": "Total area (hectares)",
-      "a_lan_ha": "Land area (hectares)",
-      "a_wat_ha": "Water area (hectares)",
-      "a_opl_lg": "Low education level population",
-      "a_opl_md": "Medium education level population",
-      "a_opl_hg": "High education level population",
-      "p_arb_pp": "Net labor participation rate",
-      "p_arb_wn": "Percentage of employees",
-      "p_arb_zs": "Percentage of self-employed individuals",
-      "a_inkont": "Number of income recipients",
-      "g_ink_po": "Average income per recipient",
-      "g_ink_pi": "Average income per inhabitant",
-      "p_ink_li": "40% of population with lowest income",
-      "p_ink_hi": "20% of population with highest income",
-      "g_hh_sti": "Standardized household income",
-      "p_hh_li": "40% of households with lowest income",
-      "p_hh_hi": "20% of households with highest income",
-      "p_hh_osm": "Household below or around the social minimum",
-      "m_hh_ver": "Median wealth of households",
-      "a_soz_wb": "Social assistance benefits recipients",
-      "a_soz_ao": "Disability benefits recipients",
-      "a_soz_ww": "Unemployment benefits recipients",
-      "a_soz_ow": "Old-age benefits recipients",
-      "a_jz_tn": "Youth care recipients",
-      "p_jz_tn": "Percentage of youth care recipients",
-      "a_wmo_t": "Social support clients",
-      "p_wmo_t": "Social support clients per 1,000 inhabitants",
-      "a_bedv": "Total business establishments",
-      "a_bed_a": "Business establishments: Agriculture, forestry, and fishing",
-      "a_bed_bf": "Business establishments: Industry and energy",
-      "a_bed_gi": "Business establishments: Trade and hospitality",
-      "a_bed_hj": "Business establishments: Transport, information, and communication",
-      "a_bed_kl": "Business establishments: Financial services and real estate",
-      "a_bed_mn": "Business establishments: Business services",
-      "a_bed_ru": "Business establishments: Culture, recreation, and other services",
-      "a_pau": "Total passenger cars",
-      "a_bst_b": "Passenger cars: Petrol",
-      "a_bst_nb": "Passenger cars: Other fuels",
-      "g_pau_hh": "Passenger cars per household",
-      "g_pau_km": "Passenger cars per km²",
-      "a_m2w": "Motorcycles",
-      "g_afs_hp": "Distance to general practitioner",
-      "g_afs_gs": "Distance to large supermarket",
-      "g_afs_kv": "Distance to daycare center",
-      "g_afs_sc": "Distance to school",
-      "g_3km_sc": "Number of schools within 3 km",
-    }
-    const linePaths = {};
-    const descriptions = Object.values(column_descriptions);
+<script>
+// State Configurations    
+const state = { //default configuration of the application 
+year: 2020,
+city: "GM0014",
+granularity: "gemeente" // Default granularity
+};
 
-    // Initial Map Load
-    loadData();
-    updateFactorList();
+// data set paths for geographic maps 
+const datasets = {
+buurt: "data/simplified_file.geojson", // Buurt dataset (dummy)
+wijk: "data/merged_data_reprojected_WK_1.geojson",  // Wijk dataset
+gemeente: "data/merged_data_reprojected_GM_1.geojson"  // Gemeente dataset
+};
+let currentLayer;
+const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
 
-    // Initial load
-    loadLineChart();
-    
+
+let factor_watch_list = [];
+let collumns_file = [];
+
+let new_factors = true;
+let newGranularity = "gemeente";
+const column_descriptions = {
+"a_inw": "Number of inhabitants",
+"a_man": "Number of male inhabitants",
+"a_vrouw": "Number of female inhabitants",
+"a_00_14": "Number of inhabitants aged 0 to 14 years",
+"a_15_24": "Number of inhabitants aged 15 to 24 years",
+"a_25_44": "Number of inhabitants aged 25 to 44 years",
+"a_45_64": "Number of inhabitants aged 45 to 64 years",
+"a_65_oo": "Number of inhabitants aged 65 years or older",
+"a_ongeh": "Number of unmarried individuals",
+"a_gehuwd": "Number of married individuals",
+"a_gesch": "Number of divorced individuals",
+"a_verwed": "Number of widowed individuals",
+"a_w_all": "Western migration background total",
+"a_nw_all": "Non-Western migration background total",
+"a_marok": "Migration background: Morocco",
+"a_antaru": "Migration background: Netherlands Antilles and Aruba",
+"a_suri": "Migration background: Suriname",
+"a_tur": "Migration background: Turkey",
+"a_ov_nw": "Migration background: Other non-Western countries",
+"a_geb": "Total births",
+"p_geb": "Birth rate per 1,000 inhabitants",
+"a_ste": "Total deaths",
+"p_ste": "Mortality rate per 1,000 inhabitants",
+"a_hh": "Total number of households",
+"a_1p_hh": "Number of single-person households",
+"a_hh_z_k": "Households without children",
+"a_hh_m_k": "Households with children",
+"g_hhgro": "Average household size",
+"bev_dich": "Population density (inhabitants per km²)",
+"a_woning": "Total housing stock",
+"g_wozbag": "Average property value (WOZ)",
+"p_1gezw": "Percentage of single-family homes",
+"p_mgezw": "Percentage of multi-family homes",
+"p_bewndw": "Percentage of occupied dwellings",
+"p_leegsw": "Percentage of unoccupied dwellings",
+"p_koopw": "Percentage of owner-occupied homes",
+"p_huurw": "Percentage of rented homes",
+"p_wcorpw": "Percentage of homes owned by housing corporations",
+"p_ov_hw": "Percentage of homes owned by other landlords",
+"p_e_o_w": "Percentage of homes with unknown ownership",
+"p_bjj2k": "Percentage of homes built before 2000",
+"p_bjo2k": "Percentage of homes built from 2000 onwards",
+"g_ele": "Average electricity consumption (total)",
+"g_ele_ap": "Electricity consumption: Apartments",
+"g_ele_tw": "Electricity consumption: Terraced houses",
+"g_ele_hw": "Electricity consumption: Corner houses",
+"g_ele_2w": "Electricity consumption: Semi-detached houses",
+"g_ele_vw": "Electricity consumption: Detached houses",
+"g_ele_hu": "Electricity consumption: Rental homes",
+"g_ele_ko": "Electricity consumption: Owner-occupied homes",
+"g_gas": "Average gas consumption (total)",
+"g_gas_ap": "Gas consumption: Apartments",
+"g_gas_tw": "Gas consumption: Terraced houses",
+"g_gas_hw": "Gas consumption: Corner houses",
+"g_gas_2w": "Gas consumption: Semi-detached houses",
+"g_gas_vw": "Gas consumption: Detached houses",
+"g_gas_hu": "Gas consumption: Rental homes",
+"g_gas_ko": "Gas consumption: Owner-occupied homes",
+"p_stadsv": "Percentage of homes with district heating",
+"ste_mvs": "Degree of urbanization",
+"ste_oad": "Address density",
+"pst_mvp": "Most common postal code",
+"pst_dekp": "Postal code coverage percentage",
+"a_opp_ha": "Total area (hectares)",
+"a_lan_ha": "Land area (hectares)",
+"a_wat_ha": "Water area (hectares)",
+"a_opl_lg": "Low education level population",
+"a_opl_md": "Medium education level population",
+"a_opl_hg": "High education level population",
+"p_arb_pp": "Net labor participation rate",
+"p_arb_wn": "Percentage of employees",
+"p_arb_zs": "Percentage of self-employed individuals",
+"a_inkont": "Number of income recipients",
+"g_ink_po": "Average income per recipient",
+"g_ink_pi": "Average income per inhabitant",
+"p_ink_li": "40% of population with lowest income",
+"p_ink_hi": "20% of population with highest income",
+"g_hh_sti": "Standardized household income",
+"p_hh_li": "40% of households with lowest income",
+"p_hh_hi": "20% of households with highest income",
+"p_hh_osm": "Household below or around the social minimum",
+"m_hh_ver": "Median wealth of households",
+"a_soz_wb": "Social assistance benefits recipients",
+"a_soz_ao": "Disability benefits recipients",
+"a_soz_ww": "Unemployment benefits recipients",
+"a_soz_ow": "Old-age benefits recipients",
+"a_jz_tn": "Youth care recipients",
+"p_jz_tn": "Percentage of youth care recipients",
+"a_wmo_t": "Social support clients",
+"p_wmo_t": "Social support clients per 1,000 inhabitants",
+"a_bedv": "Total business establishments",
+"a_bed_a": "Business establishments: Agriculture, forestry, and fishing",
+"a_bed_bf": "Business establishments: Industry and energy",
+"a_bed_gi": "Business establishments: Trade and hospitality",
+"a_bed_hj": "Business establishments: Transport, information, and communication",
+"a_bed_kl": "Business establishments: Financial services and real estate",
+"a_bed_mn": "Business establishments: Business services",
+"a_bed_ru": "Business establishments: Culture, recreation, and other services",
+"a_pau": "Total passenger cars",
+"a_bst_b": "Passenger cars: Petrol",
+"a_bst_nb": "Passenger cars: Other fuels",
+"g_pau_hh": "Passenger cars per household",
+"g_pau_km": "Passenger cars per km²",
+"a_m2w": "Motorcycles",
+"g_afs_hp": "Distance to general practitioner",
+"g_afs_gs": "Distance to large supermarket",
+"g_afs_kv": "Distance to daycare center",
+"g_afs_sc": "Distance to school",
+"g_3km_sc": "Number of schools within 3 km",
+}
+const linePaths = {};
+const descriptions = Object.values(column_descriptions);
+
+// Initial Map Load
+loadData();
+updateFactorList();
+
+// Initial load
+loadLineChart();
+
 
 // Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for rendering the map     
 function loadData() { 
-      d3.select("#loading-icon").style("display", "block");  //show the loading icon
-      d3.select("#granularity-display").style("display", "none"); //hide the granularity display
-    // load GeoJSON data for all granularities
-      const GeoPromises = [ // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
-        d3.json("data/merged_data_reprojected_GM_1.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
-          console.log(`Loaded GeoJSON Data (gemeente)`);
-          return GeoDataGemeente; 
-        }).catch(error => {
-          console.error(`Error loading GeoJSON data (gemeente):`, error);
-        }), 
-        
-        d3.json("data/merged_data_reprojected_WK_1.geojson").then(GeoDataWijk => { // fetch the GeoJSON file for the granularity 'wijk' and place it in the GeoPromises array
-          console.log(`Loaded GeoJSON Data (wijk)`);
-          return GeoDataWijk; 
-        }).catch(error => {
-          console.error(`Error loading GeoJSON data (wijk):`, error);
-        }),     
-        
-        Promise.all([ // fetch GeoJSON file (wihch is divided over 2 files) for the granularity 'buurt' and place it in the GeoPromises array
-            d3.json("data/merged_data_part1_1.geojson"),
-            d3.json("data/merged_data_part2_1.geojson")
-          ])
-          .then(([geoDataPart1, geoDataPart2]) => { // Combine both parts horizontally
-            const GeoDataBuurt = {
-              type: "FeatureCollection", // collection of geographical features
-              features: [...geoDataPart1.features, ...geoDataPart2.features] // extract features from the two geojson files and combine into a single array
-            };
-            console.log(`Loaded GeoJSON Data (buurt)`);
-            return GeoDataBuurt; 
-          }).catch(error => {
-            console.error(`Error loading GeoJSON data (buurt):`, error);
-          })      
-      ];
+d3.select("#loading-icon").style("display", "block");  //show the loading icon
+d3.select("#granularity-display").style("display", "none"); //hide the granularity display
+// load GeoJSON data for all granularities
+const GeoPromises = [ // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
+d3.json("data/merged_data_reprojected_GM_1.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
+console.log(`Loaded GeoJSON Data (gemeente)`);
+return GeoDataGemeente; 
+}).catch(error => {
+console.error(`Error loading GeoJSON data (gemeente):`, error);
+}), 
 
-    // load the cluster files and create a map where region ID is coupled to cluster number (perhaps the mapping is not necessary and the data file can be used directly)
-      const granularities = ["buurt", "wijk", "gemeente"]; // granularities to iterate over
-      const clusterFiles = {buurt: "data/clustered_BU.csv", // cluster file per granularity
-                            wijk: "data/clustered_WK.csv",
-                            gemeente: "data/clustered_GM.csv"};
+d3.json("data/merged_data_reprojected_WK_1.geojson").then(GeoDataWijk => { // fetch the GeoJSON file for the granularity 'wijk' and place it in the GeoPromises array
+console.log(`Loaded GeoJSON Data (wijk)`);
+return GeoDataWijk; 
+}).catch(error => {
+console.error(`Error loading GeoJSON data (wijk):`, error);
+}),     
 
-      let clusterMapGemeente = {}; // variables to store the clustermaps in
-      let clusterMapWijk = {};
-      let clusterMapBuurt = {};
+Promise.all([ // fetch GeoJSON file (wihch is divided over 2 files) for the granularity 'buurt' and place it in the GeoPromises array
+d3.json("data/merged_data_part1_1.geojson"),
+d3.json("data/merged_data_part2_1.geojson")
+])
+.then(([geoDataPart1, geoDataPart2]) => { // Combine both parts horizontally
+const GeoDataBuurt = {
+type: "FeatureCollection", // collection of geographical features
+features: [...geoDataPart1.features, ...geoDataPart2.features] // extract features from the two geojson files and combine into a single array
+};
+console.log(`Loaded GeoJSON Data (buurt)`);
+return GeoDataBuurt; 
+}).catch(error => {
+console.error(`Error loading GeoJSON data (buurt):`, error);
+})      
+];
 
-      const clusterPromises = granularities.map(granularity => { // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
-        const clusterFile = clusterFiles[granularity]; //get the cluster file
-        return d3.csv(clusterFile).then(clusterData => {            
-          const clusterMap = {}; //create a map where region ID is coupled to cluster number 
-          //console.log(clusterData);
-          clusterData.forEach(row => {
-            if (row.ID && row.cluster) { 
-              clusterMap[row.ID.trim()] = row.cluster.trim(); // Normalize both ID and cluster
-            
-            }
-          });
-          console.log(`Created Cluster Map (${granularity})`); 
-          
-          if (granularity === "buurt") { //store the clustermap in the correct variable
-              clusterMapBuurt = clusterMap;
-          } else if (granularity === "wijk") {
-              clusterMapWijk = clusterMap;
-          } else if (granularity === "gemeente") {
-              clusterMapGemeente = clusterMap;
-          }
-        }).catch(error => {
-          console.error(`error loading clustered CSV data for ${granularity}:`, error); 
-        });
-      });
+// load the cluster files and create a map where region ID is coupled to cluster number (perhaps the mapping is not necessary and the data file can be used directly)
+const granularities = ["buurt", "wijk", "gemeente"]; // granularities to iterate over
+const clusterFiles = {buurt: "data/clustered_BU.csv", // cluster file per granularity
+wijk: "data/clustered_WK.csv",
+gemeente: "data/clustered_GM.csv"};
 
-      //make sure all data is loaded before starting the next function 
-      Promise.all([...GeoPromises, ...clusterPromises]).then(results => {
-        const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results.slice(0,3); //gives the loaded geo data the correct names
+let clusterMapGemeente = {}; // variables to store the clustermaps in
+let clusterMapWijk = {};
+let clusterMapBuurt = {};
 
-        // Call the next function with all the loaded data
-        renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
-        d3.select("#loading-icon").style("display", "none"); //hide the loading icon
-        d3.select("#granularity-display").style("display", "block"); //show the granularity display
-    }).catch(error => {
-        console.error("Error loading all data:", error);
-        d3.select("#loading-icon").style("display", "none"); //hide the loading icon
-    });
+const clusterPromises = granularities.map(granularity => { // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
+const clusterFile = clusterFiles[granularity]; //get the cluster file
+return d3.csv(clusterFile).then(clusterData => {            
+const clusterMap = {}; //create a map where region ID is coupled to cluster number 
+//console.log(clusterData);
+clusterData.forEach(row => {
+if (row.ID && row.cluster) { 
+clusterMap[row.ID.trim()] = row.cluster.trim(); // Normalize both ID and cluster
+
+}
+});
+console.log(`Created Cluster Map (${granularity})`); 
+
+if (granularity === "buurt") { //store the clustermap in the correct variable
+clusterMapBuurt = clusterMap;
+} else if (granularity === "wijk") {
+clusterMapWijk = clusterMap;
+} else if (granularity === "gemeente") {
+clusterMapGemeente = clusterMap;
+}
+}).catch(error => {
+console.error(`error loading clustered CSV data for ${granularity}:`, error); 
+});
+});
+
+//make sure all data is loaded before starting the next function 
+Promise.all([...GeoPromises, ...clusterPromises]).then(results => {
+const [GeoDataGemeente, GeoDataWijk, GeoDataBuurt] = results.slice(0,3); //gives the loaded geo data the correct names
+
+// Call the next function with all the loaded data
+renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
+d3.select("#loading-icon").style("display", "none"); //hide the loading icon
+d3.select("#granularity-display").style("display", "block"); //show the granularity display
+}).catch(error => {
+console.error("Error loading all data:", error);
+d3.select("#loading-icon").style("display", "none"); //hide the loading icon
+});
 }
 
 // render the geographical/symbol map
 function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt) {
-      console.log("started rendering the map"); 
-      
-      //settings
-      const width = 600, height = 525; //map dimensions
-      const zoomThreshold1 = 5; // level of zoom at which the map changes granularity from municipality to district
-      const zoomThreshold2 = 15; // level of zoom at which the map changes granularity from district to neighborhood
-      const radius = 3; // circle radius
+console.log("started rendering the map"); 
 
-      //const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); // circle colors (identical to those in the line chart) 
+//settings
+const width = 600, height = 525; //map dimensions
+const zoomThreshold1 = 5; // level of zoom at which the map changes granularity from municipality to district
+const zoomThreshold2 = 15; // level of zoom at which the map changes granularity from district to neighborhood
+const radius = 3; // circle radius
 
-      const projection = d3.geoMercator() //set up map projection 
-                           .center([5.5, 52])
-                           .scale(5000)
-                           .translate([width / 2, height / 2]);
+//const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); // circle colors (identical to those in the line chart) 
 
-      const path = d3.geoPath().projection(projection); //transform geojson data into a path that can be rendered 
+const projection = d3.geoMercator() //set up map projection 
+.center([5.5, 52])
+.scale(5000)
+.translate([width / 2, height / 2]);
 
-      const geoMap = d3.select("#geo-map"); //selects the html-container for the map
-  
-      const svg = geoMap.append("svg") //create SVG element
-                        .attr("width", width)
-                        .attr("height", height)
+const path = d3.geoPath().projection(projection); //transform geojson data into a path that can be rendered 
 
-      //zoom behaviour 
-      const g = svg.append("g"); //create a group for zooming
-  
-      let prevZoomLevel = 1; //to track the previous zoom level
-      
-      function throttle(func, limit) { //to limit how often the zoom handler runs: reduce CPU load and improve responsiveness
-        let inThrottle;
-        return function(...args) {
-          if (!inThrottle) {
-            func.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-          }
-        };
-      }
-  
-      const zoom = d3.zoom()
-                     .scaleExtent([1, 30]) // Limit zoom scale 
-                     .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
-                     .on("zoom", throttle((event) => { // work via throttle to reduce CPU load
-                       const zoomLevel = event.transform.k;
-                       
-                       g.attr("transform", event.transform); //zoom
-                       g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
-                       g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
+const geoMap = d3.select("#geo-map"); //selects the html-container for the map
 
-                       if ((prevZoomLevel < zoomThreshold1 && zoomLevel >= zoomThreshold1) || (prevZoomLevel >= zoomThreshold1 && zoomLevel < zoomThreshold1)) { //when the zoomlevel increases or decreases past the first zoom threshold the shown layer is updated
-                        if(zoomLevel < zoomThreshold1){
-                          showLayer("municipality");
-                          newGranularity = "gemeente";
-                          d3.select("#granularity-display").text(`Granularity: municipality`); // Update the text in the granularity display
-                        } else {
-                          showLayer("district");
-                          newGranularity = "wijk"; 
-                          d3.select("#granularity-display").text(`Granularity: district`); // Update the text in the granularity display
-                        }
-                        } else if ((prevZoomLevel < zoomThreshold2 && zoomLevel >= zoomThreshold2) || (prevZoomLevel >= zoomThreshold2 && zoomLevel < zoomThreshold2)) { //when the zoomlevel increases or decreases past the second zoom threshold the shown layer is updated
-                          if(zoomLevel < zoomThreshold2){
-                            showLayer("district");
-                            newGranularity = "wijk"; 
-                            d3.select("#granularity-display").text(`Granularity: district`); // Update the text in the granularity display
-                          } else {
-                            showLayer("neighborhood");
-                            newGranularity = "buurt"; 
-                            d3.select("#granularity-display").text(`Granularity: neighborhood`); // Update the text in the granularity display
-                          }
-                        }
+const svg = geoMap.append("svg") //create SVG element
+.attr("width", width)
+.attr("height", height)
 
-                       //update the state variable, and calls the update of the line chart
-                       if (state.granularity !== newGranularity) {
-                            state.granularity = newGranularity;
-                            new_factors = true;
-                            if (newGranularity == "gemeente") {
-                              state.city = "GM0014";
-                            }
-                            else if (newGranularity == "wijk") {
-                              state.city = "WK001400";
-                            }
-                            else {
-                              state.city = "BU00140000";
-                            }
-                            updateFactorList();
-                            updateLineChart(); // Synchronize the line chart with the map
-                        }
-                       prevZoomLevel = zoomLevel;
-                     }, 50)); //throttle limit
-  
-      svg.call(zoom); //apply zoom behaviour to the svg
+//zoom behaviour 
+const g = svg.append("g"); //create a group for zooming
+
+let prevZoomLevel = 1; //to track the previous zoom level
+
+function throttle(func, limit) { //to limit how often the zoom handler runs: reduce CPU load and improve responsiveness
+let inThrottle;
+return function(...args) {
+if (!inThrottle) {
+func.apply(this, args);
+inThrottle = true;
+setTimeout(() => inThrottle = false, limit);
+}
+};
+}
+
+const zoom = d3.zoom()
+.scaleExtent([1, 30]) // Limit zoom scale 
+.translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
+.on("zoom", throttle((event) => { // work via throttle to reduce CPU load
+const zoomLevel = event.transform.k;
+
+g.attr("transform", event.transform); //zoom
+g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
+g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
+
+if ((prevZoomLevel < zoomThreshold1 && zoomLevel >= zoomThreshold1) || (prevZoomLevel >= zoomThreshold1 && zoomLevel < zoomThreshold1)) { //when the zoomlevel increases or decreases past the first zoom threshold the shown layer is updated
+if(zoomLevel < zoomThreshold1){
+showLayer("municipality");
+newGranularity = "gemeente";
+d3.select("#granularity-display").text(`Granularity: municipality`); // Update the text in the granularity display
+} else {
+showLayer("district");
+newGranularity = "wijk"; 
+d3.select("#granularity-display").text(`Granularity: district`); // Update the text in the granularity display
+}
+} else if ((prevZoomLevel < zoomThreshold2 && zoomLevel >= zoomThreshold2) || (prevZoomLevel >= zoomThreshold2 && zoomLevel < zoomThreshold2)) { //when the zoomlevel increases or decreases past the second zoom threshold the shown layer is updated
+if(zoomLevel < zoomThreshold2){
+showLayer("district");
+newGranularity = "wijk"; 
+d3.select("#granularity-display").text(`Granularity: district`); // Update the text in the granularity display
+} else {
+showLayer("neighborhood");
+newGranularity = "buurt"; 
+d3.select("#granularity-display").text(`Granularity: neighborhood`); // Update the text in the granularity display
+}
+}
+
+//update the state variable, and calls the update of the line chart
+if (state.granularity !== newGranularity) {
+state.granularity = newGranularity;
+new_factors = true;
+if (newGranularity == "gemeente") {
+state.city = "GM0014";
+}
+else if (newGranularity == "wijk") {
+state.city = "WK001400";
+}
+else {
+state.city = "BU00140000";
+}
+updateFactorList();
+updateLineChart(); // Synchronize the line chart with the map
+}
+prevZoomLevel = zoomLevel;
+}, 50)); //throttle limit
+
+svg.call(zoom); //apply zoom behaviour to the svg
 
       // create a tooltip element that can be reused later 
       if (d3.select("#tooltip").empty()) {
@@ -419,885 +419,918 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
           .style("z-index", "9999");
       }
   
-      function showLayer(layerName) { //show a layer
-        g.selectAll(".layer").style("display", "none"); //make sure none are visible
-        g.select(`.layer.${layerName}`).style("display", "block"); //show the correct layer
-        const selectedLayer = g.select(`.layer.${layerName}`);
-        selectedLayer.style("display", "block");
-        currentLayer = layers.find(layer => layer.name === layerName);
+function showLayer(layerName) { //show a layer
+g.selectAll(".layer").style("display", "none"); //make sure none are visible
+g.select(`.layer.${layerName}`).style("display", "block"); //show the correct layer
+const selectedLayer = g.select(`.layer.${layerName}`);
+selectedLayer.style("display", "block");
+currentLayer = layers.find(layer => layer.name === layerName);
 
-        d3.select('#granularity-display').style("display", "block"); //show granularity display 
+d3.select('#granularity-display').style("display", "block"); //show granularity display 
 
-        console.log(`Switched to layer: ${layerName}`);
-      }
-  
-      //create groups within the g-group which will function as layers for the different granularities
-      const layer_GM = g.append("g").attr("class", "layer municipality"); //create a group for the municipality layer, and assign the class names layer and municipality
-      const layer_WK = g.append("g").attr("class", "layer district"); //create a group for the district layer, and assign the class names layer and district
-      const layer_BU = g.append("g").attr("class", "layer neighborhood"); //create a group for the district layer, and assign the class names layer and district       
-  
-      //define the information belonging to each layer
-      const layers = [{ name: "municipality", data: GeoDataGemeente, clusterMap: clusterMapGemeente, idKey: "gm_code", layerGroup: layer_GM },
-                      { name: "district", data: GeoDataWijk, clusterMap: clusterMapWijk, idKey: "wk_code", layerGroup: layer_WK },
-                      { name: "neighborhood", data: GeoDataBuurt, clusterMap: clusterMapBuurt, idKey: "geo_ID", layerGroup: layer_BU }];
-      console.log("Defined layer information: ", layers);  
-  
-      //iterate to render the paths/circles belonging to each layer
-      layers.forEach(layer => { 
-        console.log(`iteration: layer ${layer.name}`); 
-        if (!layer.data || !layer.data.features) {
-            console.warn(`Layer ${layer.name} has no valid data.`);
-            return;
-        }
+console.log(`Switched to layer: ${layerName}`);
+}
 
-        const layerGroup = layer.layerGroup; // retrieve the correct layer-group
-        
-        //add paths
-        layerGroup.selectAll("path") 
-                  .data(layer.data.features)
-                  .join("path")
-                  .attr("d", path)
-                  .attr("fill", "#e0e0e0") //fill color of the map
-                  .attr("stroke", "#333") //stroke color of the map
-                  .on("mouseover", (event, d) => {
-                    const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    const lbmValues = d.properties;
-                    //console.log("region mouseover triggered");                  
-                    const tooltipContent = `
-                      <strong>Region ID:</strong> ${regionId}<br>
-                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
-                      <strong>Cluster:</strong> ${cluster || "Unknown"}
-                    `;
-                    d3.select("#tooltip")
-                      .html(tooltipContent)
-                      .style("left", `${event.pageX}px`)
-                      .style("top", `${event.pageY}px`)
-                      .style("display", "block")
-                  })
-                  .on("mouseout", () => {
-                    d3.select("#tooltip").style("display", "none");
-                    // Reset cluster highlighting
-                    Object.values(linePaths).forEach(path => {
-                      path.attr("stroke-width", 2).attr("opacity", 1);
-                    });
-                  })
-                  .on("click", (event, d) => {
-                    layerGroup.selectAll("path").attr("fill", "#e0e0e0"); //get all regions back to basic color
-                    d3.select(event.currentTarget).attr("fill", "#9c9b9b"); //highlight the clicked region
-                    //get region and cluster information, and feed to line chart
-                    const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    if (cluster !== undefined && cluster !== null) {
-                      highlightCluster(cluster);
-                    }
-                    if (regionId !== undefined && regionId !== null) {
-                      state.city = regionId;
-                      updateFactorList();
-                    }
-                  })
-        
-        //calculate centroids that lie within the polygons for adding circles 
-        layer.data.features.forEach(d => {
-          let centroid = path.centroid(d); // Calculate the centroid of the path (in screen coordinates)
-          const geoCentroid = projection.invert(centroid); // Convert the centroid back to geographic coordinates
-          
-          const isInsidePolygon = d3.geoContains(d, geoCentroid); //check if the coordinate falls within the path/ polygon
-          if (!isInsidePolygon) { //if the coordinate falls outside of its polygon, try to buffer the region and use Turf to find a point inside the polygon
-            console.log('Centroid is outside the polygon, using Turf to find an interior point')
-            const geoJsonPolygon = { // Create a GeoJSON feature for Turf operations
-              type: 'Feature',
-              geometry: d.geometry,
-              properties: {}
-            };
-            try {
-              const bufferedPolygon = turf.buffer(geoJsonPolygon, -100, { units: 'meters' });// Attempt to buffer the polygon by the calculated distance
-              if (bufferedPolygon && bufferedPolygon.geometry.coordinates.length > 0) {//if buffering was successfull: find an interior point within the buffered polygon
-                const interiorPoint = turf.pointOnFeature(bufferedPolygon);
-                centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
-              } else { // Fall back to the original polygon if buffering fails
-                console.log('Buffering failed or resulted in an invalid polygon. Using the original polygon.');
-                const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
-                centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
-              }
-            } catch (error) { 
-              console.error('Error during buffering or centroid calculation:', error);
-              const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
-              centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
-            }
-          }
-          d.centroid = centroid;// store the centroids for later use
-        });
+//create groups within the g-group which will function as layers for the different granularities
+const layer_GM = g.append("g").attr("class", "layer municipality"); //create a group for the municipality layer, and assign the class names layer and municipality
+const layer_WK = g.append("g").attr("class", "layer district"); //create a group for the district layer, and assign the class names layer and district
+const layer_BU = g.append("g").attr("class", "layer neighborhood"); //create a group for the district layer, and assign the class names layer and district       
 
-        //add circles 
-        layerGroup.selectAll("circle") 
-                  .data(layer.data.features)
-                  .join("circle")
-                  .attr("cx", d => d.centroid[0]) //extract the x-coordinate of the center of the geojson polygon data
-                  .attr("cy", d => d.centroid[1]) //extract the y-coordinate of the center of the geojson polygon data
-                  .attr("r", radius)
-                  .attr("fill", d => {
-                    const regionId = d.properties[layer.idKey]; // Match region ID from GeoJSON
-                    const cluster = layer.clusterMap[regionId];   // Get cluster number from CSV
-                    return cluster !== undefined ? color(cluster) : "#ccc"; // Assign color based on cluster
-                  })
-                  .on("mouseover", (event, d) => {
-                    const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    const lbmValues = d.properties;
-                    //console.log("region mouseover triggered");                  
-                    const tooltipContent = `
-                      <strong>Region ID:</strong> ${regionId}<br>
-                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
-                      <strong>Cluster:</strong> ${cluster || "Unknown"}
-                    `;
-                    d3.select("#tooltip")
-                      .html(tooltipContent)
-                      .style("left", `${event.pageX}px`)
-                      .style("top", `${event.pageY}px`)
-                      .style("display", "block")
-                  })
-                  .on("mouseout", () => {
-                    d3.select("#tooltip").style("display", "none");
-                    // Reset cluster highlighting
-                    Object.values(linePaths).forEach(path => {
-                      path.attr("stroke-width", 2).attr("opacity", 1);
-                    });
-                  })
-                  .on("click", (event, d) => {
-                    const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    layerGroup.selectAll("path").attr("fill", "#e0e0e0"); //get all regions back to basic color
-                    layerGroup.selectAll("path").filter(region => region.properties[layer.idKey] === regionId).attr("fill", "#9c9b9b");// give the correct region the highlight color 
-                    if (cluster !== undefined && cluster !== null) {
-                      highlightCluster(cluster);
-                    }
-                    if (regionId !== undefined && regionId !== null) {
-                      state.city = regionId;
-                      updateFactorList();
-                    }
-                  });          
-      });
-  
-      console.log("Rendering iterations finished"); 
-      
-      showLayer("municipality");
-  
-      geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
+//define the information belonging to each layer
+const layers = [{ name: "municipality", data: GeoDataGemeente, clusterMap: clusterMapGemeente, idKey: "gm_code", layerGroup: layer_GM },
+{ name: "district", data: GeoDataWijk, clusterMap: clusterMapWijk, idKey: "wk_code", layerGroup: layer_WK },
+{ name: "neighborhood", data: GeoDataBuurt, clusterMap: clusterMapBuurt, idKey: "geo_ID", layerGroup: layer_BU }];
+console.log("Defined layer information: ", layers);  
+
+//iterate to render the paths/circles belonging to each layer
+layers.forEach(layer => { 
+console.log(`iteration: layer ${layer.name}`); 
+if (!layer.data || !layer.data.features) {
+console.warn(`Layer ${layer.name} has no valid data.`);
+return;
+}
+
+const layerGroup = layer.layerGroup; // retrieve the correct layer-group
+
+//add paths
+layerGroup.selectAll("path") 
+.data(layer.data.features)
+.join("path")
+.attr("d", path)
+.attr("fill", "#e0e0e0") //fill color of the map
+.attr("stroke", "#333") //stroke color of the map
+.on("mouseover", (event, d) => {
+const regionId = d.properties[layer.idKey];
+const cluster = layer.clusterMap[regionId]?.trim();
+const lbmValues = d.properties;
+//console.log("region mouseover triggered");                  
+                    document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
+                      <div id="tooltip" style="
+                        position: fixed;
+                        display: none;
+                        background: white;
+                        border: 1px solid #000;
+                        padding: 10px;
+                        z-index: 9999;
+                        pointer-events: none;
+                      "></div>
+                    `);
+const tooltipContent = `
+                     <strong>Region ID:</strong> ${regionId}<br>
+                     <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
+                     <strong>Cluster:</strong> ${cluster || "Unknown"}
+                   `;
+d3.select("#tooltip")
+.html(tooltipContent)
+.style("left", `${event.pageX}px`)
+.style("top", `${event.pageY}px`)
+.style("display", "block")
+                      .style("position", "fixed")
+                      .style("background", "white")
+                      .style("border", "1px solid black")
+                      .style("padding", "10px")
+                      .style("z-index", "9999");
+})
+.on("mouseout", () => {
+d3.select("#tooltip").style("display", "none");
+// Reset cluster highlighting
+Object.values(linePaths).forEach(path => {
+path.attr("stroke-width", 2).attr("opacity", 1);
+});
+})
+.on("click", (event, d) => {
+layerGroup.selectAll("path").attr("fill", "#e0e0e0"); //get all regions back to basic color
+d3.select(event.currentTarget).attr("fill", "#9c9b9b"); //highlight the clicked region
+//get region and cluster information, and feed to line chart
+const regionId = d.properties[layer.idKey];
+const cluster = layer.clusterMap[regionId]?.trim();
+if (cluster !== undefined && cluster !== null) {
+highlightCluster(cluster);
+}
+if (regionId !== undefined && regionId !== null) {
+state.city = regionId;
+updateFactorList();
+}
+})
+
+//calculate centroids that lie within the polygons for adding circles 
+layer.data.features.forEach(d => {
+let centroid = path.centroid(d); // Calculate the centroid of the path (in screen coordinates)
+const geoCentroid = projection.invert(centroid); // Convert the centroid back to geographic coordinates
+
+const isInsidePolygon = d3.geoContains(d, geoCentroid); //check if the coordinate falls within the path/ polygon
+if (!isInsidePolygon) { //if the coordinate falls outside of its polygon, try to buffer the region and use Turf to find a point inside the polygon
+console.log('Centroid is outside the polygon, using Turf to find an interior point')
+const geoJsonPolygon = { // Create a GeoJSON feature for Turf operations
+type: 'Feature',
+geometry: d.geometry,
+properties: {}
+};
+try {
+const bufferedPolygon = turf.buffer(geoJsonPolygon, -100, { units: 'meters' });// Attempt to buffer the polygon by the calculated distance
+if (bufferedPolygon && bufferedPolygon.geometry.coordinates.length > 0) {//if buffering was successfull: find an interior point within the buffered polygon
+const interiorPoint = turf.pointOnFeature(bufferedPolygon);
+centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
+} else { // Fall back to the original polygon if buffering fails
+console.log('Buffering failed or resulted in an invalid polygon. Using the original polygon.');
+const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
+centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
+}
+} catch (error) { 
+console.error('Error during buffering or centroid calculation:', error);
+const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
+centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
+}
+}
+d.centroid = centroid;// store the centroids for later use
+});
+
+//add circles 
+layerGroup.selectAll("circle") 
+.data(layer.data.features)
+.join("circle")
+.attr("cx", d => d.centroid[0]) //extract the x-coordinate of the center of the geojson polygon data
+.attr("cy", d => d.centroid[1]) //extract the y-coordinate of the center of the geojson polygon data
+.attr("r", radius)
+.attr("fill", d => {
+const regionId = d.properties[layer.idKey]; // Match region ID from GeoJSON
+const cluster = layer.clusterMap[regionId];   // Get cluster number from CSV
+return cluster !== undefined ? color(cluster) : "#ccc"; // Assign color based on cluster
+})
+.on("mouseover", (event, d) => {
+const regionId = d.properties[layer.idKey];
+const cluster = layer.clusterMap[regionId]?.trim();
+const lbmValues = d.properties;
+//console.log("region mouseover triggered");
+// Move tooltip div outside scatter plot container
+document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
+                     <div id="tooltip" style="
+                       position: fixed;
+                       display: none;
+                       background: white;
+                       border: 1px solid #000;
+                       padding: 10px;
+                       z-index: 9999;
+                       pointer-events: none;
+                     "></div>
+                   `);
+const tooltipContent = `
+                     <strong>Region ID:</strong> ${regionId}<br>
+                     <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
+                     <strong>Cluster:</strong> ${cluster || "Unknown"}
+                   `;
+d3.select("#tooltip")
+.html(tooltipContent)
+.style("left", `${event.pageX}px`)
+.style("top", `${event.pageY}px`)
+.style("display", "block")
+.style("position", "fixed")
+.style("background", "white")
+.style("border", "1px solid black")
+.style("padding", "10px")
+.style("z-index", "9999");
+})
+.on("mouseout", () => {
+d3.select("#tooltip").style("display", "none");
+// Reset cluster highlighting
+Object.values(linePaths).forEach(path => {
+path.attr("stroke-width", 2).attr("opacity", 1);
+});
+})
+.on("click", (event, d) => {
+const regionId = d.properties[layer.idKey];
+const cluster = layer.clusterMap[regionId]?.trim();
+layerGroup.selectAll("path").attr("fill", "#e0e0e0"); //get all regions back to basic color
+layerGroup.selectAll("path").filter(region => region.properties[layer.idKey] === regionId).attr("fill", "#9c9b9b");// give the correct region the highlight color 
+if (cluster !== undefined && cluster !== null) {
+highlightCluster(cluster);
+}
+if (regionId !== undefined && regionId !== null) {
+state.city = regionId;
+updateFactorList();
+}
+});          
+});
+
+console.log("Rendering iterations finished"); 
+
+showLayer("municipality");
+
+geoMap.style("overflow", "hidden"); //ensure the map does not zoom outside of its container
 }
 
 //create the line chart
 function loadLineChart() {
-  
-    let clusterFile;
 
-    if (state.granularity === "buurt") {
-      clusterFile = "data/clustered_BU_1.csv";
-    } else if (state.granularity === "wijk") {
-      clusterFile = "data/clustered_WK_1.csv";
-    } else {
-      clusterFile = "data/clustered_GM_1.csv";
-    }
-  
-    d3.csv(clusterFile).then(data => {
-      console.log("line chart cluster data loaded"); 
-      //console.log("Cluster Data Loaded:", data);
+let clusterFile;
 
-    // Extract years and scores
-    const xLabels = ['2002-2008', '2008-2012', '2012-2014', '2014-2016', '2016-2018', '2018-2020', '2020-2022'];
+if (state.granularity === "buurt") {
+clusterFile = "data/clustered_BU_1.csv";
+} else if (state.granularity === "wijk") {
+clusterFile = "data/clustered_WK_1.csv";
+} else {
+clusterFile = "data/clustered_GM_1.csv";
+}
 
-    // Organize data by cluster
-    const clusters = d3.group(data, d => d.cluster);
+d3.csv(clusterFile).then(data => {
+console.log("line chart cluster data loaded"); 
+//console.log("Cluster Data Loaded:", data);
 
-    // Create Line Chart
-    // Create Line Chart
-    const lineGraph = d3.select("#line-graph");
-    lineGraph.selectAll("*").remove(); // Remove all previous elements
-    const lineSvg = lineGraph.append("svg")
-    .attr("width", 600)
-    .attr("height", 500);
+// Extract years and scores
+const xLabels = ['2002-2008', '2008-2012', '2012-2014', '2014-2016', '2016-2018', '2018-2020', '2020-2022'];
 
-    const margin = { top: 20, right: 20, bottom: 50, left: 50 };
-    const width = 600 - margin.left - margin.right;
-    const height = 480 - margin.top - margin.bottom;
+// Organize data by cluster
+const clusters = d3.group(data, d => d.cluster);
 
-    const g = lineSvg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+// Create Line Chart
+// Create Line Chart
+const lineGraph = d3.select("#line-graph");
+lineGraph.selectAll("*").remove(); // Remove all previous elements
+const lineSvg = lineGraph.append("svg")
+.attr("width", 600)
+.attr("height", 500);
 
-      const xScale = d3.scalePoint()
-      .domain([...xLabels])
-      .range([0, width]);
+const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+const width = 600 - margin.left - margin.right;
+const height = 480 - margin.top - margin.bottom;
 
-      const yScale = d3.scaleLinear()
-      .domain([
-      d3.min(data.flatMap(d => {
-          return xLabels.map(label => parseFloat(d[label]) || 0);
-        })), 
-        
-        d3.max(data.flatMap(d => {
-          return xLabels.map(label => parseFloat(d[label]) || 0);
-        })) 
-      ])
-      .range([height, 0]);
+const g = lineSvg.append("g")
+.attr("transform", `translate(${margin.left},${margin.top})`);
 
-    console.log("yScale domain:", yScale.domain());
+const xScale = d3.scalePoint()
+.domain([...xLabels])
+.range([0, width]);
 
-    // Axes
-    g.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(xScale));
+const yScale = d3.scaleLinear()
+.domain([
+d3.min(data.flatMap(d => {
+return xLabels.map(label => parseFloat(d[label]) || 0);
+})), 
 
-    g.append("g")
-      .call(d3.axisLeft(yScale));
+d3.max(data.flatMap(d => {
+return xLabels.map(label => parseFloat(d[label]) || 0);
+})) 
+])
+.range([height, 0]);
 
-   
+console.log("yScale domain:", yScale.domain());
 
-    // Create an empty object to store line paths
-    //const linePaths = {};
+// Axes
+g.append("g")
+.attr("transform", `translate(0,${height})`)
+.call(d3.axisBottom(xScale));
 
-    // Add lines for each cluster
-    //const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
+g.append("g")
+.call(d3.axisLeft(yScale));
 
-    clusters.forEach((clusterData, clusterId) => {
-      const cumulativeTrends = xLabels.map(label => ({
-        x: label,
-        y: parseFloat(clusterData[0][label]) || 0 // Directly use the value for each label
-      }));
 
-  
-  
 
-  console.log(`Cluster ${clusterId} cumulative trends:`, cumulativeTrends); // Debugging
+// Create an empty object to store line paths
+//const linePaths = {};
 
-  const normalizedClusterId = clusterId?.trim();
+// Add lines for each cluster
+//const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
 
-  // Draw the line using cumulative trends
-  const path = g.append("path")
-    .datum(cumulativeTrends)
-    .attr("fill", "none")
-    .attr("stroke", color(normalizedClusterId))
-    .attr("stroke-width", 2)
-    .attr("d", d3.line()
-      .x(d => xScale(d.x))
-      .y(d => yScale(d.y)))
-      .on("mouseout", () => {
-        //resent the circles
-        d3.selectAll("#geo-map circle")
-        .attr("stroke", null)
-        .attr("stroke-width", null)
-        .attr("opacity", 1);
-        // Reset cluster highlighting
-        Object.values(linePaths).forEach(path => {
-          path.attr("stroke-width", 2).attr("opacity", 1);
-        });
-      })
-    .on("click", () => {
-      highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
-      highlightCluster(normalizedClusterId);
-    });
+clusters.forEach((clusterData, clusterId) => {
+const cumulativeTrends = xLabels.map(label => ({
+x: label,
+y: parseFloat(clusterData[0][label]) || 0 // Directly use the value for each label
+}));
 
-  // Store the path for interactivity
-  linePaths[normalizedClusterId] = path;
+
+
+
+console.log(`Cluster ${clusterId} cumulative trends:`, cumulativeTrends); // Debugging
+
+const normalizedClusterId = clusterId?.trim();
+
+// Draw the line using cumulative trends
+const path = g.append("path")
+.datum(cumulativeTrends)
+.attr("fill", "none")
+.attr("stroke", color(normalizedClusterId))
+.attr("stroke-width", 2)
+.attr("d", d3.line()
+.x(d => xScale(d.x))
+.y(d => yScale(d.y)))
+.on("mouseout", () => {
+//resent the circles
+d3.selectAll("#geo-map circle")
+.attr("stroke", null)
+.attr("stroke-width", null)
+.attr("opacity", 1);
+// Reset cluster highlighting
+Object.values(linePaths).forEach(path => {
+path.attr("stroke-width", 2).attr("opacity", 1);
+});
+})
+.on("click", () => {
+highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
+highlightCluster(normalizedClusterId);
+});
+
+// Store the path for interactivity
+linePaths[normalizedClusterId] = path;
 });
 
 
-    // Add labels
-    g.append("text")
-      .attr("x", width / 2)
-      .attr("y", -5)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "16px")
-      .text("Cumulative year-to-year differences");
+// Add labels
+g.append("text")
+.attr("x", width / 2)
+.attr("y", -5)
+.attr("text-anchor", "middle")
+.attr("font-size", "16px")
+.text("Cumulative year-to-year differences");
 
-    g.append("text")
-      .attr("x", -height / 2)
-      .attr("y", -35)
-      .attr("transform", "rotate(-90)")
-      .attr("text-anchor", "middle")
-      .attr("font-size", "12px")
-      .text("Cumulative values");
+g.append("text")
+.attr("x", -height / 2)
+.attr("y", -35)
+.attr("transform", "rotate(-90)")
+.attr("text-anchor", "middle")
+.attr("font-size", "12px")
+.text("Cumulative values");
 
-    g.append("text")
-      .attr("x", width / 2)
-      .attr("y", height + 40)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "12px")
-      .text("Year-to-Year differences");
+g.append("text")
+.attr("x", width / 2)
+.attr("y", height + 40)
+.attr("text-anchor", "middle")
+.attr("font-size", "12px")
+.text("Year-to-Year differences");
 
-    const legendContainer = d3.select("#legend")
-      .html("") // Clear any existing legend
-      .style("display", "flex")
-      .style("justify-content", "center")
-      .style("flex-wrap", "wrap")
-      .style("gap", "20px")
-      .style("margin-top", "20px");
+const legendContainer = d3.select("#legend")
+.html("") // Clear any existing legend
+.style("display", "flex")
+.style("justify-content", "center")
+.style("flex-wrap", "wrap")
+.style("gap", "20px")
+.style("margin-top", "20px");
 
-      // Create a fixed color mapping
+// Create a fixed color mapping
 const clusterIds = Array.from(clusters.keys()).sort((a, b) => a - b); // Sort cluster IDs to ensure order
 const fixedColorMapping = {};
 clusterIds.forEach((clusterId, index) => {
-  fixedColorMapping[clusterId] = d3.schemeCategory10[index % 10]; // Assign a color from the color scheme
+fixedColorMapping[clusterId] = d3.schemeCategory10[index % 10]; // Assign a color from the color scheme
 });
 
 // Function to get the color for a cluster
 const getColor = clusterId => fixedColorMapping[clusterId];
 
-      
+
 clusterIds.forEach((_, clusterId) => {
-      const legendItem = legendContainer.append("div")
-        .attr("class", "legend-item")
-        .style("display", "flex")
-        .style("align-items", "center")
-        .style("margin", "5px");
+const legendItem = legendContainer.append("div")
+.attr("class", "legend-item")
+.style("display", "flex")
+.style("align-items", "center")
+.style("margin", "5px");
 
-      legendItem.append("div")
-        .style("width", "20px")
-        .style("height", "20px")
-        .style("background-color", getColor(clusterId))
-        .style("margin-right", "10px");
+legendItem.append("div")
+.style("width", "20px")
+.style("height", "20px")
+.style("background-color", getColor(clusterId))
+.style("margin-right", "10px");
 
-      legendItem.append("span")
-        .text(`Cluster ${clusterId}`)
-        .style("font-size", "12px");
+legendItem.append("span")
+.text(`Cluster ${clusterId}`)
+.style("font-size", "12px");
 
-      // Add hover interaction for legend
-      
-      });
+// Add hover interaction for legend
 
-      }).catch(error => {
-        console.error("Error loading cluster data:", error);
-      });
-    }
+});
 
-    function updateLineChart() {
-      const granularity = state.granularity;
-      loadLineChart();
-    }
-
-
-    function highlightCluster(clusterId) {
-      console.log(`Attempting to highlight cluster: ${clusterId}`);
-
-      // Reset all lines to their default style
-      Object.values(linePaths).forEach(path => {
-        path.attr("stroke-width", 2).attr("opacity", 0.5); // Reset other lines
-      });
-
-      // Highlight the selected cluster
-      const selectedPath = linePaths[clusterId];
-      if (selectedPath) {
-        selectedPath.attr("stroke-width", 7).attr("opacity", 1); // Highlight
-        console.log(`Highlighted cluster: ${clusterId}`);
-      } else {
-        console.warn(`No path found for cluster: ${clusterId}`);
-      }
-    }
-
-    function highlightMapPoints(clusterId, layer) {
-      console.log(`Highlighting map points for cluster: ${clusterId}`);
-
-      // Reset styles for all points
-      d3.selectAll("#geo-map circle")
-        .attr("stroke", null)
-        .attr("stroke-width", null)
-        .attr("opacity", 0.5);
-      console.log(`garnularity: ${state.granularity}`);
-      // Highlight points belonging to the clicked cluster
-      //const color = d3.scaleOrdinal(d3.schemeCategory10);
-      d3.selectAll("#geo-map circle")
-        .filter(function (d) {
-          const regionId = d.properties[layer.idKey]; // Retrieve region ID based on the layer's idKey
-          const cluster = layer.clusterMap[regionId]?.trim(); // Get cluster from clusterMap
-          console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
-          console.log(`Region Data:`, d.properties);
-
-          return cluster === clusterId; // Match the cluster ID
-        })
-        .attr("stroke", color(clusterId)) // Add a highlight stroke
-        .attr("stroke-width", 7)
-        .attr("opacity", 1); // Ensure visibility
-    }
-
-    /*const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    console.log(`Region ID: ${regionId}, Cluster: ${cluster}`); 
-                    console.log(`Cluster retrieved:`, cluster);*/
-    // Add an event listener to the map background for resetting styles
-   /* d3.select("#geo-map")
-        .on("click", function(event) {
-          console.log("Map background clicked. Resetting styles.");
-
-          // Reset styles for all points
-          d3.selectAll("#geo-map circle")
-            .attr("stroke", null)
-            .attr("stroke-width", null)
-            .attr("opacity", 1);
-
-          // Optionally reset the tooltip or other elements
-          //d3.select("#tooltip").style("display", "none");
-        });
-*/
-      // Ensure the click events on circles do not propagate to the background
-      d3.selectAll("#geo-map circle")
-        .on("click", function(event) {
-          event.stopPropagation(); // Prevent event from propagating to the map background
-     
-        });
-
-
-
-
-    // ----------------------------------------------------
-    // ----------------------------------------------------
-    // ----------------------------------------------------
-    // SECOND VISUALIZATION
-    // ----------------------------------------------------
-    // ----------------------------------------------------
-    // ----------------------------------------------------
-
-
-    function getCorrelations() {
-      return new Promise((resolve, reject) => {
-        let final_factors = [];
-
-        if (state.granularity === "buurt") {
-          file = `data/2_visualization/Buurt/BU_correlations.csv`;
-        } else if (state.granularity === "wijk") {
-          file = `data/2_visualization/Wijk/WK_correlations.csv`;
-        } else {
-          file = `data/2_visualization/Gemeente/GM_correlations.csv`;
-        }
-
-        d3.dsv(";", file)
-          .then(data => {
-
-            const factorsWithCorrelations = [];
-
-            data.forEach(row => {
-              const combinedValue = row["factor,lbm"];
-
-              // Split the string to extract the factor and correlation
-              if (combinedValue && combinedValue.includes(',')) {
-                const [factor, rawCorrelation] = combinedValue.split(',');
-
-                // Parse the correlation value
-                const correlation = parseFloat(rawCorrelation);
-
-                // Check correlation threshold
-                if (Math.abs(correlation) > 0.35) {
-                  factorsWithCorrelations.push({ factor, correlation });
-                }
-              }
-            });
-
-            // Sort the array by correlation (ascending)
-            factorsWithCorrelations.sort((a, b) => a.correlation - b.correlation);
-
-            // Get the 3 lowest and 3 highest correlations
-            const lowestFactors = factorsWithCorrelations.slice(0, 3);
-            const highestFactors = factorsWithCorrelations.slice(-3);
-
-            lowestFactors.forEach(p => {final_factors.push(p.factor)});
-            highestFactors.forEach(p => {final_factors.push(p.factor)});
-
-            resolve(final_factors); // Resolve the Promise with final_factors
-          })
-          .catch(error => {
-            console.error(`Error loading file ${file}:`, error);
-            reject(error); // Reject the Promise on error
-          });
-      });
-    }
-
-    function loadScatterData() {
-
-      let file, names_codes;
-      const promises = [];
-      data_final = {};
-
-      factor_watch_list.forEach(factor => {
-        data_final[factor] = {};  // Initialize the factor key in data_final
-
-        if (state.granularity === "buurt") {
-          file = `data/2_visualization/Buurt/BU_means.csv`;
-          names_codes = "BU_name";
-        } else if (state.granularity === "wijk") {
-          file = `data/2_visualization/Wijk/WK_means.csv`;
-          names_codes = "WK_name";
-        } else {
-          file = `data/2_visualization/Gemeente/GM_means.csv`;
-          names_codes = "GM_name";
-        }
-
-        const promise = d3.dsv(";", file).then(data => {
-
-          collumns_file = data["columns"];
-
-          // Initialize the year key in the factor object if it doesn't exist
-          data_final[factor] = data.map(row => {
-
-            const factorValue = parseFloat(row[factor].replace(',', '.'));
-            const lbmValue = parseFloat(row["lbm"].replace(',', '.'));
-            if (!isNaN(factorValue) && !isNaN(lbmValue)) {
-                return {
-                    code: row["ID"],
-                    name: row[names_codes],
-                    lbm: lbmValue,
-                    factor: factorValue
-                };
-            }
-
-            // If the factor or lbm is invalid, return null or skip this entry
-            return null;
-          }).filter(item => item !== null); // Remove null entries if any
-        }).catch(error => {
-              console.error(`Error loading file ${file}:`, error);
-        });
-
-        promises.push(promise);
-      });
-
-      Promise.all(promises).then(() => {
-          createScatterPlot(data_final);
-      });
-    } 
-
-    function createScatterPlot(data_org) {
-      const width = 300;
-      const height = 300;
-      const margin = { top: 20, right: 30, bottom: 50, left: 50 };
-
-      // Select the container for all plots
-      const plotsContainer = d3.select("#scatter-plot-container");
-
-      // Add a tooltip
-      const tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("display", "none")
-        .style("position", "absolute")
-        .style("background", "white")
-        .style("border", "1px solid black")
-        .style("padding", "3px")
-        .style("font-size", "12px")
-        .style("pointer-events", "none");
-
-      function mapPointsToContours(data, contours, xScale, yScale) {
-        const pointToContourMap = [];
-
-        contours.forEach((contour, contourIndex) => {
-          const polygons = contour.coordinates;
-          data.forEach((point) => {
-            const x = xScale(point.factor);
-            const y = yScale(point.lbm);
-            polygons.forEach((polygon) => {
-              if (d3.polygonContains(polygon[0], [x, y])) {
-                pointToContourMap.push({ point, contourIndex, density: contour.value });
-              }
-            });
-          });
-        });
-
-        return pointToContourMap;
-      }
-
-      Object.keys(data_org).forEach((factorKey) => {
-        const data = data_org[factorKey];
-        const highlightData = data.find(d => d.code === state.city);
-  
-        
-        const container = plotsContainer
-          .append("div")
-          .attr("class", "scatter-plot-container")
-          .style("width", `${width + margin.left + margin.right}px`)
-          .style("height", `${height + margin.top + margin.bottom + 60}px`)
-          .style("background-color", "#fff");
-          
-
-        
-        container.append("h4").text(`${column_descriptions[factorKey]}`);
-        // Highlight the factors with the biggest potential i.e. the ones that differ 20 % of the mean
-        if (highlightData) {
-    
-          const averageValue = d3.mean(data, d => d.factor);
-          
-          if (highlightData.factor > averageValue * 1.2) {
-       
-            container.style("box-shadow", "0 0 15px 5px rgba(255, 0, 0, 0.5)");
-          } else if (highlightData.factor < averageValue * 0.8) {
-            
-            container.style("box-shadow", "0 0 15px 5px rgba(0, 0, 255, 0.5)");
-
-  }
+}).catch(error => {
+console.error("Error loading cluster data:", error);
+});
 }
 
-        const svg = container
-          .append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", `translate(${margin.left},${margin.top})`);
+function updateLineChart() {
+const granularity = state.granularity;
+loadLineChart();
+}
 
-        const xScale = d3.scaleLinear()
-          .domain(d3.extent(data, (d) => d.factor))
-          .range([0, width]);
 
-        const yScale = d3.scaleLinear()
-          .domain(d3.extent(data, (d) => d.lbm))
-          .range([height, 0]);
+function highlightCluster(clusterId) {
+console.log(`Attempting to highlight cluster: ${clusterId}`);
 
-        const density = d3.contourDensity()
-          .x((d) => xScale(d.factor))
-          .y((d) => yScale(d.lbm))
-          .size([width, height])
-          .bandwidth(20)(data);
+// Reset all lines to their default style
+Object.values(linePaths).forEach(path => {
+path.attr("stroke-width", 2).attr("opacity", 0.5); // Reset other lines
+});
 
-        const densityValues = density.map(d => d.value);
-        const minDensity = d3.min(densityValues);
-        const maxDensity = d3.max(densityValues);
+// Highlight the selected cluster
+const selectedPath = linePaths[clusterId];
+if (selectedPath) {
+selectedPath.attr("stroke-width", 7).attr("opacity", 1); // Highlight
+console.log(`Highlighted cluster: ${clusterId}`);
+} else {
+console.warn(`No path found for cluster: ${clusterId}`);
+}
+}
 
-        const colorScale = d3.scaleSequential(d3.interpolateViridis)
-          .domain([minDensity, maxDensity]);
+function highlightMapPoints(clusterId, layer) {
+console.log(`Highlighting map points for cluster: ${clusterId}`);
 
-        const pointToContourMap = mapPointsToContours(data, density, xScale, yScale);
+// Reset styles for all points
+d3.selectAll("#geo-map circle")
+.attr("stroke", null)
+.attr("stroke-width", null)
+.attr("opacity", 0.5);
+console.log(`garnularity: ${state.granularity}`);
+// Highlight points belonging to the clicked cluster
+//const color = d3.scaleOrdinal(d3.schemeCategory10);
+d3.selectAll("#geo-map circle")
+.filter(function (d) {
+const regionId = d.properties[layer.idKey]; // Retrieve region ID based on the layer's idKey
+const cluster = layer.clusterMap[regionId]?.trim(); // Get cluster from clusterMap
+console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
+console.log(`Region Data:`, d.properties);
 
-        svg.selectAll("path")
-          .data(density)
-          .enter()
-          .append("path")
-          .attr("d", d3.geoPath())
-          .attr("fill", (d) => colorScale(d.value))
-          .attr("stroke", "none")
-          .on("mouseover", (event, d) => {
-            const pointsInRegion = pointToContourMap.filter(entry => entry.density === d.value);
+return cluster === clusterId; // Match the cluster ID
+})
+.attr("stroke", color(clusterId)) // Add a highlight stroke
+.attr("stroke-width", 7)
+.attr("opacity", 1); // Ensure visibility
+}
 
-            svg.selectAll("circle")
-              .attr("stroke", "none")
-              .attr("opacity", 0.3);
+/*const regionId = d.properties[layer.idKey];
+                   const cluster = layer.clusterMap[regionId]?.trim();
+                   console.log(`Region ID: ${regionId}, Cluster: ${cluster}`); 
+                   console.log(`Cluster retrieved:`, cluster);*/
+// Add an event listener to the map background for resetting styles
+/* d3.select("#geo-map")
+       .on("click", function(event) {
+         console.log("Map background clicked. Resetting styles.");
 
-            pointsInRegion.forEach(({ point }) => {
-              svg.append("circle")
-                .attr("cx", xScale(point.factor))
-                .attr("cy", yScale(point.lbm))
-                .attr("r", 5)
-                .attr("fill", "red")
-                .attr("stroke", "black");
-            });
-          })
-          .on("mousemove", (event) => {
-            tooltip.style("left", `${event.pageX + 10}px`)
-              .style("top", `${event.pageY - 10}px`);
-            ;
-          })
-          .on("mouseout", () => {
-            tooltip.style("display", "none");
-            svg.selectAll("circle").remove();
-            const highlightData = data.find(d => d.code === state.city);
+         // Reset styles for all points
+         d3.selectAll("#geo-map circle")
+           .attr("stroke", null)
+           .attr("stroke-width", null)
+           .attr("opacity", 1);
 
-            if (highlightData) {
-              svg.append("circle")
-                .attr("cx", xScale(highlightData.factor))
-                .attr("cy", yScale(highlightData.lbm))
-                .attr("r", 5)
-                .attr("fill", "orange")
-                .attr("stroke", "black")
-                .on("mouseover", (event) => {
-                  tooltip.style("display", "block")
-                    .html(`Name: ${highlightData.name}<br>LBM: ${highlightData.lbm}<br>${column_descriptions[factorKey]}: ${highlightData.factor}`);
-                })
-                .on("mousemove", (event) => {
-                  
-                  tooltip.style("left", `${event.pageX + 10}px`)
-                    .style("top", `${event.pageY - 20}px`);
-                })
-                .on("mouseout", () => {
-                  tooltip.style("display", "none");
-                });
-            }
-          });
+         // Optionally reset the tooltip or other elements
+         //d3.select("#tooltip").style("display", "none");
+       });
+*/
+// Ensure the click events on circles do not propagate to the background
+d3.selectAll("#geo-map circle")
+.on("click", function(event) {
+event.stopPropagation(); // Prevent event from propagating to the map background
 
-        const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(d3.format(".2f"));
-        const yAxis = d3.axisLeft(yScale).ticks(5).tickFormat(d3.format(".2f"));
-
-        svg.append("g")
-          .attr("transform", `translate(0, ${height})`)
-          .call(xAxis)
-          .append("text")
-          .attr("fill", "black")
-          .attr("x", width / 2)
-          .attr("y", 40)
-          .attr("text-anchor", "middle")
-          .text(descriptions[factorKey]);
-
-        svg.append("g")
-          .call(yAxis)
-          .append("text")
-          .attr("fill", "black")
-          .attr("transform", "rotate(-90)")
-          .attr("x", -height / 2)
-          .attr("y", -40)
-          .attr("text-anchor", "middle")
-          .text("LBM");
-
-        if (state.city) {
-          const highlightData = data.find(d => d.code === state.city);
-          const selectedCity = d3.select("#selected-city");
-          selectedCity.text(highlightData.name);
-
-          if (highlightData) {
-            svg.append("circle")
-              .attr("cx", xScale(highlightData.factor))
-              .attr("cy", yScale(highlightData.lbm))
-              .attr("r", 5)
-              .attr("fill", "orange")
-              .attr("stroke", "black")
-              .on("mouseover", (event) => {
-                tooltip.style("display", "block")
-                  .html(`Name: ${highlightData.name}<br>LBM: ${highlightData.lbm}<br>${factorKey}: ${highlightData.factor}`);
-              })
-              .on("mousemove", (event) => {
-                tooltip.style("left", `${event.pageX + 10}px`)
-                  .style("top", `${event.pageY - 20}px`);
-              })
-              .on("mouseout", () => {
-                tooltip.style("display", "none");
-              });
-          }       
-        }
-      });
-    }
+});
 
 
 
-    // Search functionality
-    const searchInput = document.getElementById("factor-search");
-    const suggestionsBox = document.getElementById("suggestions");
-    searchInput.addEventListener("input", seeSuggestions);
 
-    function seeSuggestions() {
-
-
-      const query = searchInput.value.trim().toLowerCase();
-      suggestionsBox.innerHTML = ""; // Clear current suggestions
-      if (query) {
-
-        const matches = Object.entries(column_descriptions).filter(([, value]) =>
-          value.toLowerCase().includes(query)
-        );
+// ----------------------------------------------------
+// ----------------------------------------------------
+// ----------------------------------------------------
+// SECOND VISUALIZATION
+// ----------------------------------------------------
+// ----------------------------------------------------
+// ----------------------------------------------------
 
 
-        matches.forEach(([key, value]) => {
+function getCorrelations() {
+return new Promise((resolve, reject) => {
+let final_factors = [];
 
-          const suggestionItem = document.createElement("div");
-          suggestionItem.textContent = `${value}`;
-          suggestionItem.classList.add("suggestion-item");
+if (state.granularity === "buurt") {
+file = `data/2_visualization/Buurt/BU_correlations.csv`;
+} else if (state.granularity === "wijk") {
+file = `data/2_visualization/Wijk/WK_correlations.csv`;
+} else {
+file = `data/2_visualization/Gemeente/GM_correlations.csv`;
+}
 
-          suggestionItem.addEventListener("click", () => {
-            searchInput.value = suggestionItem.textContent;
-            suggestionsBox.style.display = 'none';
-          });
+d3.dsv(";", file)
+.then(data => {
+
+const factorsWithCorrelations = [];
+
+data.forEach(row => {
+const combinedValue = row["factor,lbm"];
+
+// Split the string to extract the factor and correlation
+if (combinedValue && combinedValue.includes(',')) {
+const [factor, rawCorrelation] = combinedValue.split(',');
+
+// Parse the correlation value
+const correlation = parseFloat(rawCorrelation);
+
+// Check correlation threshold
+if (Math.abs(correlation) > 0.35) {
+factorsWithCorrelations.push({ factor, correlation });
+}
+}
+});
+
+// Sort the array by correlation (ascending)
+factorsWithCorrelations.sort((a, b) => a.correlation - b.correlation);
+
+// Get the 3 lowest and 3 highest correlations
+const lowestFactors = factorsWithCorrelations.slice(0, 3);
+const highestFactors = factorsWithCorrelations.slice(-3);
+
+lowestFactors.forEach(p => {final_factors.push(p.factor)});
+highestFactors.forEach(p => {final_factors.push(p.factor)});
+
+resolve(final_factors); // Resolve the Promise with final_factors
+})
+.catch(error => {
+console.error(`Error loading file ${file}:`, error);
+reject(error); // Reject the Promise on error
+});
+});
+}
+
+function loadScatterData() {
+
+let file, names_codes;
+const promises = [];
+data_final = {};
+
+factor_watch_list.forEach(factor => {
+data_final[factor] = {};  // Initialize the factor key in data_final
+
+if (state.granularity === "buurt") {
+file = `data/2_visualization/Buurt/BU_means.csv`;
+names_codes = "BU_name";
+} else if (state.granularity === "wijk") {
+file = `data/2_visualization/Wijk/WK_means.csv`;
+names_codes = "WK_name";
+} else {
+file = `data/2_visualization/Gemeente/GM_means.csv`;
+names_codes = "GM_name";
+}
+
+const promise = d3.dsv(";", file).then(data => {
+
+collumns_file = data["columns"];
+
+// Initialize the year key in the factor object if it doesn't exist
+data_final[factor] = data.map(row => {
+
+const factorValue = parseFloat(row[factor].replace(',', '.'));
+const lbmValue = parseFloat(row["lbm"].replace(',', '.'));
+if (!isNaN(factorValue) && !isNaN(lbmValue)) {
+return {
+code: row["ID"],
+name: row[names_codes],
+lbm: lbmValue,
+factor: factorValue
+};
+}
+
+// If the factor or lbm is invalid, return null or skip this entry
+return null;
+}).filter(item => item !== null); // Remove null entries if any
+}).catch(error => {
+console.error(`Error loading file ${file}:`, error);
+});
+
+promises.push(promise);
+});
+
+Promise.all(promises).then(() => {
+createScatterPlot(data_final);
+});
+} 
+
+function createScatterPlot(data_org) {
+const width = 300;
+const height = 300;
+const margin = { top: 20, right: 30, bottom: 50, left: 50 };
+
+// Select the container for all plots
+const plotsContainer = d3.select("#scatter-plot-container");
+
+// Add a tooltip
+const tooltip = d3.select("body").append("div")
+.attr("class", "tooltip")
+.style("display", "none")
+.style("position", "absolute")
+.style("background", "white")
+.style("border", "1px solid black")
+.style("padding", "3px")
+.style("font-size", "12px")
+.style("pointer-events", "none");
+
+function mapPointsToContours(data, contours, xScale, yScale) {
+const pointToContourMap = [];
+
+contours.forEach((contour, contourIndex) => {
+const polygons = contour.coordinates;
+data.forEach((point) => {
+const x = xScale(point.factor);
+const y = yScale(point.lbm);
+polygons.forEach((polygon) => {
+if (d3.polygonContains(polygon[0], [x, y])) {
+pointToContourMap.push({ point, contourIndex, density: contour.value });
+}
+});
+});
+});
+
+return pointToContourMap;
+}
+
+Object.keys(data_org).forEach((factorKey) => {
+const data = data_org[factorKey];
+const highlightData = data.find(d => d.code === state.city);
 
 
-          suggestionsBox.appendChild(suggestionItem);
-
-        });
-
-        suggestionsBox.style.display = 'block';
-
-      }
-    }
+const container = plotsContainer
+.append("div")
+.attr("class", "scatter-plot-container")
+.style("width", `${width + margin.left + margin.right}px`)
+.style("height", `${height + margin.top + margin.bottom + 60}px`)
+.style("background-color", "#fff");
 
 
-    function findKeyByValue(dictionary, targetValue) {
-      return Object.keys(dictionary).find(key => dictionary[key] === targetValue) || null;
-    }
 
-    const addButton = document.getElementById('add-button');
-    addButton.addEventListener('click', addFactorToPlots);
+container.append("h4").text(`${column_descriptions[factorKey]}`);
+// Highlight the factors with the biggest potential i.e. the ones that differ 20 % of the mean
+if (highlightData) {
 
-    async function addFactorToPlots() {
+const averageValue = d3.mean(data, d => d.factor);
 
-      try {
-        const match = await findKeyByValue(column_descriptions, searchInput.value)
+if (highlightData.factor > averageValue * 1.2) {
 
-        if (match) {
-          if (factor_watch_list.includes(match)) {
-            alert("Factor is already on the list");
-          } else {
-            if (collumns_file.includes(match)) {
-              factor_watch_list.push(match);
-              updateFactorList();
-            }
-            else {
-              alert("The current granularity level does not have this factor");
-            }
-          }    
-          searchInput.value = "";  
-        }
-      }
-      catch (error) {
-        console.error("Error updating factor list:", error);
-      }
-    }
+container.style("box-shadow", "0 0 15px 5px rgba(255, 0, 0, 0.5)");
+} else if (highlightData.factor < averageValue * 0.8) {
 
-    async function updateFactorList() {
-      const factorList = document.getElementById("factor-list");
-      factorList.innerHTML = ""; // Clear the current list
+container.style("box-shadow", "0 0 15px 5px rgba(0, 0, 255, 0.5)");
 
-      d3.select("#scatter-plot-container").html(""); // Clear the container
-      data_final = {};
+}
+}
 
-      try {
+const svg = container
+.append("svg")
+.attr("width", width + margin.left + margin.right)
+.attr("height", height + margin.top + margin.bottom)
+.append("g")
+.attr("transform", `translate(${margin.left},${margin.top})`);
 
-        if (new_factors) {
-          factor_watch_list = await getCorrelations(); // Wait for getCorrelations to complete
-        }
+const xScale = d3.scaleLinear()
+.domain(d3.extent(data, (d) => d.factor))
+.range([0, width]);
 
-        new_factors = false;
-        loadScatterData();
+const yScale = d3.scaleLinear()
+.domain(d3.extent(data, (d) => d.lbm))
+.range([height, 0]);
 
-        factor_watch_list.forEach(factor => {
-          const li = document.createElement("li");
-          li.textContent = `${column_descriptions[factor]}`;
+const density = d3.contourDensity()
+.x((d) => xScale(d.factor))
+.y((d) => yScale(d.lbm))
+.size([width, height])
+.bandwidth(20)(data);
 
-          const removeButton = document.createElement("span");
-          removeButton.textContent = " ×";
-          removeButton.style.color = "red";
-          removeButton.style.cursor = "pointer";
-          removeButton.style.marginLeft = "10px";
+const densityValues = density.map(d => d.value);
+const minDensity = d3.min(densityValues);
+const maxDensity = d3.max(densityValues);
 
-          // Add event listener to remove the factor
-          removeButton.addEventListener("click", () => {
-            factor_watch_list.splice(factor_watch_list.indexOf(factor), 1); // Remove the factor
-            updateFactorList(); // Update the displayed list
-          });
+const colorScale = d3.scaleSequential(d3.interpolateViridis)
+.domain([minDensity, maxDensity]);
 
-          li.appendChild(removeButton);
-          factorList.appendChild(li);
-        });
-      } catch (error) {
-        console.error("Error updating factor list:", error);
-      }
-    }
+const pointToContourMap = mapPointsToContours(data, density, xScale, yScale);
+
+svg.selectAll("path")
+.data(density)
+.enter()
+.append("path")
+.attr("d", d3.geoPath())
+.attr("fill", (d) => colorScale(d.value))
+.attr("stroke", "none")
+.on("mouseover", (event, d) => {
+const pointsInRegion = pointToContourMap.filter(entry => entry.density === d.value);
+
+svg.selectAll("circle")
+.attr("stroke", "none")
+.attr("opacity", 0.3);
+
+pointsInRegion.forEach(({ point }) => {
+svg.append("circle")
+.attr("cx", xScale(point.factor))
+.attr("cy", yScale(point.lbm))
+.attr("r", 5)
+.attr("fill", "red")
+.attr("stroke", "black");
+});
+})
+.on("mousemove", (event) => {
+tooltip.style("left", `${event.pageX + 10}px`)
+.style("top", `${event.pageY - 10}px`);
+;
+})
+.on("mouseout", () => {
+tooltip.style("display", "none");
+svg.selectAll("circle").remove();
+const highlightData = data.find(d => d.code === state.city);
+
+if (highlightData) {
+svg.append("circle")
+.attr("cx", xScale(highlightData.factor))
+.attr("cy", yScale(highlightData.lbm))
+.attr("r", 5)
+.attr("fill", "orange")
+.attr("stroke", "black")
+.on("mouseover", (event) => {
+tooltip.style("display", "block")
+.html(`Name: ${highlightData.name}<br>LBM: ${highlightData.lbm}<br>${column_descriptions[factorKey]}: ${highlightData.factor}`);
+})
+.on("mousemove", (event) => {
+
+tooltip.style("left", `${event.pageX + 10}px`)
+.style("top", `${event.pageY - 20}px`);
+})
+.on("mouseout", () => {
+tooltip.style("display", "none");
+});
+}
+});
+
+const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(d3.format(".2f"));
+const yAxis = d3.axisLeft(yScale).ticks(5).tickFormat(d3.format(".2f"));
+
+svg.append("g")
+.attr("transform", `translate(0, ${height})`)
+.call(xAxis)
+.append("text")
+.attr("fill", "black")
+.attr("x", width / 2)
+.attr("y", 40)
+.attr("text-anchor", "middle")
+.text(descriptions[factorKey]);
+
+svg.append("g")
+.call(yAxis)
+.append("text")
+.attr("fill", "black")
+.attr("transform", "rotate(-90)")
+.attr("x", -height / 2)
+.attr("y", -40)
+.attr("text-anchor", "middle")
+.text("LBM");
+
+if (state.city) {
+const highlightData = data.find(d => d.code === state.city);
+const selectedCity = d3.select("#selected-city");
+selectedCity.text(highlightData.name);
+
+if (highlightData) {
+svg.append("circle")
+.attr("cx", xScale(highlightData.factor))
+.attr("cy", yScale(highlightData.lbm))
+.attr("r", 5)
+.attr("fill", "orange")
+.attr("stroke", "black")
+.on("mouseover", (event) => {
+tooltip.style("display", "block")
+.html(`Name: ${highlightData.name}<br>LBM: ${highlightData.lbm}<br>${factorKey}: ${highlightData.factor}`);
+})
+.on("mousemove", (event) => {
+tooltip.style("left", `${event.pageX + 10}px`)
+.style("top", `${event.pageY - 20}px`);
+})
+.on("mouseout", () => {
+tooltip.style("display", "none");
+});
+}       
+}
+});
+}
 
 
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".search-container")) {
-        suggestionsBox.innerHTML = "";
-      }
-    });
 
-  </script>
-  <div class="container">
-    <h1>Quiz Title</h1>
-    <div id="progress-bar-container">
-        <div id="progress-bar"></div>
-    </div>
-    <div id="quiz-container"></div>
-    <button id="next-button">Next Question</button>
-    <div id="result-container" style="display: none;"></div>
-  </div>
+// Search functionality
+const searchInput = document.getElementById("factor-search");
+const suggestionsBox = document.getElementById("suggestions");
+searchInput.addEventListener("input", seeSuggestions);
 
-  <script src="script.js"></script>
+function seeSuggestions() {
+
+
+const query = searchInput.value.trim().toLowerCase();
+suggestionsBox.innerHTML = ""; // Clear current suggestions
+if (query) {
+
+const matches = Object.entries(column_descriptions).filter(([, value]) =>
+value.toLowerCase().includes(query)
+);
+
+
+matches.forEach(([key, value]) => {
+
+const suggestionItem = document.createElement("div");
+suggestionItem.textContent = `${value}`;
+suggestionItem.classList.add("suggestion-item");
+
+suggestionItem.addEventListener("click", () => {
+searchInput.value = suggestionItem.textContent;
+suggestionsBox.style.display = 'none';
+});
+
+
+suggestionsBox.appendChild(suggestionItem);
+
+});
+
+suggestionsBox.style.display = 'block';
+
+}
+}
+
+
+function findKeyByValue(dictionary, targetValue) {
+return Object.keys(dictionary).find(key => dictionary[key] === targetValue) || null;
+}
+
+const addButton = document.getElementById('add-button');
+addButton.addEventListener('click', addFactorToPlots);
+
+async function addFactorToPlots() {
+
+try {
+const match = await findKeyByValue(column_descriptions, searchInput.value)
+
+if (match) {
+if (factor_watch_list.includes(match)) {
+alert("Factor is already on the list");
+} else {
+if (collumns_file.includes(match)) {
+factor_watch_list.push(match);
+updateFactorList();
+}
+else {
+alert("The current granularity level does not have this factor");
+}
+}    
+searchInput.value = "";  
+}
+}
+catch (error) {
+console.error("Error updating factor list:", error);
+}
+}
+
+async function updateFactorList() {
+const factorList = document.getElementById("factor-list");
+factorList.innerHTML = ""; // Clear the current list
+
+d3.select("#scatter-plot-container").html(""); // Clear the container
+data_final = {};
+
+try {
+
+if (new_factors) {
+factor_watch_list = await getCorrelations(); // Wait for getCorrelations to complete
+}
+
+new_factors = false;
+loadScatterData();
+
+factor_watch_list.forEach(factor => {
+const li = document.createElement("li");
+li.textContent = `${column_descriptions[factor]}`;
+
+const removeButton = document.createElement("span");
+removeButton.textContent = " ×";
+removeButton.style.color = "red";
+removeButton.style.cursor = "pointer";
+removeButton.style.marginLeft = "10px";
+
+// Add event listener to remove the factor
+removeButton.addEventListener("click", () => {
+factor_watch_list.splice(factor_watch_list.indexOf(factor), 1); // Remove the factor
+updateFactorList(); // Update the displayed list
+});
+
+li.appendChild(removeButton);
+factorList.appendChild(li);
+});
+} catch (error) {
+console.error("Error updating factor list:", error);
+}
+}
+
+
+document.addEventListener("click", (e) => {
+if (!e.target.closest(".search-container")) {
+suggestionsBox.innerHTML = "";
+}
+});
+
+</script>
+<div class="container">
+<h1>Quiz Title</h1>
+<div id="progress-bar-container">
+<div id="progress-bar"></div>
+</div>
+<div id="quiz-container"></div>
+<button id="next-button">Next Question</button>
+<div id="result-container" style="display: none;"></div>
+</div>
+
+<script src="script.js"></script>
 </body>
 
 </html>
