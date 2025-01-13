@@ -463,21 +463,26 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("fill", fillColor) //fill color of the map
                   .attr("stroke", borderColor) //stroke color of the map
                   .on("mouseover", (event, d) => {
-                    //const regionId = d.properties[layer.idKey];
-                    //const cluster = layer.clusterMap[regionId]?.trim();
-                    //const lbmValues = d.properties;
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    const lbmValues = d.properties;
                     console.log("circle mouseover triggered");  
                     //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
                     const tooltipContent = `
-                      <strong>Region ID:</strong> ${d.properties[layer.idKey]}<br>
-                      <strong>LBM Values:</strong> ${JSON.stringify(d.properties, null, 2)}<br>
-                      <strong>Cluster:</strong> ${layer.clusterMap[regionId]?.trim() || "Unknown"}
+                      <strong>Region ID:</strong> ${regionId}<br>
+                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
+                      <strong>Cluster:</strong> ${cluster || "Unknown"}
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
                         .style("left", `${event.pageX + 10}px`)
                         .style("top", `${event.pageY + 10}px`)
                         .style("display", "block")
+                        .style("position", "fixed")
+                        .style("background", "white")
+                        .style("border", "1px solid black")
+                        .style("padding", "10px")
+                        .style("z-index", "9999");
                   })
                   .on("mousemove", (event) => {
                     console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
@@ -552,20 +557,25 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     return cluster !== undefined ? color(cluster) : "#ccc"; // Assign color based on cluster
                   })
                   .on("mouseover", (event, d) => {
-                    //const regionId = d.properties[layer.idKey];
-                    //const cluster = layer.clusterMap[regionId]?.trim();
-                    //const lbmValues = d.properties;
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    const lbmValues = d.properties;
                     console.log("circle mouseover triggered");                  
                     const tooltipContent = `
-                      <strong>Region ID:</strong> ${d.properties[layer.idKey]}<br>
-                      <strong>LBM Values:</strong> ${JSON.stringify(d.properties, null, 2)}<br>
-                      <strong>Cluster:</strong> ${layer.clusterMap[regionId]?.trim() || "Unknown"}
+                      <strong>Region ID:</strong> ${regionId}<br>
+                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
+                      <strong>Cluster:</strong> ${cluster || "Unknown"}
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
                         .style("left", `${event.pageX + 10}px`)
                         .style("top", `${event.pageY + 10}px`)
                         .style("display", "block")
+                        .style("position", "fixed")
+                        .style("background", "white")
+                        .style("border", "1px solid black")
+                        .style("padding", "10px")
+                        .style("z-index", "9999");
                   })
                   .on("mousemove", (event) => {
                     console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
