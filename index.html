@@ -320,6 +320,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const zoomThreshold1 = 5; // level of zoom at which the map changes granularity from municipality to district
       const zoomThreshold2 = 15; // level of zoom at which the map changes granularity from district to neighborhood
       const radius = 3; // circle radius
+
       //const clusterColors = d3.scaleOrdinal(d3.schemeCategory10); // circle colors (identical to those in the line chart) 
 
       const projection = d3.geoMercator() //set up map projection 
@@ -500,14 +501,11 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         
         //calculate centroids that lie within the polygons for adding circles 
         layer.data.features.forEach(d => {
-          let centroid = path.centroid(d); // Calculate the initial centroid (in screen coordinates)
-          const geoCentroid = projection.invert(centroid); // Convert the centroid back to geographic coordinates
+          let centroid = path.centroid(d); // Calculate the centroid of the path (in screen coordinates)
           
-          const isInsidePolygon = d3.geoContains(d, geoCentroid);
-
+          const geoCentroid = projection.invert(centroid); // Convert the centroid back to geographic coordinates
+          const isInsidePolygon = d3.geoContains(d, geoCentroid); //check if the coordinate falls within the path/ polygon
           if (!isInsidePolygon) {
-            console.log('Centroid is outside the polygon. Using Turf to find an interior point.');
-            
             const geoJsonPolygon = { // Create a GeoJSON feature for Turf operations
               type: 'Feature',
               geometry: d.geometry,
@@ -515,8 +513,12 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
             };
         
             try {
-              // Attempt to buffer the polygon by -(radius + 1) meters
-              const bufferedPolygon = turf.buffer(geoJsonPolygon, -(radius + 1), { units: 'meters' });
+              // Calculate buffer distance in geographic units
+              const pixelToGeoFactor = (projection.invert([1, 0])[0] - projection.invert([0, 0])[0]);
+              const bufferDistance = pixelToGeoFactor * 4; // 4-pixel buffer in geographic units
+        
+              // Attempt to buffer the polygon by the calculated distance
+              const bufferedPolygon = turf.buffer(geoJsonPolygon, -bufferDistance, { units: 'degrees' });
         
               if (bufferedPolygon && bufferedPolygon.geometry.coordinates.length > 0) {
                 // Find an interior point within the buffered polygon
