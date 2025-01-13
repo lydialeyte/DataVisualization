@@ -463,11 +463,10 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("fill", fillColor) //fill color of the map
                   .attr("stroke", borderColor) //stroke color of the map
                   .on("mouseover", (event, d) => {
-                    const tooltipTitle = d.properties[layer.idName]; //name of the region you have selected
-                    const tooltipMunicipality = d.properties[layer.municipality]; //name of the municipality the selected region belongs to
-                    const tooltipCluster = layer.clusterMap[regionId]?.trim(); //cluster number the selected region belongs to
-                    //console.log("circle mouseover triggered");  
-                    //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
+                    const tooltipTitle = d.properties[layer.idName]; //name of the selected region
+                    const tooltipMunicipality = d.properties[layer.municipality]; //name of the municipality of the selected region 
+                    const regionId = d.properties[layer.idKey];
+                    const tooltipCluster = layer.clusterMap[regionId]?.trim(); //cluster number of the selected region
                     const tooltipContent = `
                       <strong></strong>${tooltipTitle}<br>
                       <p>Municipality:</p> ${tooltipMunicipality}<br>
@@ -482,10 +481,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .style("background", "white")
                         .style("border", "1px solid black")
                         .style("padding", "10px")
-                        .style("z-index", "9999");
-                  //  console.log("gm_naam = ", d.properties.gm_naam); 
-                    //console.log("idName = ", d.properties[layer.idName]);
-                    //console.log("municipality = ", d.properties[layer.municipality]); 
+                        .style("z-index", "9999"); 
                   })
                   .on("mousemove", (event) => {
                     //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
@@ -560,13 +556,12 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     return cluster !== undefined ? color(cluster) : "#ccc"; // Assign color based on cluster
                   })
                   .on("mouseover", (event, d) => {
-                    const tooltipTitle = d.properties[layer.idName]; //name of the region you have selected
-                    const tooltipMunicipality = d.properties[layer.municipality]; //name of the municipality the selected region belongs to
-                    const tooltipCluster = layer.clusterMap[regionId]?.trim(); //cluster number the selected region belongs to
-                    //console.log("circle mouseover triggered");  
-                    //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
+                    const tooltipTitle = d.properties[layer.idName]; //name of the selected region
+                    const tooltipMunicipality = d.properties[layer.municipality]; //name of the municipality of the selected region 
+                    const regionId = d.properties[layer.idKey];
+                    const tooltipCluster = layer.clusterMap[regionId]?.trim(); //cluster number of the selected region
                     const tooltipContent = `
-                      <strong></strong> ${tooltipTitle}<br>
+                      <strong></strong>${tooltipTitle}<br>
                       <p>Municipality:</p> ${tooltipMunicipality}<br>
                       <p>Cluster:</p> ${tooltipCluster || "Unknown"}
                     `;
@@ -579,10 +574,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .style("background", "white")
                         .style("border", "1px solid black")
                         .style("padding", "10px")
-                        .style("z-index", "9999");
-                  //  console.log("gm_naam = ", d.properties.gm_naam); 
-                    //console.log("idName = ", d.properties[layer.idName]);
-                    //console.log("municipality = ", d.properties[layer.municipality]); 
+                        .style("z-index", "9999"); 
                   })
                   .on("mousemove", (event) => {
                     //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
