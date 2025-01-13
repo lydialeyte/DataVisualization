@@ -466,7 +466,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     const lbmValues = d.properties;
-                    //console.log("region mouseover triggered");                  
+                    console.log("path mouseover triggered");                  
                     const tooltipContent = `
                       <strong>Region ID:</strong> ${regionId}<br>
                       <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
@@ -507,7 +507,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
           
           const isInsidePolygon = d3.geoContains(d, geoCentroid); //check if the coordinate falls within the path/ polygon
           if (!isInsidePolygon) { //if the coordinate falls outside of its polygon, try to buffer the region and use Turf to find a point inside the polygon
-            console.log('Centroid is outside the polygon, using Turf to find an interior point')
+            //console.log('Centroid is outside the polygon, using Turf to find an interior point')
             const geoJsonPolygon = { // Create a GeoJSON feature for Turf operations
               type: 'Feature',
               geometry: d.geometry,
@@ -519,7 +519,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                 const interiorPoint = turf.pointOnFeature(bufferedPolygon);
                 centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
               } else { // Fall back to the original polygon if buffering fails
-                console.log('Buffering failed or resulted in an invalid polygon. Using the original polygon.');
+                //console.log('Buffering failed or resulted in an invalid polygon. Using the original polygon.');
                 const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
                 centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
               }
@@ -548,7 +548,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     const lbmValues = d.properties;
-                    //console.log("region mouseover triggered");                  
+                    console.log("circle mouseover triggered");                  
                     const tooltipContent = `
                       <strong>Region ID:</strong> ${regionId}<br>
                       <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
