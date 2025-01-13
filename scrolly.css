@@ -190,7 +190,7 @@ svg {
   margin: 20px;
   padding: 30px;
 }
-#tooltip {
+#tooltip { 
   position: absolute;
   z-index: 9999;
   background: white;
