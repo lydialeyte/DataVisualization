@@ -500,8 +500,20 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         //add circles
         layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
           //d.centroid = path.centroid(d);
-          polygon = d.geometry.coordinates[0]; 
-          d.centroid = d3.polygonCentroid(polygon); 
+        let polygon;
+        if (d.geometry.type === "MultiPolygon") {
+          const polygons = d.geometry.coordinates;
+          const largestPolygon = polygons.reduce((largest, current) =>
+            d3.polygonArea(current[0]) > d3.polygonArea(largest[0]) ? current : largest
+          );
+          polygon = largestPolygon[0];
+        } else {
+          polygon = d.geometry.coordinates[0];
+        }
+        
+        // Calculate the centroid and project it
+        d.centroid = projection(d3.polygonCentroid(polygon));
+
         });
         
         layerGroup.selectAll("circle") 
