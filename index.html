@@ -43,13 +43,13 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
   
   <div class="chart-container">
     <div id="line-graph" class="chart"></div> <!-- Placeholder for the Line Graph -->
-    <div id="geo-map" class="chart">  <!-- Placeholder for the Geographic Map -->
+    <div id="geo-map" class="chart" style="z-index: 50;">  <!-- Placeholder for the Geographic Map -->
       <div id="tooltip" style="position: absolute; z-index: 1000; display: none; background: rgba(255, 255, 255, 0.9); border: 1px solid #ccc; padding: 10px; font-size: 12px; pointer-events: none;"></div>
       <div id="loading-icon"> <!-- Placeholder for Loading Icon -->
         <div class="spinner"></div>  
       </div> 
     </div>
-    <div id="granularity-display">
+    <div id="granularity-display" style="z-index: 9999;">
       Granularity: Municipality
     </div>
   </div>
@@ -363,23 +363,21 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         if(zoomLevel < zoomThreshold1){
                           showLayer("municipality");
                           newGranularity = "gemeente";
-                          d3.select("#granularity-display").text(`Granularity: ${newGranularity}`); // Update the text in the granularity display
+                          d3.select("#granularity-display").text(`Granularity: municipality`); // Update the text in the granularity display
                         } else {
                           showLayer("district");
                           newGranularity = "wijk"; 
-                          d3.select("#granularity-display").text(`Granularity: ${newGranularity}`); // Update the text in the granularity display
+                          d3.select("#granularity-display").text(`Granularity: district`); // Update the text in the granularity display
                         }
-                        //showLayer(zoomLevel < zoomThreshold1 ? "municipality" : "district"); // if zoom is below the threshold, the municipality layer is shown, otherwise the district layer
                         } else if ((prevZoomLevel < zoomThreshold2 && zoomLevel >= zoomThreshold2) || (prevZoomLevel >= zoomThreshold2 && zoomLevel < zoomThreshold2)) { //when the zoomlevel increases or decreases past the second zoom threshold the shown layer is updated
-                          //showLayer(zoomLevel < zoomThreshold2 ? "district" : "neighborhood"); // if zoom is below the threshold, the district layer is shown, otherwise the neighborhood layer
                           if(zoomLevel < zoomThreshold2){
                             showLayer("district");
                             newGranularity = "wijk"; 
-                            d3.select("#granularity-display").text(`Granularity: ${newGranularity}`); // Update the text in the granularity display
+                            d3.select("#granularity-display").text(`Granularity: district`); // Update the text in the granularity display
                           } else {
                             showLayer("neighborhood");
                             newGranularity = "buurt"; 
-                            d3.select("#granularity-display").text(`Granularity: ${newGranularity}`); // Update the text in the granularity display
+                            d3.select("#granularity-display").text(`Granularity: neighborhood`); // Update the text in the granularity display
                           }
                         }
 
