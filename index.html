@@ -443,6 +443,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("d", path)
                   .attr("fill", "#e0e0e0") //fill color of the map
                   .attr("stroke", "#333") //stroke color of the map
+                  .on("click", function (event, d) {
+                    console.log("Region clicked:", d); // Log when a region is clicked
+                  })
                   .on("mouseover", (event, d) => {
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
@@ -593,10 +596,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     });
                   })
                   .on("click", (event, d) => {
-                    //color region
-                   // console.log("trying clicking behaviour"); 
-                   // layerGroup.selectAll("path").attr("fill", "#e0e0e0");
-                   // d3.select(event.currentTarget).attr("fill", "#ff5722"); // Use event currentTarget for the clicked element
                     //get region and cluster information, and feed to line chart
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
