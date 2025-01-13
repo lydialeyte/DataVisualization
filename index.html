@@ -9,6 +9,7 @@
   <title>Livability in the Netherlands</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://unpkg.com/topojson@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf/turf.min.js"></script>
   <link rel="stylesheet" href="scrolly.css">
 </head>
 
@@ -499,25 +500,18 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         
         //add circles
         layer.data.features.forEach(d => {
-          let polygon = d.geometry.coordinates[0]; // Use the outer ring of the polygon
-          let centroid = polygonCentroid(polygon); // Calculate the geometric centroid
+          // Create a GeoJSON feature from your polygon geometry
+          const geoJsonPolygon = {
+            type: 'Feature',
+            geometry: d.geometry,
+            properties: {} // Turf requires a valid GeoJSON feature
+          };
         
-          // If the centroid is outside, adjust it
-          if (!polygonContains(polygon, centroid)) {
-            // Move the centroid towards the polygon's bounding box center until it's inside
-            const bboxCenter = [
-              (d3.min(polygon, p => p[0]) + d3.max(polygon, p => p[0])) / 2,
-              (d3.min(polygon, p => p[1]) + d3.max(polygon, p => p[1])) / 2,
-            ];
+          // Use Turf.js to calculate a point inside the polygon
+          const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
         
-            while (!polygonContains(polygon, centroid)) {
-              centroid = [
-                (centroid[0] + bboxCenter[0]) / 2,
-                (centroid[1] + bboxCenter[1]) / 2,
-              ];
-            }
-          }
-          d.centroid = projection(centroid); // Project the adjusted centroid
+          // Project the calculated point's coordinates for rendering on the map
+          d.centroid = projection(interiorPoint.geometry.coordinates);
         });
         //layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
         //  d.centroid = path.centroid(d);
