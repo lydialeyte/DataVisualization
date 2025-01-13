@@ -466,7 +466,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     const lbmValues = d.properties;
-                    console.log("circle mouseover triggered");                  
+                    console.log("circle mouseover triggered");  
+                    //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
                     const tooltipContent = `
                       <strong>Region ID:</strong> ${regionId}<br>
                       <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
@@ -482,6 +483,12 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .style("border", "1px solid black")
                         .style("padding", "10px")
                         .style("z-index", "9999");
+                  })
+                  .on("mousemove", (event) => {
+                    console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
+                    d3.select("#tooltip")
+                      .style("left", `${event.pageX + 10}px`)
+                      .style("top", `${event.pageY + 10}px`);
                   })
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
