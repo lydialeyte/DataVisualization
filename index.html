@@ -440,9 +440,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const layer_BU = g.append("g").attr("class", "layer neighborhood"); //create a group for the district layer, and assign the class names layer and district       
   
       //define the information belonging to each layer
-      const layers = [{ name: "municipality", data: GeoDataGemeente, clusterMap: clusterMapGemeente, idKey: "gm_code", layerGroup: layer_GM },
-                      { name: "district", data: GeoDataWijk, clusterMap: clusterMapWijk, idKey: "wk_code", layerGroup: layer_WK },
-                      { name: "neighborhood", data: GeoDataBuurt, clusterMap: clusterMapBuurt, idKey: "geo_ID", layerGroup: layer_BU }];
+      const layers = [{ name: "municipality", data: GeoDataGemeente, clusterMap: clusterMapGemeente, idKey: "gm_code", idName: "gm_naam", municipality: "gm_naam", layerGroup: layer_GM },
+                      { name: "district", data: GeoDataWijk, clusterMap: clusterMapWijk, idKey: "wk_code", idName: "wk_naam", municipality: "gm_naam", layerGroup: layer_WK },
+                      { name: "neighborhood", data: GeoDataBuurt, clusterMap: clusterMapBuurt, idKey: "geo_ID", idName: "bu_naam", municipality: "gm_naam", layerGroup: layer_BU }];
       console.log("Defined layer information: ", layers);  
   
       //iterate to render the paths/circles belonging to each layer
@@ -483,6 +483,10 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .style("border", "1px solid black")
                         .style("padding", "10px")
                         .style("z-index", "9999");
+                    console.log(d.properties.gm_naam); 
+                    console.log(layer.idKey); 
+                    console.log(layer.idName); 
+                    console.log(layer.municipality); 
                   })
                   .on("mousemove", (event) => {
                     console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
