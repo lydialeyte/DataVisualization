@@ -1,6 +1,14 @@
+/* define variables */
+:root {
+  --primary-color: #5fada9; 
+  --secondary-color: #59a09d;
+  --background-color-1: #f4f4f4;
+  --background-color-2: #ffffff;
+}
+
 header {
   text-align: center;
-  background-color: #5fada9;
+  background-color: var(--primary-color);
   color: white;
   padding: 1rem;
 }
@@ -21,13 +29,13 @@ p {
 }
 
 .introduction {
-  background-color: #ffffff;
-  border-bottom: 1px solid #5fada9;
+  background-color: var(--background-color-2);
+  border-bottom: 1px solid var(--primary-color);
 }
 
 .explanation {
-  background-color: #f4f4f4;
-  border-bottom: 1px solid #5fada9;
+  background-color: var(--background-color-1);
+  border-bottom: 1px solid var(--primary-color);
   margin-top: 10px; 
 }
 
@@ -37,13 +45,13 @@ p {
   flex-direction: column; 
   align-items: center; 
   padding: 1rem; 
-  background-color: #f4f4f4;
+  background-color: var(--background-color-1);
 }
 
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background-color: #f4f4f4;
+  background-color: var(--background-color-1);
 }
 
 .container {
@@ -84,7 +92,7 @@ svg {
   width: 50px; 
   height: 50px; 
   border: 5px solid #f3f3f3; 
-  border-top: 5px solid #5fada9; 
+  border-top: 5px solid var(--primary-color); 
   border-radius: 50%; /*make it circular*/
   animation: spin 1s linear infinite;
 }
@@ -203,7 +211,7 @@ svg {
 #progress-bar {
   width: 0%;
   height: 30px;
-  background-color: #4CAF50;
+  background-color: var(--primary-color);
 }
 
 #quiz-container {
@@ -212,12 +220,12 @@ svg {
 
 button {
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: var(--secondary-color);
 }
