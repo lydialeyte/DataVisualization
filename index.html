@@ -470,8 +470,10 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const tooltipContent = `
                       <div style="text-align: center;">
                         <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">${tooltipTitle}</div>
-                        <div><strong>Municipality:</strong> ${tooltipMunicipality}</div>
-                        <div style="margin-top: 5px;"><strong>Cluster:</strong> ${tooltipCluster || "Unknown"}</div>
+                        <div>
+                          <strong>Municipality: </strong>${tooltipMunicipality}<br>
+                          <strong>Cluster: </strong>${tooltipCluster || "Unknown"}
+                        </div>
                       </div>
                     `;
                     d3.select("#tooltip")
