@@ -406,7 +406,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         const selectedLayer = g.select(`.layer.${layerName}`);
         selectedLayer.style("display", "block");
         currentLayer = layers.find(layer => layer.name === layerName);
-        
+
+        d3.select('#granularity-display').style("display", "block"); 
+
         console.log(`Switched to layer: ${layerName}`);
       }
   
@@ -442,7 +444,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
     const regionId = d.properties[layer.idKey];
     const cluster = layer.clusterMap[regionId]?.trim();
     const lbmValues = d.properties;
-    console.log("Circle mouseover triggered");
+    //console.log("Circle mouseover triggered");
     
     const tooltipContent = `
       <strong>Region ID:</strong> ${regionId}<br>
@@ -495,7 +497,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
           const regionId = d.properties[layer.idKey];
           const cluster = layer.clusterMap[regionId]?.trim();
           const lbmValues = d.properties;
-          console.log("region mouseover triggered");
+          //console.log("region mouseover triggered");
 
         // Move tooltip div outside scatter plot container
         document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
