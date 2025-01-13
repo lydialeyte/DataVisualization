@@ -47,10 +47,10 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
       <div id="tooltip" style="position: absolute; z-index: 1000; display: none; background: rgba(255, 255, 255, 0.9); border: 1px solid #ccc; padding: 10px; font-size: 12px; pointer-events: none;"></div>
       <div id="loading-icon"> <!-- Placeholder for Loading Icon -->
         <div class="spinner"></div>  
-      </div>
-      <div id="granularity-display">
-        Granularity: Municipality
-      </div>
+      </div> 
+    </div>
+    <div id="granularity-display">
+      Granularity: Municipality
     </div>
   </div>
   
@@ -274,7 +274,7 @@ function loadData() {
         const clusterFile = clusterFiles[granularity]; //get the cluster file
         return d3.csv(clusterFile).then(clusterData => {            
           const clusterMap = {}; //create a map where region ID is coupled to cluster number 
-          console.log(clusterData);
+          //console.log(clusterData);
           clusterData.forEach(row => {
             if (row.ID && row.cluster) { 
               clusterMap[row.ID.trim()] = row.cluster.trim(); // Normalize both ID and cluster
