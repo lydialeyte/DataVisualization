@@ -483,10 +483,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .style("border", "1px solid black")
                         .style("padding", "10px")
                         .style("z-index", "9999");
-                    console.log(d.properties.gm_naam); 
-                    console.log(layer.idKey); 
-                    console.log(layer.idName); 
-                    console.log(layer.municipality); 
+                  //  console.log("gm_naam = ", d.properties.gm_naam); 
+                    console.log("idName = ", d.properties[layer.idName]);
+                    console.log("municipality = ", d.properties.[layer.municipality]); 
                   })
                   .on("mousemove", (event) => {
                     console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
