@@ -463,15 +463,15 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("fill", fillColor) //fill color of the map
                   .attr("stroke", borderColor) //stroke color of the map
                   .on("mouseover", (event, d) => {
-                    const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    const lbmValues = d.properties;
+                    const tooltipTitle = d.properties[layer.idName]; //name of the region you have selected
+                    const tooltipMunicipality = d.properties[layer.municipality]); //name of the municipality the selected region belongs to
+                    const tooltipCluster = layer.clusterMap[regionId]?.trim(); //cluster number the selected region belongs to
                     //console.log("circle mouseover triggered");  
                     //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
                     const tooltipContent = `
-                      <strong>Region ID:</strong> ${regionId}<br>
-                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
-                      <strong>Cluster:</strong> ${cluster || "Unknown"}
+                      <strong></strong> ${tooltipTitle}<br>
+                      <p>Municipality:</p> ${tooltipMunicipality}<br>
+                      <p>Cluster:</p> ${tooltipCluster || "Unknown"}
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
