@@ -72,7 +72,6 @@ body {
 
 #geo-map {
   position: relative;
-  z-index: 500;
 }
 
 .spinner {
@@ -95,9 +94,9 @@ body {
 #granularity-display {
   display: block;  
   position: absolute;
-  bottom: 20px;
-  right: 20px;
-  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
@@ -173,8 +172,6 @@ body {
   font-size: 12px;
 }
 
-
-
 #controls {
   margin: 20px;
   padding: 30px;
@@ -191,9 +188,6 @@ body {
   max-width: 300px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-
-
-
 
 #progress-bar-container {
   width: 100%;
