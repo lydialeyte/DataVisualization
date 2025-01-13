@@ -447,13 +447,11 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const cluster = layer.clusterMap[regionId]?.trim();
                     const lbmValues = d.properties;
                     //console.log("Circle mouseover triggered");
-                    
                     const tooltipContent = `
                       <strong>Region ID:</strong> ${regionId}<br>
                       <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
                       <strong>Cluster:</strong> ${cluster || "Unknown"}
                     `;
-              
                     d3.select("#tooltip")
                       .html(tooltipContent)
                       .style("left", `${event.pageX}px`)
@@ -491,15 +489,14 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   });
         
         layerGroup.selectAll("path")
-        .data(layer.data.features)
-        .join("path")
-        .attr("d", path) // Use the GeoJSON path generator
-        
-        .on("mouseover", (event, d) => {
-          const regionId = d.properties[layer.idKey];
-          const cluster = layer.clusterMap[regionId]?.trim();
-          const lbmValues = d.properties;
-          //console.log("region mouseover triggered");
+                  .data(layer.data.features)
+                  .join("path")
+                  .attr("d", path) // Use the GeoJSON path generator
+                  .on("mouseover", (event, d) => {
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    const lbmValues = d.properties;
+                    //console.log("region mouseover triggered");
 
         // Move tooltip div outside scatter plot container
         document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
@@ -530,8 +527,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
           .style("border", "1px solid black")
           .style("padding", "10px")
           .style("z-index", "9999");
-
-      })
+      //})
       .on("mouseout", () => {
         d3.select("#tooltip").style("display", "none");
         // Reset cluster highlighting
@@ -553,7 +549,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
           updateFactorList();
         }
       });
-          });
+      });
   
       console.log("Rendering iterations finished"); 
       showLayer("municipality");
