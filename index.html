@@ -484,7 +484,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   })
                   .on("click", (event, d) => {
                     layerGroup.selectAll("path").attr("fill", "#e0e0e0"); //get all regions back to basic color
-                    d3.select(event.currentTarget).attr("fill", "#ff5722"); //highlight the clicked region
+                    d3.select(event.currentTarget).attr("fill", "#9c9b9b"); //highlight the clicked region
                     //get region and cluster information, and feed to line chart
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
@@ -557,10 +557,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     layerGroup.selectAll("path").attr("fill", "#e0e0e0"); //get all regions back to basic color
-                    layerGroup.selectAll("path") // give the correct region the highlight color 
-                      .filter(region => region.properties[layer.idKey] === regionId)
-                      .attr("fill", "#ff5722");
-
+                    layerGroup.selectAll("path").filter(region => region.properties[layer.idKey] === regionId).attr("fill", "#9c9b9b");// give the correct region the highlight color 
                     if (cluster !== undefined && cluster !== null) {
                       highlightCluster(cluster);
                     }
