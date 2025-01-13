@@ -220,7 +220,6 @@
 // Load data needed for the symbol map: geographical data and parts of the clusterdata. Then, start function for rendering the map     
 function loadData() { 
       d3.select("#loading-icon").style("display", "block");  //show the loading icon
-      d3.select("#granularity-display").style("display", "block"); //Hide granularity display
     // load GeoJSON data for all granularities
       const GeoPromises = [ // use this promise-constant to make sure the next function is not called when the data isn't loaded yet
         d3.json("data/merged_data_reprojected_GM_1.geojson").then(GeoDataGemeente => { // fetch the GeoJSON file for the granularity 'municipality' and place it in the GeoPromises array
@@ -293,7 +292,6 @@ function loadData() {
         // Call the next function with all the loaded data
         renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeente, clusterMapWijk, clusterMapBuurt);
         d3.select("#loading-icon").style("display", "none"); //hide the loading icon
-        d3.select("#granularity-display").style("display", "block"); //Show granularity display
     }).catch(error => {
         console.error("Error loading all data:", error);
         d3.select("#loading-icon").style("display", "none"); //hide the loading icon
@@ -375,7 +373,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                             state.granularity = newGranularity;
                             new_factors = true;
 
-                            d3.select("#granularity-display").text(`Granularity: ${newGranularity}`); // Update the text in the granularity display
+                            //d3.select("#granularity-display").text(`Granularity: ${newGranularity}`); // Update the text in the granularity display
                          
                             if (newGranularity == "gemeente") {
                               state.city = "GM0014";
