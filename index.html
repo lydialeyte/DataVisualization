@@ -498,31 +498,30 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   })
         
         //add circles
-
-        layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
-          //d.centroid = path.centroid(d);
-          let polygon;
-          if (d.geometry.type === "MultiPolygon") {
-            const polygons = d.geometry.coordinates;
-            const largestPolygon = polygons.reduce((largest, current) =>
-              d3.polygonArea(current[0]) > d3.polygonArea(largest[0]) ? current : largest
-            );
-            polygon = largestPolygon[0];
-          } else {
-            polygon = d.geometry.coordinates[0];
-          }
-          // Calculate the centroid and project it
-          const geoJsonPolygon = {
-            type: "Feature",
-            geometry: {
-              type: "Polygon",
-              coordinates: [polygon]
+        layer.data.features.forEach(d => {
+          let polygon = d.geometry.coordinates[0]; // Use the outer ring of the polygon
+          let centroid = polygonCentroid(polygon); // Calculate the geometric centroid
+        
+          // If the centroid is outside, adjust it
+          if (!polygonContains(polygon, centroid)) {
+            // Move the centroid towards the polygon's bounding box center until it's inside
+            const bboxCenter = [
+              (d3.min(polygon, p => p[0]) + d3.max(polygon, p => p[0])) / 2,
+              (d3.min(polygon, p => p[1]) + d3.max(polygon, p => p[1])) / 2,
+            ];
+        
+            while (!polygonContains(polygon, centroid)) {
+              centroid = [
+                (centroid[0] + bboxCenter[0]) / 2,
+                (centroid[1] + bboxCenter[1]) / 2,
+              ];
             }
-          };
-          // Calculate an interior point
-          const interiorPoint = pointOnFeature(geoJsonPolygon);
-          d.centroid = projection(interiorPoint.geometry.coordinates); // Project the point to screen space
+          }
+          d.centroid = projection(centroid); // Project the adjusted centroid
         });
+        //layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
+        //  d.centroid = path.centroid(d);
+        //});
         
         layerGroup.selectAll("circle") 
                   .data(layer.data.features)
