@@ -489,15 +489,15 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     return cluster !== undefined ? color(cluster) : "#ccc"; // Assign color based on cluster
                   });
         
-        //layerGroup.selectAll("path")
-       // .data(layer.data.features)
-       // .join("path")
-       // .attr("d", path) // Use the GeoJSON path generator
+        layerGroup.selectAll("path")
+        .data(layer.data.features)
+        .join("path")
+        .attr("d", path) // Use the GeoJSON path generator
         
-        //.on("mouseover", (event, d) => {
-        //  const regionId = d.properties[layer.idKey];
-        //  const cluster = layer.clusterMap[regionId]?.trim();
-        //  const lbmValues = d.properties;
+        .on("mouseover", (event, d) => {
+          const regionId = d.properties[layer.idKey];
+          const cluster = layer.clusterMap[regionId]?.trim();
+          const lbmValues = d.properties;
           //console.log("region mouseover triggered");
 
         // Move tooltip div outside scatter plot container
