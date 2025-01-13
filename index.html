@@ -498,14 +498,13 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     }
                   })
         
-        //add circles
+        //calculate centroids that lie within the polygons for adding circles 
         layer.data.features.forEach(d => {
           let centroid = path.centroid(d); // Calculate the initial centroid using D3's path.centroid (this is in screen coordinates) 
-          
-          const projectedPolygon = d.geometry.coordinates[0].map(coord => projection(coord)); // Project the polygon to screen coordinates for D3's polygonContains
-          const isInsidePolygon = d3.polygonContains(projectedPolygon, centroid); // Check if the centroid is inside the projected polygon
-          if (!isInsidePolygon) { //if the centroid is not inside the polygon: 
-            console.log('centroid is not inside polygon'); 
+    
+          const isInsidePath = path.contains(d, centroid);; // Check if the centroid is inside the path
+          if (!isInsidePath) { //if the centroid is not inside the polygon: 
+            console.log('centroid is not inside path'); 
             const geoJsonPolygon = {// Create a GeoJSON feature for Turf operations
               type: 'Feature',
               geometry: d.geometry,
@@ -536,7 +535,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         //layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
         //  d.centroid = path.centroid(d);
         //});
-        
+
+        //add circles 
         layerGroup.selectAll("circle") 
                   .data(layer.data.features)
                   .join("circle")
