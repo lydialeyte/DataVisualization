@@ -477,6 +477,11 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                       .style("left", `${event.pageX}px`)
                       .style("top", `${event.pageY}px`)
                       .style("display", "block")
+                      .style("position", "fixed")
+                      .style("background", "white")
+                      .style("border", "1px solid black")
+                      .style("padding", "10px")
+                      .style("z-index", "9999");
                   })
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
