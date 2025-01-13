@@ -329,7 +329,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const path = d3.geoPath().projection(projection); //transform geojson data into a path that can be rendered 
 
       const geoMap = d3.select("#geo-map"); //selects the html-container for the map
-      geoMap.selectAll("*").remove(); // Clear previous map
+      //geoMap.selectAll("*").remove(); // Clear previous map
   
       const svg = geoMap.append("svg") //create SVG element
                         .attr("width", width)
