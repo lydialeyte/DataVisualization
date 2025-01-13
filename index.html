@@ -405,6 +405,20 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
   
       svg.call(zoom); //apply zoom behaviour to the svg
 
+      // create a tooltip element that can be reused later 
+      if (d3.select("#tooltip").empty()) {
+        d3.select("body").append("div")
+          .attr("id", "tooltip")
+          .style("position", "absolute")
+          .style("display", "none")
+          .style("background", "white")
+          .style("border", "1px solid #ccc")
+          .style("padding", "10px")
+          .style("border-radius", "5px")
+          .style("pointer-events", "none")
+          .style("z-index", "9999");
+      }
+  
       function showLayer(layerName) { //show a layer
         g.selectAll(".layer").style("display", "none"); //make sure none are visible
         g.select(`.layer.${layerName}`).style("display", "block"); //show the correct layer
@@ -450,17 +464,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const cluster = layer.clusterMap[regionId]?.trim();
                     const lbmValues = d.properties;
                     //console.log("region mouseover triggered");                  
-                    document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
-                      <div id="tooltip" style="
-                        position: fixed;
-                        display: none;
-                        background: white;
-                        border: 1px solid #000;
-                        padding: 10px;
-                        z-index: 9999;
-                        pointer-events: none;
-                      "></div>
-                    `);
                     const tooltipContent = `
                       <strong>Region ID:</strong> ${regionId}<br>
                       <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
@@ -471,11 +474,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                       .style("left", `${event.pageX}px`)
                       .style("top", `${event.pageY}px`)
                       .style("display", "block")
-                      .style("position", "fixed")
-                      .style("background", "white")
-                      .style("border", "1px solid black")
-                      .style("padding", "10px")
-                      .style("z-index", "9999");
                   })
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
