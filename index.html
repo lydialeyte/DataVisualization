@@ -499,7 +499,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         
         //add circles
         layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
-          d.centroid = path.centroid(d);
+          //d.centroid = path.centroid(d);
+          polygon = d.geometry.coordinates[0]; 
+          d.centroid = d3.polygonCentroid(polygon); 
         });
         
         layerGroup.selectAll("circle") 
