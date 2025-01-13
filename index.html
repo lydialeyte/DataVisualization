@@ -480,10 +480,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .html(tooltipContent)
                         .style("left", `${event.pageX + 10}px`)
                         .style("top", `${event.pageY + 10}px`)
-                        .style("display", "block")
+                        .style("display", "block");
                   })
                   .on("mousemove", (event) => {
-                    //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
                     d3.select("#tooltip")
                       .style("left", `${event.pageX + 10}px`)
                       .style("top", `${event.pageY + 10}px`);
@@ -560,23 +559,21 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey];
                     const tooltipCluster = layer.clusterMap[regionId]?.trim(); //cluster number of the selected region
                     const tooltipContent = `
-                      <strong></strong>${tooltipTitle}<br>
-                      <p>Municipality:</p> ${tooltipMunicipality}<br>
-                      <p>Cluster:</p> ${tooltipCluster || "Unknown"}
+                      <div style="text-align: center;">
+                        <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">${tooltipTitle}</div>
+                        <div>
+                          <strong>Municipality: </strong>${tooltipMunicipality}<br>
+                          <strong>Cluster: </strong>${tooltipCluster || "Unknown"}
+                        </div>
+                      </div>
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
                         .style("left", `${event.pageX + 10}px`)
                         .style("top", `${event.pageY + 10}px`)
-                        .style("display", "block")
-                        .style("position", "fixed")
-                        .style("background", "white")
-                        .style("border", "1px solid black")
-                        .style("padding", "10px")
-                        .style("z-index", "9999"); 
+                        .style("display", "block");
                   })
                   .on("mousemove", (event) => {
-                    //console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
                     d3.select("#tooltip")
                       .style("left", `${event.pageX + 10}px`)
                       .style("top", `${event.pageY + 10}px`);
