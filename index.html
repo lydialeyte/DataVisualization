@@ -487,6 +487,61 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey]; // Match region ID from GeoJSON
                     const cluster = layer.clusterMap[regionId];   // Get cluster number from CSV
                     return cluster !== undefined ? color(cluster) : "#ccc"; // Assign color based on cluster
+                  })
+                  .on("mouseover", (event, d) => {
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    const lbmValues = d.properties;
+                    //console.log("region mouseover triggered");
+  
+                    // Move tooltip div outside scatter plot container
+                    document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
+                      <div id="tooltip" style="
+                        position: fixed;
+                        display: none;
+                        background: white;
+                        border: 1px solid #000;
+                        padding: 10px;
+                        z-index: 9999;
+                        pointer-events: none;
+                      "></div>
+                    `);
+            
+                    const tooltipContent = `
+                      <strong>Region ID:</strong> ${regionId}<br>
+                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
+                      <strong>Cluster:</strong> ${cluster || "Unknown"}
+                    `;
+
+                    d3.select("#tooltip")
+                      .html(tooltipContent)
+                      .style("left", `${event.pageX}px`)
+                      .style("top", `${event.pageY}px`)
+                      .style("display", "block")
+                      .style("position", "fixed")
+                      .style("background", "white")
+                      .style("border", "1px solid black")
+                      .style("padding", "10px")
+                      .style("z-index", "9999");
+
+                  })
+                  .on("mouseout", () => {
+                    d3.select("#tooltip").style("display", "none");
+                    // Reset cluster highlighting
+                    Object.values(linePaths).forEach(path => {
+                      path.attr("stroke-width", 2).attr("opacity", 1);
+                    });
+                  })
+                  .on("click", (event, d) => {
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    if (cluster !== undefined && cluster !== null) {
+                      highlightCluster(cluster);
+                    }
+                    if (regionId !== undefined && regionId !== null) {
+                      state.city = regionId;
+                      updateFactorList();
+                    }
                   });
         
         layerGroup.selectAll("path")
@@ -538,6 +593,11 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     });
                   })
                   .on("click", (event, d) => {
+                    //color region
+                   // console.log("trying clicking behaviour"); 
+                   // layerGroup.selectAll("path").attr("fill", "#e0e0e0");
+                   // d3.select(event.currentTarget).attr("fill", "#ff5722"); // Use event currentTarget for the clicked element
+                    //get region and cluster information, and feed to line chart
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     if (cluster !== undefined && cluster !== null) {
