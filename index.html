@@ -443,15 +443,22 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   .attr("d", path)
                   .attr("fill", "#e0e0e0") //fill color of the map
                   .attr("stroke", "#333") //stroke color of the map
-                  .on("click", function (event, d) {
-                    console.log("Region clicked:", d); // Log when a region is clicked
-                  })
                   .on("mouseover", (event, d) => {
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     const lbmValues = d.properties;
-                    //console.log("Circle mouseover triggered");
-                    
+                    //console.log("region mouseover triggered");                  
+                    document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
+                      <div id="tooltip" style="
+                        position: fixed;
+                        display: none;
+                        background: white;
+                        border: 1px solid #000;
+                        padding: 10px;
+                        z-index: 9999;
+                        pointer-events: none;
+                      "></div>
+                    `);
                     const tooltipContent = `
                       <strong>Region ID:</strong> ${regionId}<br>
                       <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
@@ -474,7 +481,21 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     Object.values(linePaths).forEach(path => {
                       path.attr("stroke-width", 2).attr("opacity", 1);
                     });
-                  });
+                  })
+                  .on("click", (event, d) => {
+                    //get region and cluster information, and feed to line chart
+                    console.log("Region clicked:", d);
+                    const regionId = d.properties[layer.idKey];
+                    const cluster = layer.clusterMap[regionId]?.trim();
+                    if (cluster !== undefined && cluster !== null) {
+                      highlightCluster(cluster);
+                    }
+                    if (regionId !== undefined && regionId !== null) {
+                      state.city = regionId;
+                      updateFactorList();
+                    }
+                  })
+        
         //add circles
         layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
           d.centroid = path.centroid(d);
@@ -496,7 +517,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const cluster = layer.clusterMap[regionId]?.trim();
                     const lbmValues = d.properties;
                     //console.log("region mouseover triggered");
-  
                     // Move tooltip div outside scatter plot container
                     document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
                       <div id="tooltip" style="
@@ -509,13 +529,11 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         pointer-events: none;
                       "></div>
                     `);
-            
                     const tooltipContent = `
                       <strong>Region ID:</strong> ${regionId}<br>
                       <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
                       <strong>Cluster:</strong> ${cluster || "Unknown"}
                     `;
-
                     d3.select("#tooltip")
                       .html(tooltipContent)
                       .style("left", `${event.pageX}px`)
@@ -526,7 +544,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                       .style("border", "1px solid black")
                       .style("padding", "10px")
                       .style("z-index", "9999");
-
                   })
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
@@ -547,66 +564,11 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     }
                   });
         
-        layerGroup.selectAll("path")
-                  .data(layer.data.features)
-                  .join("path")
-                  .attr("d", path) // Use the GeoJSON path generator
-                  .on("mouseover", (event, d) => {
-                    const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    const lbmValues = d.properties;
-                    //console.log("region mouseover triggered");
-  
-                    // Move tooltip div outside scatter plot container
-                    document.querySelector(".chart-container").insertAdjacentHTML('beforeend', `
-                      <div id="tooltip" style="
-                        position: fixed;
-                        display: none;
-                        background: white;
-                        border: 1px solid #000;
-                        padding: 10px;
-                        z-index: 9999;
-                        pointer-events: none;
-                      "></div>
-                    `);
-            
-                    const tooltipContent = `
-                      <strong>Region ID:</strong> ${regionId}<br>
-                      <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
-                      <strong>Cluster:</strong> ${cluster || "Unknown"}
-                    `;
-
-                    d3.select("#tooltip")
-                      .html(tooltipContent)
-                      .style("left", `${event.pageX}px`)
-                      .style("top", `${event.pageY}px`)
-                      .style("display", "block")
-                      .style("position", "fixed")
-                      .style("background", "white")
-                      .style("border", "1px solid black")
-                      .style("padding", "10px")
-                      .style("z-index", "9999");
-
-                  })
-                  .on("mouseout", () => {
-                    d3.select("#tooltip").style("display", "none");
-                    // Reset cluster highlighting
-                    Object.values(linePaths).forEach(path => {
-                      path.attr("stroke-width", 2).attr("opacity", 1);
-                    });
-                  })
-                  .on("click", (event, d) => {
-                    //get region and cluster information, and feed to line chart
-                    const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    if (cluster !== undefined && cluster !== null) {
-                      highlightCluster(cluster);
-                    }
-                    if (regionId !== undefined && regionId !== null) {
-                      state.city = regionId;
-                      updateFactorList();
-                    }
-                  });
+       // layerGroup.selectAll("path")
+         //         .data(layer.data.features)
+           //       .join("path")
+             //     .attr("d", path) // Use the GeoJSON path generator
+                  
       });
   
       console.log("Rendering iterations finished"); 
