@@ -471,6 +471,10 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     Object.values(linePaths).forEach(path => {
                       path.attr("stroke-width", 2).attr("opacity", 1);
                     });
+                  })
+                  .on("click", function (event, d) {
+                    layerGroup.selectAll("path").attr("fill", "#e0e0e0");// Reset color of all regions to default
+                    d3.select(this).attr("fill", "#ff5722"); // // Change color of the clicked region
                   });
         //add circles
         layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time
