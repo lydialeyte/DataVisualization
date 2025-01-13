@@ -500,33 +500,26 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
         
         //add circles
         layer.data.features.forEach(d => {
-          // Calculate the initial centroid using D3's path.centroid
-          let centroid = path.centroid(d);
-        
-          // Project the polygon to screen coordinates for D3's polygonContains
-          const projectedPolygon = d.geometry.coordinates[0].map(coord => projection(coord));
-        
-          // Check if the centroid is inside the projected polygon
-          const isInsidePolygon = d3.polygonContains(projectedPolygon, centroid);
-        
-          if (!isInsidePolygon) {
-            // Create a GeoJSON feature for Turf operations
-            const geoJsonPolygon = {
+          let centroid = path.centroid(d); // Calculate the initial centroid using D3's path.centroid (this is in screen coordinates) 
+          
+          const projectedPolygon = d.geometry.coordinates[0].map(coord => projection(coord)); // Project the polygon to screen coordinates for D3's polygonContains
+          const isInsidePolygon = d3.polygonContains(projectedPolygon, centroid); // Check if the centroid is inside the projected polygon
+          if (!isInsidePolygon) { //if the centroid is not inside the polygon: 
+            console.log('centroid is not inside polygon'); 
+            const geoJsonPolygon = {// Create a GeoJSON feature for Turf operations
               type: 'Feature',
               geometry: d.geometry,
               properties: {}
-            };
-        
-            // Attempt to buffer the polygon by -(radius + 1) meters
-            try {
+            };  
+            try { // Attempt to buffer the polygon by -(radius + 1) meters
               const bufferedPolygon = turf.buffer(geoJsonPolygon, -(radius + 1), { units: 'meters' });
-        
+              console.log('tried buffering a polygon'); 
               // Find an interior point within the buffered polygon
               if (bufferedPolygon && bufferedPolygon.geometry.coordinates.length > 0) {
                 const interiorPoint = turf.pointOnFeature(bufferedPolygon);
                 centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
               } else {
-                console.warn('Buffering failed or resulted in an invalid polygon. Using original polygon for interior point.');
+                console.log('Buffering failed or resulted in an invalid polygon. Using original polygon for interior point.');
                 const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
                 centroid = projection(interiorPoint.geometry.coordinates);
               }
@@ -537,7 +530,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
               centroid = projection(interiorPoint.geometry.coordinates);
             }
           }
-        
           // Assign the calculated centroid to the feature
           d.centroid = centroid;
         });
