@@ -480,7 +480,12 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .html(tooltipContent)
                         .style("left", `${event.pageX + 10}px`)
                         .style("top", `${event.pageY + 10}px`)
-                        .style("display", "block");
+                        .style("display", "block")
+                        .style("position", "fixed")
+                        .style("background", "white")
+                        .style("border", "1px solid black")
+                        .style("padding", "10px")
+                        .style("z-index", "9999");
                   })
                   .on("mousemove", (event) => {
                     d3.select("#tooltip")
@@ -571,7 +576,12 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                         .html(tooltipContent)
                         .style("left", `${event.pageX + 10}px`)
                         .style("top", `${event.pageY + 10}px`)
-                        .style("display", "block");
+                        .style("display", "block")
+                        .style("position", "fixed")
+                        .style("background", "white")
+                        .style("border", "1px solid black")
+                        .style("padding", "10px")
+                        .style("z-index", "9999");
                   })
                   .on("mousemove", (event) => {
                     d3.select("#tooltip")
