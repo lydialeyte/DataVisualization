@@ -532,7 +532,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
           .style("padding", "10px")
           .style("z-index", "9999");
 
-      //})
+      })
       .on("mouseout", () => {
         d3.select("#tooltip").style("display", "none");
         // Reset cluster highlighting
