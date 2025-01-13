@@ -82,6 +82,8 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
 
   <script>
     // State Configurations
+    import {pointOnFeature} from "@turf/turf";
+    
     const state = { //default configuration of the application 
       year: 2020,
       city: "GM0014",
@@ -498,7 +500,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   })
         
         //add circles
-        import {pointOnFeature} from "@turf/turf";
+
         layer.data.features.forEach(d => { //cache the centroids so they don't have to be recalculated every time (perhaps move thise to outside the layers-iteration, if this works with zoom)
           //d.centroid = path.centroid(d);
           let polygon;
