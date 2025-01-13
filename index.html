@@ -466,8 +466,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     const lbmValues = d.properties;
-                    console.log("path mouseover triggered");  
-                    console.log("Tooltip X:", event.pageX, "Y:", event.pageY);
+                    console.log("path mouseover triggered");                  
                     const tooltipContent = `
                       <strong>Region ID:</strong> ${regionId}<br>
                       <strong>LBM Values:</strong> ${JSON.stringify(lbmValues, null, 2)}<br>
@@ -478,13 +477,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                       .style("left", `${event.pageX}px`)
                       .style("top", `${event.pageY}px`)
                       .style("display", "block")
-                    
                   })
-                  .on("mousemove", (event) => {
-                    d3.select("#tooltip")
-                      .style("left", `${event.pageX + 10}px`)
-                      .style("top", `${event.pageY + 10}px`);
-                  });
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
                     // Reset cluster highlighting
@@ -567,7 +560,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                       .style("top", `${event.pageY}px`)
                       .style("display", "block")
                   })
-          
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
                     // Reset cluster highlighting
