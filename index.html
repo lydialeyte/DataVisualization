@@ -483,8 +483,9 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     });
                   })
                   .on("click", (event, d) => {
+                    layerGroup.selectAll("path").attr("fill", "#e0e0e0"); //get all regions back to basic color
+                    d3.select(event.currentTarget).attr("fill", "#ff5722"); //highlight the clicked region
                     //get region and cluster information, and feed to line chart
-                    console.log("Region clicked:", d);
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     if (cluster !== undefined && cluster !== null) {
@@ -562,13 +563,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                       state.city = regionId;
                       updateFactorList();
                     }
-                  });
-        
-       // layerGroup.selectAll("path")
-         //         .data(layer.data.features)
-           //       .join("path")
-             //     .attr("d", path) // Use the GeoJSON path generator
-                  
+                  });          
       });
   
       console.log("Rendering iterations finished"); 
