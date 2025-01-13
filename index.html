@@ -513,10 +513,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
               properties: {}
             };
             try {
-              const pixelToGeoFactor = (projection.invert([1, 0])[0] - projection.invert([0, 0])[0]); // transform pixels to geographic units to calculate the buffer distance in geographic units
-              const bufferDistance = pixelToGeoFactor * (radius+1); 
-              const bufferedPolygon = turf.buffer(geoJsonPolygon, -bufferDistance, { units: 'degrees' });// Attempt to buffer the polygon by the calculated distance
-        
+              const bufferedPolygon = turf.buffer(geoJsonPolygon, -100, { units: 'meters' });// Attempt to buffer the polygon by the calculated distance
               if (bufferedPolygon && bufferedPolygon.geometry.coordinates.length > 0) {//if buffering was successfull: find an interior point within the buffered polygon
                 const interiorPoint = turf.pointOnFeature(bufferedPolygon);
                 centroid = projection(interiorPoint.geometry.coordinates); // Convert to screen coordinates
