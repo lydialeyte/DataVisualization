@@ -72,6 +72,12 @@ body {
 
 #geo-map {
   position: relative;
+  z-index: 50; 
+}
+
+svg {
+  position: relative; 
+  z-index: 1; 
 }
 
 .spinner {
