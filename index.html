@@ -509,7 +509,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
               geometry: d.geometry,
               properties: {} // Turf requires a valid GeoJSON feature
             };
-            const interiorPoint = turf.pointOnFeature(geoJsonPolygon);
+            const bufferedPolygon = turf.buffer(geoJsonPolygon, -(radius+1), { units: 'meters' });
+            const interiorPoint = turf.pointOnFeature(bufferedPolygon);
             centroid = projection(interiorPoint.geometry.coordinates); // Project Turf's centroid to screen coordinates
           }
           // Assign the centroid back to the feature for further use
