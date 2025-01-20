@@ -717,8 +717,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
 
 //create the line chart
 function loadLineChart() {
-      let clusterFile;
-
       //settings
       const clusterLineWidth = 3; 
       const hoverLineWidth = 5; 
@@ -726,7 +724,12 @@ function loadLineChart() {
       const clusterHighlightWidth = 7; 
 
       const circleHighlightWidth = 7; 
-  
+
+      const individualLineOpacity = 0.3; 
+
+      // start 
+      let clusterFile;
+
       if (state.granularity === "buurt") {
         clusterFile = "data/clustered_BU_1.csv";
       } else if (state.granularity === "wijk") {
@@ -845,7 +848,7 @@ function loadLineChart() {
                                                   .attr("fill", "none")
                                                   .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
                                                   .attr("stroke-width", individualLineWitdh) // Thinner line for individual items
-                                                  .attr("opacity", 0.5)
+                                                  .attr("opacity", individualLineOpacity)
                                                   .attr("class", `individual-line`) //add the line to a cluster, so it can be removed when clicking on the background
                                                   .attr("region-id", regionId) // Store the region ID as a custom attribute
                                                   .attr("d", d3.line()
@@ -853,9 +856,13 @@ function loadLineChart() {
                                                     .y(d => yScale(d.y)))
                                                   .on("click", (event, d) => {
                                                     console.log('individual line click triggered'); 
-                                                    const clickedRegionId = d3.select(event.currentTarget).attr("region-id");
-                                                    console.log(clickedRegionId); 
-                                                    highlightRegionOnMap(clickedRegionId, clusterId, currentLayer, circleHighlightWidth); //call a highlightfunction with the correct regionID
+                                                    
+                                                    g.selectAll(".individual-line").attr("opacity", individualLineOpacity); //highlight the selected line
+                                                    d3.select(event.currentTarget).attr("opacity", 1);
+                                                    
+                                                    const clickedRegionId = d3.select(event.currentTarget).attr("region-id"); //highlight the region of the line on the map
+                                                    //console.log(clickedRegionId); 
+                                                    highlightRegionOnMap(clickedRegionId, clusterId, currentLayer, circleHighlightWidth); 
                                                   });
                               });
                           }});
