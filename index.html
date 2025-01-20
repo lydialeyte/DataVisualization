@@ -796,17 +796,19 @@ function loadLineChart() {
                         .x(d => xScale(d.x))
                         .y(d => yScale(d.y)))
                         .on("click", () => {
+                          console.log('line click triggered'); 
                           highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
                           highlightCluster(normalizedClusterId);
                           //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
                           clusters.forEach((clusterData, clusterId) => {
                             if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
-                              //console.log("cluster id of the clicked: ", clusterId);
-                              //console.log(`Cluster ${clusterId} data:`, clusterData);
+                              console.log("cluster id of the clicked: ", clusterId);
+                              console.log(`Cluster ${clusterId} data:`, clusterData);
                               //clusterData.forEach((item, index) => {
                                 //console.log(`Item ${index} in cluster ${clusterId}:`, item);
                               //});
                               clusterData.forEach(item => {
+                                console.log('trying to draw individual lines'); 
                                 const cumulativeTrends = xLabels.map(label => ({
                                   x: label,
                                   y: parseFloat(item[`lbm_${label}`]) || 0 // Directly use the value for each label
@@ -857,6 +859,7 @@ function loadLineChart() {
           .attr("pointer-events", "all") // Ensure it captures click events
           .on("click", () => {
             // Remove all individual cluster lines
+            console.log('background click triggered'); 
             g.selectAll(".individual-line").remove();
             
             // Optionally reset cluster highlighting
