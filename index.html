@@ -972,7 +972,7 @@ function highlightMapPoints(clusterId, layer, highlightWidth) {
       console.log(`Highlighting map points for cluster: ${clusterId}`);
 
       d3.selectAll("#geo-map circle") // Reset styles for all points and make then a bit transparant
-        .attr("r", 3)
+        .attr("r", 3 / currentZoomLevel)
         //.attr("stroke", null)
         //.attr("stroke-width", null)
         .attr("opacity", 0.5);
@@ -999,7 +999,7 @@ function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) {
       currentZoomLevel = event.transform.k; //needed to keep the circle radius constant throughout zooming
   
       d3.selectAll("#geo-map circle") //reset the map highlighting and make then a bit transparant
-        .attr("r", 3)
+        .attr("r", 3/ currentZoomLevel)
         //.attr("stroke", null)
         //.attr("stroke-width", null)
         .attr("opacity", 0.5);
@@ -1008,7 +1008,7 @@ function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) {
         .filter(d => d.properties && d.properties[layer.idKey] === regionId)
         //.attr("stroke", color(clusterId))
         //.attr("stroke-width", highlightWidth)
-        .attr("r", 3 / currentZoomLevel)
+        .attr("r", 6 / currentZoomLevel)
         .attr("opacity", 1);
     
       console.log(`Region ${regionId} highlighted on the map.`);
