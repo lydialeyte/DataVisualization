@@ -720,9 +720,9 @@ function loadLineChart() {
       let clusterFile;
 
       //settings
-      const clusterLineWidth = 4; 
+      const clusterLineWidth = 3; 
       const hoverLineWidth = 5; 
-      const individualLineWitdh = 2; 
+      const individualLineWitdh = 1.5; 
       const clusterHighlightWidth = 7; 
 
       const circleHighlightWidth = 7; 
@@ -847,17 +847,18 @@ function loadLineChart() {
                                                   .attr("stroke-width", individualLineWitdh) // Thinner line for individual items
                                                   .attr("opacity", 0.5)
                                                   .attr("class", `individual-line`) //add the line to a cluster, so it can be removed when clicking on the background
+                                                  .attr("region-id", regionId) // Store the region ID as a custom attribute
                                                   .attr("d", d3.line()
                                                     .x(d => xScale(d.x))
                                                     .y(d => yScale(d.y)))
                                                   .on("click", (event, d) => {
                                                     console.log('individual line click triggered'); 
-                                                    console.log(d.regionId); 
-                                                    highlightRegionOnMap(d.regionId, currentLayer, circleHighlightWidth); //call a highlightfunction with the correct regionID
+                                                    const clickedRegionId = d3.select(this).attr("data-region-id");
+                                                    console.log(d.clickedRegionId); 
+                                                    highlightRegionOnMap(clickedRegionId, currentLayer, circleHighlightWidth); //call a highlightfunction with the correct regionID
                                                   });
                               });
-                            }
-                          });
+                          }});
                         })
                         .on("mouseover", () => {
                           d3.select(path.node()).attr("stroke-width", hoverLineWidth); // Highlight on hover
