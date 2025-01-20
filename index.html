@@ -841,7 +841,7 @@ function loadLineChart() {
                                 }));
                                 const regionId = item.ID; 
                                 const itemPath = g.append("path")
-                                                  .datum({ trends: cumulativeTrends, regionId})
+                                                  .datum(cumulativeTrends)
                                                   .attr("fill", "none")
                                                   .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
                                                   .attr("stroke-width", individualLineWitdh) // Thinner line for individual items
