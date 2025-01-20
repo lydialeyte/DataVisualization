@@ -271,8 +271,21 @@ Once you've gained insight into livability patterns, proceed to examine how soci
 };
     const linePaths = {};
     const descriptions = Object.values(column_descriptions);
-    
+
+    // constants for interactivity
     let currentZoomLevel = 1; //to track the current zoom level throughout all functions
+    
+    const radius = 3; // default circle radius
+    const highlightRadius = 7; 
+          
+    const clusterLineWidth = 3; 
+    const clusterHoverWidth = 5; 
+    const clusterHighlightWidth = 7; 
+    
+    const individualLineWitdh = 1.5; 
+    const individualLineOpacity = 0.2; 
+    
+    const circleHighlightWidth = 7;
     
     // Initial Map Load
     loadData();
@@ -375,7 +388,6 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       const width = 600, height = 525; //map dimensions
       const zoomThreshold1 = 5; // level of zoom at which the map changes granularity from municipality to district
       const zoomThreshold2 = 15; // level of zoom at which the map changes granularity from district to neighborhood
-      const radius = 3; // circle radius
       const fillColor = "#e0e0e0"; 
       const highlightColor = "#9c9b9b"; 
       const borderColor = "#333"; 
@@ -718,17 +730,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
 }
 
 //create the line chart
-function loadLineChart() {
-      //settings
-      const clusterLineWidth = 3; 
-      const clusterHoverWidth = 5; 
-      const clusterHighlightWidth = 7; 
-      
-      const individualLineWitdh = 1.5; 
-      const individualLineOpacity = 0.2; 
-
-      const circleHighlightWidth = 7; 
-
+function loadLineChart() { 
       // start 
       let clusterFile;
 
@@ -920,7 +922,6 @@ function loadLineChart() {
         // Function to get the color for a cluster
         const getColor = clusterId => fixedColorMapping[clusterId];
     
-          
         clusterIds.forEach((_, clusterId) => {
           const legendItem = legendContainer.append("div")
                                             .attr("class", "legend-item")
@@ -950,7 +951,7 @@ function updateLineChart() {
 }
 
 
-function highlightCluster(clusterId, standardLineWidth, HighlightLineWidth) {
+function highlightCluster(clusterId, standardLineWidth, HighlightLineWidth) { //to highlight the line of one cluster
       console.log(`Attempting to highlight cluster: ${clusterId}`);
       // Reset all lines to their default style and make them transparant 
       Object.values(linePaths).forEach(path => {
@@ -968,13 +969,11 @@ function highlightCluster(clusterId, standardLineWidth, HighlightLineWidth) {
 }
 
     
-function highlightMapPoints(clusterId, layer, highlightWidth) {
+function highlightMapPoints(clusterId, layer, highlightWidth) { //to highlight all points from a single cluster
       console.log(`Highlighting map points for cluster: ${clusterId}`);
 
       d3.selectAll("#geo-map circle") // Reset styles for all points and make then a bit transparant
-        .attr("r", 3 / currentZoomLevel)
-        //.attr("stroke", null)
-        //.attr("stroke-width", null)
+        .attr("r", radius / currentZoomLevel)
         .attr("opacity", 0.5);
       
       // Highlight points belonging to the clicked cluster
@@ -987,19 +986,15 @@ function highlightMapPoints(clusterId, layer, highlightWidth) {
 
           return cluster === clusterId; // Match the cluster ID
         })
-        .attr("r", 6 / currentZoomLevel)
-        //.attr("stroke", color(clusterId)) // Add a highlight stroke
-        //.attr("stroke-width", highlightWidth)
+        .attr("r", highlightRadius / currentZoomLevel)
         .attr("opacity", 1); // Ensure visibility
 }
 
-function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) {
+function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) { //to highlight a single point
       console.log('highlighting individual region on map for region ID: ${regionId}');
-  
-      currentZoomLevel = event.transform.k; //needed to keep the circle radius constant throughout zooming
-  
+
       d3.selectAll("#geo-map circle") //reset the map highlighting and make then a bit transparant
-        .attr("r", 3/ currentZoomLevel)
+        .attr("r", radius / currentZoomLevel)
         //.attr("stroke", null)
         //.attr("stroke-width", null)
         .attr("opacity", 0.5);
@@ -1008,31 +1003,12 @@ function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) {
         .filter(d => d.properties && d.properties[layer.idKey] === regionId)
         //.attr("stroke", color(clusterId))
         //.attr("stroke-width", highlightWidth)
-        .attr("r", 6 / currentZoomLevel)
+        .attr("r", highlightRadius / currentZoomLevel)
         .attr("opacity", 1);
     
       console.log(`Region ${regionId} highlighted on the map.`);
 }
 
-    /*const regionId = d.properties[layer.idKey];
-                    const cluster = layer.clusterMap[regionId]?.trim();
-                    console.log(`Region ID: ${regionId}, Cluster: ${cluster}`); 
-                    console.log(`Cluster retrieved:`, cluster);*/
-    // Add an event listener to the map background for resetting styles
-   /* d3.select("#geo-map")
-        .on("click", function(event) {
-          console.log("Map background clicked. Resetting styles.");
-
-          // Reset styles for all points
-          d3.selectAll("#geo-map circle")
-            .attr("stroke", null)
-            .attr("stroke-width", null)
-            .attr("opacity", 1);
-
-          // Optionally reset the tooltip or other elements
-          //d3.select("#tooltip").style("display", "none");
-        });
-*/
       // Ensure the click events on circles do not propagate to the background
       d3.selectAll("#geo-map circle")
         .on("click", function(event) {
