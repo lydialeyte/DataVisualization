@@ -717,237 +717,235 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
 
 //create the line chart
 function loadLineChart() {
+      let clusterFile;
   
-    let clusterFile;
-
-    if (state.granularity === "buurt") {
-      clusterFile = "data/clustered_BU_1.csv";
-    } else if (state.granularity === "wijk") {
-      clusterFile = "data/clustered_WK_1.csv";
-    } else {
-      clusterFile = "data/clustered_GM_1.csv";
-    }
+      if (state.granularity === "buurt") {
+        clusterFile = "data/clustered_BU_1.csv";
+      } else if (state.granularity === "wijk") {
+        clusterFile = "data/clustered_WK_1.csv";
+      } else {
+        clusterFile = "data/clustered_GM_1.csv";
+      }
+    
+      d3.csv(clusterFile).then(data => {
+        console.log("line chart cluster data loaded"); 
+        
+      // Extract years and scores
+      const xLabels = ['2002', '2008', '2012', '2014', '2016', '2018', '2020', '2022'];
   
-    d3.csv(clusterFile).then(data => {
-      console.log("line chart cluster data loaded"); 
-      
-    // Extract years and scores
-    const xLabels = ['2002', '2008', '2012', '2014', '2016', '2018', '2020', '2022'];
-
-    // Convert years to numeric values
-    const xYears = xLabels.map(year => +year);
-
-    // Organize data by cluster
-    const clusters = d3.group(data, d => d.cluster);
-
-    // Create Line Chart
-    const lineGraph = d3.select("#line-graph");
-    lineGraph.selectAll("*").remove(); // Remove all previous elements
-    const lineSvg = lineGraph.append("svg")
-                             .attr("width", 600)
-                             .attr("height", 500);
-
-    const margin = { top: 20, right: 20, bottom: 50, left: 50 };
-    const width = 600 - margin.left - margin.right;
-    const height = 480 - margin.top - margin.bottom;
-
-    const g = lineSvg.append("g")
-                     .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    // Define a linear scale for the x-axis based on the year values
-    const xScale = d3.scaleLinear()
-      .domain([d3.min(xYears), d3.max(xYears)]) // Use the range of years
-      .range([0, width]);
-      
-    // Define the x-axis using the linear scale
-    const xAxis = d3.axisBottom(xScale)
-        .tickValues(xYears) // Only place ticks for the specified years
-        .tickFormat(d3.format("d")); // Format ticks as integers
-
-    const yScale = d3.scaleLinear()
-                     .domain([
-                       d3.min(data.flatMap(d => {
-                         return xLabels.map(label => parseFloat(d[label]) || 0);
-                       }))-0.2, 
-                       d3.max(data.flatMap(d => {
-                         return xLabels.map(label => parseFloat(d[label]) || 0);
-                       }))+0.2
-                     ])
-                     .range([height, 0]);
-    //console.log("yScale domain:", yScale.domain());
-    const yAxis = d3.axisLeft(yScale);  
-      
-    // Add dashed horizontal line at y=0
-    //g.append("line")
-    //       .attr("x1", 0)
-    //        .attr("x2", width)
-    //        .attr("y1", yScale(0))
-    //        .attr("y2", yScale(0))
-    //        .attr("stroke", "grey")
-    //        .attr("stroke-width", 1)
-    //        .attr("stroke-dasharray", "4 2");
-
-    // Axes
-    g.append("g")
-            .attr("transform", `translate(0, ${height})`)
-            .call(xAxis);
-    g.append("g")
-      .call(d3.axisLeft(yScale));
-    g.append("g").call(yAxis);
-
-    // Create an empty object to store line paths
-    //const linePaths = {};
-
-    // Add lines for each cluster
-    //const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
-
-    clusters.forEach((clusterData, clusterId) => {
-      const cumulativeTrends = xLabels.map(label => ({
-        x: label,
-        y: parseFloat(clusterData[0][label]) || 0 // Directly use the value for each label
-      }));
-
-    //console.log(`Cluster ${clusterId} cumulative trends:`, cumulativeTrends); // Debugging
-
-    const normalizedClusterId = clusterId?.trim();
+      // Convert years to numeric values
+      const xYears = xLabels.map(year => +year);
   
-    // Draw the line using cumulative trends
-    const path = g.append("path")
-                  .datum(cumulativeTrends)
-                  .attr("fill", "none")
-                  .attr("stroke", color(normalizedClusterId))
-                  .attr("stroke-width", 2)
-                  .attr("d", d3.line()
-                  .x(d => xScale(d.x))
-                  .y(d => yScale(d.y)))
-                  .on("mouseout", () => {
-                    //resent the circles
-                    d3.selectAll("#geo-map circle")
-                      .attr("stroke", null)
-                      .attr("stroke-width", null)
-                      .attr("opacity", 1);
-                    // Reset cluster highlighting
-                    Object.values(linePaths).forEach(path => {
-                      path.attr("stroke-width", 2).attr("opacity", 1);
-                    });
-                  })
-                  .on("click", () => {
-                    highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
-                    highlightCluster(normalizedClusterId);
-                    //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
-                    clusters.forEach((clusterData, clusterId) => {
-                      if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
-                        console.log("cluster id of the clicked: ", clusterId);
-                        console.log(`Cluster ${clusterId} data:`, clusterData);
-                        
-                        clusterData.forEach((item, index) => {
-                          console.log(`Item ${index} in cluster ${clusterId}:`, item);
+      // Organize data by cluster
+      const clusters = d3.group(data, d => d.cluster);
+  
+      // Create Line Chart
+      const lineGraph = d3.select("#line-graph");
+      lineGraph.selectAll("*").remove(); // Remove all previous elements
+      const lineSvg = lineGraph.append("svg")
+                               .attr("width", 600)
+                               .attr("height", 500);
+  
+      const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+      const width = 600 - margin.left - margin.right;
+      const height = 480 - margin.top - margin.bottom;
+  
+      const g = lineSvg.append("g")
+                       .attr("transform", `translate(${margin.left},${margin.top})`);
+  
+      // Define a linear scale for the x-axis based on the year values
+      const xScale = d3.scaleLinear()
+        .domain([d3.min(xYears), d3.max(xYears)]) // Use the range of years
+        .range([0, width]);
+        
+      // Define the x-axis using the linear scale
+      const xAxis = d3.axisBottom(xScale)
+          .tickValues(xYears) // Only place ticks for the specified years
+          .tickFormat(d3.format("d")); // Format ticks as integers
+  
+      const yScale = d3.scaleLinear()
+                       .domain([
+                         d3.min(data.flatMap(d => {
+                           return xLabels.map(label => parseFloat(d[label]) || 0);
+                         }))-0.2, 
+                         d3.max(data.flatMap(d => {
+                           return xLabels.map(label => parseFloat(d[label]) || 0);
+                         }))+0.2
+                       ])
+                       .range([height, 0]);
+      //console.log("yScale domain:", yScale.domain());
+      const yAxis = d3.axisLeft(yScale);  
+        
+      // Add dashed horizontal line at y=0
+      //g.append("line")
+      //       .attr("x1", 0)
+      //        .attr("x2", width)
+      //        .attr("y1", yScale(0))
+      //        .attr("y2", yScale(0))
+      //        .attr("stroke", "grey")
+      //        .attr("stroke-width", 1)
+      //        .attr("stroke-dasharray", "4 2");
+  
+      // Axes
+      g.append("g")
+              .attr("transform", `translate(0, ${height})`)
+              .call(xAxis);
+      g.append("g")
+        .call(d3.axisLeft(yScale));
+      g.append("g").call(yAxis);
+  
+      // Create an empty object to store line paths
+      //const linePaths = {};
+  
+      // Add lines for each cluster
+      //const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
+  
+      clusters.forEach((clusterData, clusterId) => {
+        const cumulativeTrends = xLabels.map(label => ({
+          x: label,
+          y: parseFloat(clusterData[0][label]) || 0 // Directly use the value for each label
+        }));
+  
+        //console.log(`Cluster ${clusterId} cumulative trends:`, cumulativeTrends); // Debugging
+  
+        const normalizedClusterId = clusterId?.trim();
+      
+        // Draw the line using cumulative trends
+        const path = g.append("path")
+                      .datum(cumulativeTrends)
+                      .attr("fill", "none")
+                      .attr("stroke", color(normalizedClusterId))
+                      .attr("stroke-width", 2)
+                      .attr("d", d3.line()
+                      .x(d => xScale(d.x))
+                      .y(d => yScale(d.y)))
+                      .on("mouseout", () => {
+                        //reset the circles on the map
+                        d3.selectAll("#geo-map circle")
+                          .attr("stroke", null)
+                          .attr("stroke-width", null)
+                          .attr("opacity", 1);
+                        // Reset cluster highlighting
+                        Object.values(linePaths).forEach(path => {
+                          path.attr("stroke-width", 2).attr("opacity", 1);
                         });
-                        clusterData.forEach(item => {
-                          const cumulativeTrends = xLabels.map(label => ({
-                            x: label,
-                            y: parseFloat(item[`lbm_${label}`]) || 0 // Directly use the value for each label
-                          }));
-                          const itemPath = g.append("path")
-                                            .datum(cumulativeTrends)
-                                            .attr("fill", "none")
-                                            .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
-                                            .attr("stroke-width", 1) // Thinner line for individual items
-                                            .attr("d", d3.line()
-                                            .x(d => xScale(d.x))
-                                            .y(d => yScale(d.y)))
-                      /*.on("mouseover", () => {
-                        d3.select(path.node())
-                          .attr("stroke-width", 3); // Highlight on hover
-                      })*/
-                          .on("mouseout", () => {
-                            d3.selectAll(cumulativeTrends)
-                              .remove(); // Reset on hover out
-                          });
+                        // remove individual cluster lines 
+                        d3.selectAll(cumulativeTrends)
+                           .remove();
+                      })
+                      .on("click", () => {
+                        highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
+                        highlightCluster(normalizedClusterId);
+                        //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
+                        clusters.forEach((clusterData, clusterId) => {
+                          if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
+                            //console.log("cluster id of the clicked: ", clusterId);
+                            //console.log(`Cluster ${clusterId} data:`, clusterData);
+                            
+                            //clusterData.forEach((item, index) => {
+                              //console.log(`Item ${index} in cluster ${clusterId}:`, item);
+                            //});
+                            clusterData.forEach(item => {
+                              const cumulativeTrends = xLabels.map(label => ({
+                                x: label,
+                                y: parseFloat(item[`lbm_${label}`]) || 0 // Directly use the value for each label
+                              }));
+                              const itemPath = g.append("path")
+                                                .datum(cumulativeTrends)
+                                                .attr("fill", "none")
+                                                .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
+                                                .attr("stroke-width", 1) // Thinner line for individual items
+                                                .attr("d", d3.line()
+                                                .x(d => xScale(d.x))
+                                                .y(d => yScale(d.y)))
+                          /*.on("mouseover", () => {
+                            d3.select(path.node())
+                              .attr("stroke-width", 3); // Highlight on hover
+                          })*/
+                              .on("mouseout", () => {
+                                 // Reset on hover out
+                              });
+                            });
+                          }
                         });
-                      }
-                    });
-                  });
-
-  // Store the path for interactivity
-  linePaths[normalizedClusterId] = path;
-});
-
-    // Add labels
-    g.append("text")
-      .attr("x", width / 2)
-      .attr("y", -5)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "16px")
-      .text("Normalized LBM Scores Over Time by Cluster");
-
-    g.append("text")
-      .attr("x", -height / 2)
-      .attr("y", -35)
-      .attr("transform", "rotate(-90)")
-      .attr("text-anchor", "middle")
-      .attr("font-size", "12px")
-      .text("Normalized LBM Score");
-
-    g.append("text")
-      .attr("x", width / 2)
-      .attr("y", height + 40)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "12px")
-      .text("Years");
-
-    const legendContainer = d3.select("#legend")
-      .html("") // Clear any existing legend
-      .style("display", "flex")
-      .style("justify-content", "center")
-      .style("flex-wrap", "wrap")
-      .style("gap", "20px")
-      .style("margin-top", "20px");
-
-      // Create a fixed color mapping
-const clusterIds = Array.from(clusters.keys()).sort((a, b) => a - b); // Sort cluster IDs to ensure order
-const fixedColorMapping = {};
-clusterIds.forEach((clusterId, index) => {
-  fixedColorMapping[clusterId] = d3.schemeCategory10[index % 10]; // Assign a color from the color scheme
-});
-
-// Function to get the color for a cluster
-const getColor = clusterId => fixedColorMapping[clusterId];
-
-      
-clusterIds.forEach((_, clusterId) => {
-      const legendItem = legendContainer.append("div")
-        .attr("class", "legend-item")
-        .style("display", "flex")
-        .style("align-items", "center")
-        .style("margin", "5px");
-
-      legendItem.append("div")
-        .style("width", "20px")
-        .style("height", "20px")
-        .style("background-color", getColor(clusterId))
-        .style("margin-right", "10px");
-
-      legendItem.append("span")
-        .text(`Cluster ${clusterId}`)
-        .style("font-size", "12px");
-
-      // Add hover interaction for legend
-      
+                      });
+        
+        // Store the path for interactivity
+        linePaths[normalizedClusterId] = path;
       });
-
+  
+      // Add labels
+      g.append("text")
+        .attr("x", width / 2)
+        .attr("y", -5)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "16px")
+        .text("Normalized LBM Scores Over Time by Cluster");
+  
+      g.append("text")
+        .attr("x", -height / 2)
+        .attr("y", -35)
+        .attr("transform", "rotate(-90)")
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .text("Normalized LBM Score");
+  
+      g.append("text")
+        .attr("x", width / 2)
+        .attr("y", height + 40)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .text("Years");
+  
+      const legendContainer = d3.select("#legend")
+        .html("") // Clear any existing legend
+        .style("display", "flex")
+        .style("justify-content", "center")
+        .style("flex-wrap", "wrap")
+        .style("gap", "20px")
+        .style("margin-top", "20px");
+  
+       // Create a fixed color mapping
+       const clusterIds = Array.from(clusters.keys()).sort((a, b) => a - b); // Sort cluster IDs to ensure order
+       const fixedColorMapping = {};
+       clusterIds.forEach((clusterId, index) => {
+         fixedColorMapping[clusterId] = d3.schemeCategory10[index % 10]; // Assign a color from the color scheme
+       });
+  
+      // Function to get the color for a cluster
+      const getColor = clusterId => fixedColorMapping[clusterId];
+  
+        
+      clusterIds.forEach((_, clusterId) => {
+        const legendItem = legendContainer.append("div")
+                                          .attr("class", "legend-item")
+                                          .style("display", "flex")
+                                          .style("align-items", "center")
+                                          .style("margin", "5px");
+        legendItem.append("div")
+                  .style("width", "20px")
+                  .style("height", "20px")
+                  .style("background-color", getColor(clusterId))
+                  .style("margin-right", "10px");
+  
+        legendItem.append("span")
+          .text(`Cluster ${clusterId}`)
+          .style("font-size", "12px");
+        // Add hover interaction for legend
+      });
       }).catch(error => {
         console.error("Error loading cluster data:", error);
       });
-    }
+}
 
-    function updateLineChart() {
+    
+function updateLineChart() {
       const granularity = state.granularity;
       loadLineChart();
-    }
+}
 
 
-    function highlightCluster(clusterId) {
+function highlightCluster(clusterId) {
       console.log(`Attempting to highlight cluster: ${clusterId}`);
 
       // Reset all lines to their default style
