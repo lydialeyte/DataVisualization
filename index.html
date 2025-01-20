@@ -853,7 +853,7 @@ function loadLineChart() {
                                                     .y(d => yScale(d.y)))
                                                   .on("click", (event, d) => {
                                                     console.log('individual line click triggered'); 
-                                                    const clickedRegionId = d3.select(this).attr("region-id");
+                                                    const clickedRegionId = d3.select(event.currentTarget).attr("region-id");
                                                     console.log(d.clickedRegionId); 
                                                     highlightRegionOnMap(clickedRegionId, currentLayer, circleHighlightWidth); //call a highlightfunction with the correct regionID
                                                   });
@@ -870,17 +870,6 @@ function loadLineChart() {
           // Store the path for interactivity
           linePaths[normalizedClusterId] = path;
         });
-        
-            // Optionally reset cluster highlighting
-            /*Object.values(linePaths).forEach(path => {
-              path.attr("stroke-width", 2).attr("opacity", 1);
-            });
-        
-            // Reset map circles or any other elements if needed
-            d3.selectAll("#geo-map circle")
-              .attr("stroke", null)
-              .attr("stroke-width", null)
-              .attr("opacity", 1);*/
         
         // Add labels
         g.append("text") //title
