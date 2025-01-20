@@ -34,12 +34,10 @@ Once you've gained insight into livability patterns, proceed to examine how soci
     <p>
       Use the interactive tools below to explore livability trends across the Netherlands. The map lets you locate your region of interest and select it directly, or you can search for a specific region using the search bar. Once you’ve selected your region, you can compare it with other regions of the same granularity (municipality, district, or neighborhood) to better understand how they stack up in terms of livability scores.
 
-On the left, you’ll find a line graph that illustrates the standardized livability trends over time for your selected region and its comparisons. This visualization helps you identify long-term patterns and clusters of regions with similar trajectories.
+      On the left, you’ll find a line graph that illustrates the standardized livability trends over time for your selected region and its comparisons. This visualization helps you identify long-term patterns and clusters of regions with similar trajectories.
 
-To the right is the geographic map, where regions are color-coded by cluster. These clusters group regions based on their livability trends, allowing you to easily spot similarities or outliers. Hover over regions on the map for more details, such as the specific cluster they belong to or other regional information.</p>
-    <h3 style="padding-left:50px;" id="current-city">
-      Current selected city: <span id="selected-city">No city selected</span>
-    </h3>
+      To the right is the geographic map, where regions are color-coded by cluster. These clusters group regions based on their livability trends, allowing you to easily spot similarities or outliers. Hover over regions on the map for more details, such as the specific cluster they belong to or other regional information.
+    </p>
   </section>
   
   <div class="chart-container">
@@ -58,8 +56,7 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
   <div class="chart-container">
   <div id="legend" class="legend-container"></div>
    </div>
-  
-  <section class="explanation">
+   <section class="explanation">
     <p>To help discover patterns in livability, all regions are grouped into clusters based on how their livability scores have changed over time. The clustering algorithm focuses on year-to-year differences, capturing the dynamic changes in livability rather than static values. This ensures that regions with similar trends—whether improving, declining, or stable—are grouped together.
 
       Each cluster is represented by a standardized cumulative trend line, which shows how regions in the cluster are evolving relative to their average trends over the years. By examining these trend lines, you can identify whether certain clusters are improving rapidly, experiencing declines, or showing consistent stability.
@@ -68,16 +65,64 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
     
   </section>
   
-  <section id="factor-list-container" class="factor-list-container">
-    <div id="search-container" class="search-container">
-      <input type="text" id="factor-search" placeholder="Add a factor to the plots" autocomplete="off">
-      <button id="add-button">ADD</button>
-      <div id="suggestions"></div>
+  <section class="explanation">
+    <p>All regions are grouped into clusters based on the patterns of their livability scores over time. The line graph on the left displays the average livability scores for each cluster. </p>
+    <p>On the geographical map, regions are color-coded according to their cluster, allowing you to identify your region's cluster and compare it with others. </p>
+  </section>
+  
+  <section class="introduction">
+  <section class="controls-container" >
+    <div id="description-container" style="padding: 20px; font-size: 16px; line-height: 1.5;">
+      <h3>Analyse the factors that influence the livability</h3>
+      <p>
+        In the following scatterplots you can identify the factors which have the biggest impact on the livability and can compare
+        the values of the factors of the area of your interest to other selected areas.
+      </p>
+      <p>
+        ⁠By default, the 3 factors with the highest positive and negative correlation with the livability score are displayed. 
+  
+        Of course, you can add factors you are interested in into the analysis or delete them.
+      </p>
+      <p>
+        Have fun exploring the influences of the different factors!
+      </p>
+    
+  <h3 >Add the factors of your interest:</h3>
+   <div id="dropdown-container"></div>
+   <section id="factor-list-container" class="factor-list-container" style="display: flex; align-items: flex-start;">
+    <div id="factor-list-side" class="factor-list-side">
+    
+      <h3 style="padding-left:50px;">Selected Factors:</h3>
+      <ul style="padding-left:60px;"id="factor-list"></ul>
     </div>
-    <h3 style="padding-left:50px;">Selected Factors:</h3>
-    <ul style="padding-left:60px;"id="factor-list"></ul>
+    <div id="selected-city-side" class="selected-city-side">
+      <h3>Selected Cities: <span id="selected-city">No city selected</span></h3>
+      <div id="city-list"></div>
+    </div>
+  </section>
+  <div id="cluster-buttons-container">
+    <button id="cluster-button-0" class="cluster-button-0" onclick="handleClusterButtonClick('0')">Cluster 0</button>
+    <button id="cluster-button-1" class="cluster-button-1" onclick="handleClusterButtonClick('1')">Cluster 1</button>
+    <button id="cluster-button-2" class="cluster-button-2" onclick="handleClusterButtonClick('2')">Cluster 2</button>
+    <button id="cluster-button-3" class="cluster-button-3" onclick="handleClusterButtonClick('3')">Cluster 3</button>
+    <button id="cluster-button-4" class="cluster-button-4" onclick="handleClusterButtonClick('4')">Cluster 4</button>
+  </div>
+  <section id="factor-list-container" class="factor-list-container" style="display: flex; align-items: flex-start;"></section>
+  <div style="display: flex; align-items: center; gap: 5px;padding-left: 20px">
+    <p style="margin: 0;padding-left: 0;">If the absolute correlation of a factor is high and the factor´s value of your favorite selected area is significantly below or above average, it is highlighted with the shadow around the density plot. This indicates that there is potential for improvement; thus, it is especially interesting for you if you want to know how to improve the livability score. </p>
+  </div>
+  <section id="factor-list-container" class="factor-list-container" style="display: flex; align-items: flex-start;">
+    <div style="display: flex; align-items: center; gap: 5px;padding-left: 20px">
+      <p style="margin: 0;padding-left: 0;">To improve the livability score of the favorite area of interest especially the factors highlighted with</p>
+      <div style="width: 10px; height: 10px; background-color:#fcfbfc; box-shadow: 0 0 10px 2px rgba(228, 0,0, 0.8);"></div>
+      <p style="margin: 0;padding-left: 0;">should be decreased and the factors hightlighted with</p>
+      <div style="width: 10px; height: 10px; background-color: #fcfbfc; box-shadow: 0 0 10px 2px rgba(0, 0, 228, 0.8);padding-right: 0;"></div>
+      <p style="margin: 0;padding-left: 0;">should be increased.</p>
+    </div>
+  </div>
     <div id="scatter-plot-container"></div>
   </section>
+</section>
   
   
 
@@ -85,7 +130,11 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
     // State Configurations    
     const state = { //default configuration of the application 
       year: 2020,
-      city: "GM0014",
+      city: [],
+      city_codes: [],
+      clusters_watching: [],
+      cluster_buttons_clicked: [],  
+      favorite: null,
       granularity: "gemeente" // Default granularity
     };
 
@@ -100,6 +149,8 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
 
 
     let factor_watch_list = [];
+    let correlationMap = {};
+    let allCorrelations = [];
     let collumns_file = [];
 
     let new_factors = true;
@@ -108,93 +159,49 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
       "a_inw": "Number of inhabitants",
       "a_man": "Number of male inhabitants",
       "a_vrouw": "Number of female inhabitants",
-      "a_00_14": "Number of inhabitants aged 0 to 14 years",
-      "a_15_24": "Number of inhabitants aged 15 to 24 years",
-      "a_25_44": "Number of inhabitants aged 25 to 44 years",
-      "a_45_64": "Number of inhabitants aged 45 to 64 years",
-      "a_65_oo": "Number of inhabitants aged 65 years or older",
       "a_ongeh": "Number of unmarried individuals",
       "a_gehuwd": "Number of married individuals",
       "a_gesch": "Number of divorced individuals",
-      "a_verwed": "Number of widowed individuals",
       "a_w_all": "Western migration background total",
       "a_nw_all": "Non-Western migration background total",
-      "a_marok": "Migration background: Morocco",
-      "a_antaru": "Migration background: Netherlands Antilles and Aruba",
-      "a_suri": "Migration background: Suriname",
-      "a_tur": "Migration background: Turkey",
       "a_ov_nw": "Migration background: Other non-Western countries",
       "a_geb": "Total births",
       "p_geb": "Birth rate per 1,000 inhabitants",
       "a_ste": "Total deaths",
       "p_ste": "Mortality rate per 1,000 inhabitants",
       "a_hh": "Total number of households",
-      "a_1p_hh": "Number of single-person households",
-      "a_hh_z_k": "Households without children",
-      "a_hh_m_k": "Households with children",
       "g_hhgro": "Average household size",
       "bev_dich": "Population density (inhabitants per km²)",
       "a_woning": "Total housing stock",
-      "g_wozbag": "Average property value (WOZ)",
       "p_1gezw": "Percentage of single-family homes",
       "p_mgezw": "Percentage of multi-family homes",
       "p_bewndw": "Percentage of occupied dwellings",
-      "p_leegsw": "Percentage of unoccupied dwellings",
       "p_koopw": "Percentage of owner-occupied homes",
       "p_huurw": "Percentage of rented homes",
       "p_wcorpw": "Percentage of homes owned by housing corporations",
-      "p_ov_hw": "Percentage of homes owned by other landlords",
-      "p_e_o_w": "Percentage of homes with unknown ownership",
       "p_bjj2k": "Percentage of homes built before 2000",
       "p_bjo2k": "Percentage of homes built from 2000 onwards",
       "g_ele": "Average electricity consumption (total)",
-      "g_ele_ap": "Electricity consumption: Apartments",
-      "g_ele_tw": "Electricity consumption: Terraced houses",
-      "g_ele_hw": "Electricity consumption: Corner houses",
-      "g_ele_2w": "Electricity consumption: Semi-detached houses",
-      "g_ele_vw": "Electricity consumption: Detached houses",
-      "g_ele_hu": "Electricity consumption: Rental homes",
-      "g_ele_ko": "Electricity consumption: Owner-occupied homes",
       "g_gas": "Average gas consumption (total)",
-      "g_gas_ap": "Gas consumption: Apartments",
-      "g_gas_tw": "Gas consumption: Terraced houses",
-      "g_gas_hw": "Gas consumption: Corner houses",
-      "g_gas_2w": "Gas consumption: Semi-detached houses",
-      "g_gas_vw": "Gas consumption: Detached houses",
-      "g_gas_hu": "Gas consumption: Rental homes",
-      "g_gas_ko": "Gas consumption: Owner-occupied homes",
       "p_stadsv": "Percentage of homes with district heating",
       "ste_mvs": "Degree of urbanization",
       "ste_oad": "Address density",
-      "pst_mvp": "Most common postal code",
       "pst_dekp": "Postal code coverage percentage",
       "a_opp_ha": "Total area (hectares)",
       "a_lan_ha": "Land area (hectares)",
       "a_wat_ha": "Water area (hectares)",
-      "a_opl_lg": "Low education level population",
-      "a_opl_md": "Medium education level population",
-      "a_opl_hg": "High education level population",
-      "p_arb_pp": "Net labor participation rate",
-      "p_arb_wn": "Percentage of employees",
-      "p_arb_zs": "Percentage of self-employed individuals",
       "a_inkont": "Number of income recipients",
       "g_ink_po": "Average income per recipient",
       "g_ink_pi": "Average income per inhabitant",
       "p_ink_li": "40% of population with lowest income",
       "p_ink_hi": "20% of population with highest income",
-      "g_hh_sti": "Standardized household income",
       "p_hh_li": "40% of households with lowest income",
       "p_hh_hi": "20% of households with highest income",
       "p_hh_osm": "Household below or around the social minimum",
-      "m_hh_ver": "Median wealth of households",
       "a_soz_wb": "Social assistance benefits recipients",
       "a_soz_ao": "Disability benefits recipients",
       "a_soz_ww": "Unemployment benefits recipients",
       "a_soz_ow": "Old-age benefits recipients",
-      "a_jz_tn": "Youth care recipients",
-      "p_jz_tn": "Percentage of youth care recipients",
-      "a_wmo_t": "Social support clients",
-      "p_wmo_t": "Social support clients per 1,000 inhabitants",
       "a_bedv": "Total business establishments",
       "a_bed_a": "Business establishments: Agriculture, forestry, and fishing",
       "a_bed_bf": "Business establishments: Industry and energy",
@@ -205,7 +212,6 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
       "a_bed_ru": "Business establishments: Culture, recreation, and other services",
       "a_pau": "Total passenger cars",
       "a_bst_b": "Passenger cars: Petrol",
-      "a_bst_nb": "Passenger cars: Other fuels",
       "g_pau_hh": "Passenger cars per household",
       "g_pau_km": "Passenger cars per km²",
       "a_m2w": "Motorcycles",
@@ -215,6 +221,54 @@ To the right is the geographic map, where regions are color-coded by cluster. Th
       "g_afs_sc": "Distance to school",
       "g_3km_sc": "Number of schools within 3 km",
     }
+    // Factors grouped for the dropdown
+    const groupedFactors = {
+   "Demographics": [
+    { key: "a_inw", description: "Number of inhabitants" },
+    { key: "a_man", description: "Number of male inhabitants" },
+    { key: "a_vrouw", description: "Number of female inhabitants" },
+    ], 
+    "Households and Housing": [
+    { key: "a_hh", description: "Total number of households" },
+    { key: "g_hhgro", description: "Average household size" },
+    { key: "bev_dich", description: "Population density (inhabitants per km²)" },
+    { key: "a_woning", description: "Total housing stock" },
+    { key: "p_1gezw", description: "Percentage of single-family homes" },
+    { key: "p_mgezw", description: "Percentage of multi-family homes" },
+    { key: "p_bewndw", description: "Percentage of occupied dwellings" },
+    { key: "p_koopw", description: "Percentage of owner-occupied homes" },
+    { key: "p_huurw", description: "Percentage of rented homes" },
+    { key: "p_wcorpw", description: "Percentage of homes owned by housing corporations" },
+    { key: "p_bjj2k", description: "Percentage of homes built before 2000" },
+    { key: "p_bjo2k", description: "Percentage of homes built from 2000 onwards" }
+    ],
+    "Economy and Income": [
+    { key: "a_inkont", description: "Number of income recipients" },
+    { key: "g_ink_po", description: "Average income per recipient" },
+    { key: "g_ink_pi", description: "Average income per inhabitant" },
+    { key: "p_ink_li", description: "40% of population with lowest income" },
+    { key: "p_ink_hi", description: "20% of population with highest income" },
+    { key: "p_hh_li", description: "40% of households with lowest income" },
+    { key: "p_hh_hi", description: "20% of households with highest income" },
+    { key: "p_hh_osm", description: "Household below or around the social minimum" },
+    { key: "a_soz_wb", description: "Social assistance benefits recipients" },
+    { key: "a_soz_ao", description: "Disability benefits recipients" },
+    { key: "a_soz_ww", description: "Unemployment benefits recipients" },
+    { key: "a_soz_ow", description: "Old-age benefits recipients" }
+    ], 
+    "Infrastructure and Mobility": [
+    { key: "a_pau", description: "Total passenger cars" },
+    { key: "a_bst_b", description: "Passenger cars: Petrol" },
+    { key: "g_pau_hh", description: "Passenger cars per household" },
+    { key: "g_pau_km", description: "Passenger cars per km²" },
+    { key: "a_m2w", description: "Motorcycles" },
+    { key: "g_afs_hp", description: "Distance to general practitioner" },
+    { key: "g_afs_gs", description: "Distance to large supermarket" },
+    { key: "g_afs_kv", description: "Distance to daycare center" },
+    { key: "g_afs_sc", description: "Distance to school" },
+    { key: "g_3km_sc", description: "Number of schools within 3 km" }
+    ],
+};
     const linePaths = {};
     const descriptions = Object.values(column_descriptions);
 
@@ -264,9 +318,9 @@ function loadData() {
 
     // load the cluster files and create a map where region ID is coupled to cluster number (perhaps the mapping is not necessary and the data file can be used directly)
       const granularities = ["buurt", "wijk", "gemeente"]; // granularities to iterate over
-      const clusterFiles = {buurt: "data/clustered_BU.csv", // cluster file per granularity
-                            wijk: "data/clustered_WK.csv",
-                            gemeente: "data/clustered_GM.csv"};
+      const clusterFiles = {buurt: "data/clustered_BU_1.csv", // cluster file per granularity
+                            wijk: "data/clustered_WK_1.csv",
+                            gemeente: "data/clustered_GM_1.csv"};
 
       let clusterMapGemeente = {}; // variables to store the clustermaps in
       let clusterMapWijk = {};
@@ -392,16 +446,32 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                             state.granularity = newGranularity;
                             new_factors = true;
                             if (newGranularity == "gemeente") {
-                              state.city = "GM0014";
+                              state.city = [];
+                              state.favorite = null;
+                              state.city_codes = [];
+                              state.cluster_buttons_clicked = [];
+                              state.clusters_watching = [];
+
                             }
                             else if (newGranularity == "wijk") {
-                              state.city = "WK001400";
+                              state.city = [];
+                              state.favorite = null;
+                              state.city_codes = [];
+                              state.cluster_buttons_clicked = [];
+                              state.clusters_watching = [];
                             }
                             else {
-                              state.city = "BU00140000";
+                              state.city = [];
+                              state.favorite = null;
+                              state.city_codes = [];
+                              state.cluster_buttons_clicked = [];
+                              state.clusters_watching = [];
                             }
-                            updateFactorList();
                             updateLineChart(); // Synchronize the line chart with the map
+                            update_buttons_colors();
+                            updateFactorList();
+                            renderCityList();
+                            loadScatterData();
                         }
                        prevZoomLevel = zoomLevel;
                      }, 50)); //throttle limit
@@ -508,9 +578,23 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     if (cluster !== undefined && cluster !== null) {
                       highlightCluster(cluster);
                     }
-                    if (regionId !== undefined && regionId !== null) {
-                      state.city = regionId;
-                      updateFactorList();
+                    if (state.city.length >= 5) {
+                      alert("You can only select up to 5 regions.");
+                    }
+                    else if (regionId !== undefined && regionId !== null) {
+                      if (state.city_codes.includes(regionId)) {
+                        alert("This city has already been selected.");
+                      }
+                      else {
+                        state.city.push({id: regionId, name: d.properties[layer.idName], cluster: cluster});
+                        state.city_codes.push(regionId);
+                        if (state.cluster_buttons_clicked.includes(cluster)) {
+                          state.cluster_buttons_clicked = state.cluster_buttons_clicked.filter(item => item !== cluster);
+                          state.clusters_watching = state.clusters_watching.filter(item => item !== cluster);
+                        } 
+                        handleClusterButtonClick(cluster);
+                        renderCityList();
+                      }
                     }
                   })
         
@@ -603,9 +687,23 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     if (cluster !== undefined && cluster !== null) {
                       highlightCluster(cluster);
                     }
-                    if (regionId !== undefined && regionId !== null) {
-                      state.city = regionId;
-                      updateFactorList();
+                    if (state.city.length >= 5) {
+                      alert("You can only select up to 5 regions.");
+                    }
+                    else if (regionId !== undefined && regionId !== null) {
+                      if (state.city_codes.includes(regionId)) {
+                        alert("This city has already been selected.");
+                      }
+                      else {
+                        state.city.push({id: regionId, name: d.properties[layer.idName], cluster: cluster});
+                        state.city_codes.push(regionId);
+                        if (state.cluster_buttons_clicked.includes(cluster)) {
+                          state.cluster_buttons_clicked = state.cluster_buttons_clicked.filter(item => item !== cluster);
+                          state.clusters_watching = state.clusters_watching.filter(item => item !== cluster);
+                        } 
+                        handleClusterButtonClick(cluster);
+                        renderCityList();
+                      }
                     }
                   });          
       });
@@ -635,7 +733,10 @@ function loadLineChart() {
       //console.log("Cluster Data Loaded:", data);
 
     // Extract years and scores
-    const xLabels = ['2002-2008', '2008-2012', '2012-2014', '2014-2016', '2016-2018', '2018-2020', '2020-2022'];
+    const xLabels = ['2002', '2008', '2012', '2014', '2016', '2018', '2020', '2022'];
+
+    // Convert years to numeric values
+    const xYears = xLabels.map(year => +year);
 
     // Organize data by cluster
     const clusters = d3.group(data, d => d.cluster);
@@ -655,33 +756,49 @@ function loadLineChart() {
     const g = lineSvg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-      const xScale = d3.scalePoint()
-      .domain([...xLabels])
+     // Define a linear scale for the x-axis based on the year values
+    const xScale = d3.scaleLinear()
+      .domain([d3.min(xYears), d3.max(xYears)]) // Use the range of years
       .range([0, width]);
+    // Define the x-axis using the linear scale
+    const xAxis = d3.axisBottom(xScale)
+        .tickValues(xYears) // Only place ticks for the specified years
+        .tickFormat(d3.format("d")); // Format ticks as integers
 
-      const yScale = d3.scaleLinear()
+    const yScale = d3.scaleLinear()
       .domain([
       d3.min(data.flatMap(d => {
           return xLabels.map(label => parseFloat(d[label]) || 0);
-        })), 
+        }))-0.2, 
         
         d3.max(data.flatMap(d => {
           return xLabels.map(label => parseFloat(d[label]) || 0);
-        })) 
+        }))+0.2
       ])
       .range([height, 0]);
 
     console.log("yScale domain:", yScale.domain());
+    // Add dashed horizontal line at y=0
+    g.append("line")
+            .attr("x1", 0)
+            .attr("x2", width)
+            .attr("y1", yScale(0))
+            .attr("y2", yScale(0))
+            .attr("stroke", "grey")
+            .attr("stroke-width", 1)
+            .attr("stroke-dasharray", "4 2");
+
 
     // Axes
     g.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(xScale));
+    .attr("transform", `translate(0, ${height})`)
+    .call(xAxis);
 
     g.append("g")
       .call(d3.axisLeft(yScale));
 
-   
+      const yAxis = d3.axisLeft(yScale);
+      g.append("g").call(yAxis);
 
     // Create an empty object to store line paths
     //const linePaths = {};
@@ -725,11 +842,52 @@ function loadLineChart() {
     .on("click", () => {
       highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
       highlightCluster(normalizedClusterId);
+      //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
+      clusters.forEach((clusterData, clusterId) => {
+        
+        if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
+          console.log("cluster id of the clicked: ", clusterId);
+          console.log(`Cluster ${clusterId} data:`, clusterData);
+          clusterData.forEach((item, index) => {
+  console.log(`Item ${index} in cluster ${clusterId}:`, item);
+});
+
+          clusterData.forEach(item => {
+          const cumulativeTrends = xLabels.map(label => ({
+            x: label,
+            y: parseFloat(item[`lbm_${label}`]) || 0 // Directly use the value for each label
+          }));
+          const itemPath = g.append("path")
+            .datum(cumulativeTrends)
+            .attr("fill", "none")
+            .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
+            .attr("stroke-width", 1) // Thinner line for individual items
+            .attr("d", d3.line()
+              .x(d => xScale(d.x))
+              .y(d => yScale(d.y)))
+            /*.on("mouseover", () => {
+              d3.select(path.node())
+                .attr("stroke-width", 3); // Highlight on hover
+            })*/
+            .on("mouseout", () => {
+              d3.selectAll(cumulativeTrends)
+                .remove(); // Reset on hover out
+            });
+
+  
+          });
+  }
+});
+
+
+
+
     });
 
   // Store the path for interactivity
   linePaths[normalizedClusterId] = path;
 });
+
 
 
     // Add labels
@@ -738,7 +896,7 @@ function loadLineChart() {
       .attr("y", -5)
       .attr("text-anchor", "middle")
       .attr("font-size", "16px")
-      .text("Cumulative year-to-year differences");
+      .text("Normalized LBM Scores Over Time by Cluster");
 
     g.append("text")
       .attr("x", -height / 2)
@@ -746,14 +904,14 @@ function loadLineChart() {
       .attr("transform", "rotate(-90)")
       .attr("text-anchor", "middle")
       .attr("font-size", "12px")
-      .text("Cumulative values");
+      .text("Normalized LBM Score");
 
     g.append("text")
       .attr("x", width / 2)
       .attr("y", height + 40)
       .attr("text-anchor", "middle")
       .attr("font-size", "12px")
-      .text("Year-to-Year differences");
+      .text("Years");
 
     const legendContainer = d3.select("#legend")
       .html("") // Clear any existing legend
@@ -877,7 +1035,6 @@ clusterIds.forEach((_, clusterId) => {
 
 
 
-
     // ----------------------------------------------------
     // ----------------------------------------------------
     // ----------------------------------------------------
@@ -886,6 +1043,80 @@ clusterIds.forEach((_, clusterId) => {
     // ----------------------------------------------------
     // ----------------------------------------------------
 
+
+    function renderCityList() {
+      const cityListContainer = document.getElementById("city-list");
+
+      cityListContainer.innerHTML = ""; // Clear existing content
+
+      state.city.forEach((city, index) => {
+          const cityCard = document.createElement("div");
+          cityCard.className = "city-card";
+
+          cityCard.innerHTML = `
+              <p><strong>Name:</strong> ${city.name}</p>       
+              <p><strong>Cluster:</strong> ${city.cluster}</p>   
+              <button onclick="removeCity(${index})">Remove</button>
+               <button onclick="toggleFavorite(${index})" class="${city.id === state.favorite ? 'favorite-active' : 'normal-city'}">
+                ${city.id === state.favorite ? '★' : '☆'}
+              </button>      
+              `;
+
+          cityListContainer.appendChild(cityCard);
+      });
+    }
+
+    function removeCity(index) {
+      if (state.favorite == state.city[index].id) {
+        state.favorite = null;
+      }
+      state.city.splice(index, 1);
+      state.city_codes.splice(index, 1);
+      renderCityList();
+      loadScatterData();
+    }
+
+    // Function to toggle favorite status
+    function toggleFavorite(index) {
+      if (state.favorite == state.city[index].id) {
+        state.favorite = null;
+      } else if (state.favorite == null) {
+        state.favorite = state.city[index].id;
+      }
+      else {
+        alert("Only one favorite city is allowed.");
+        return;
+      }
+      renderCityList();
+      loadScatterData();
+    }
+
+    function update_buttons_colors() {
+
+      for (let i = 0; i <= 4; i++) {
+        if (state.cluster_buttons_clicked.includes(i.toString())) {
+          d3.select(`#cluster-button-${i}`).style("background-color", color(i.toString()));
+        }
+        else {
+          d3.select(`#cluster-button-${i}`).style("background-color", "#5fada9");
+        }
+      }
+    }
+
+
+    function handleClusterButtonClick(cluster) {
+      // Remove cluster from density plots
+      if (state.cluster_buttons_clicked.includes(cluster)) {
+        state.cluster_buttons_clicked = state.cluster_buttons_clicked.filter(item => item !== cluster);
+        state.clusters_watching = state.clusters_watching.filter(item => item !== cluster);
+      } 
+      else {
+        state.cluster_buttons_clicked.push(cluster);
+        state.clusters_watching.push(cluster);
+      }
+      update_buttons_colors();
+      loadScatterData();
+    }
 
     function getCorrelations() {
       return new Promise((resolve, reject) => {
@@ -913,6 +1144,11 @@ clusterIds.forEach((_, clusterId) => {
 
                 // Parse the correlation value
                 const correlation = parseFloat(rawCorrelation);
+                allCorrelations.push({factor,correlation});
+                correlationMap = allCorrelations.reduce((map, item) => {
+                    map[item.factor] = item.correlation;
+                  return map;
+                }, {});
 
                 // Check correlation threshold
                 if (Math.abs(correlation) > 0.35) {
@@ -950,13 +1186,13 @@ clusterIds.forEach((_, clusterId) => {
         data_final[factor] = {};  // Initialize the factor key in data_final
 
         if (state.granularity === "buurt") {
-          file = `data/2_visualization/Buurt/BU_means.csv`;
+          file = `data/2_visualization/Buurt/BU_means_with_clusters.csv`;
           names_codes = "BU_name";
         } else if (state.granularity === "wijk") {
-          file = `data/2_visualization/Wijk/WK_means.csv`;
+          file = `data/2_visualization/Wijk/WK_means_with_clusters.csv`;
           names_codes = "WK_name";
         } else {
-          file = `data/2_visualization/Gemeente/GM_means.csv`;
+          file = `data/2_visualization/Gemeente/GM_means_with_clusters.csv`;
           names_codes = "GM_name";
         }
 
@@ -969,10 +1205,13 @@ clusterIds.forEach((_, clusterId) => {
 
             const factorValue = parseFloat(row[factor].replace(',', '.'));
             const lbmValue = parseFloat(row["lbm"].replace(',', '.'));
-            if (!isNaN(factorValue) && !isNaN(lbmValue)) {
+            const cluster = parseInt(row["cluster"]).toString();
+          
+            if (state.city_codes.includes(row["ID"]) || (state.clusters_watching.includes(cluster) && !isNaN(factorValue) && !isNaN(lbmValue))) {
                 return {
                     code: row["ID"],
                     name: row[names_codes],
+                    cluster: cluster,
                     lbm: lbmValue,
                     factor: factorValue
                 };
@@ -998,6 +1237,22 @@ clusterIds.forEach((_, clusterId) => {
       const height = 300;
       const margin = { top: 20, right: 30, bottom: 50, left: 50 };
 
+      d3.select("#scatter-plot-container").html(""); // Clear the container
+
+      let has_data = false;
+
+      Object.keys(data_org).forEach((factorKey) => {
+        const data = data_org[factorKey];
+        if (data.length > 0) {
+          has_data = true;
+        }
+      });
+
+      if (!has_data) {
+        d3.select("#scatter-plot-container").append("p").text("No data available for the selected clusters.");
+        return;
+      }
+
       // Select the container for all plots
       const plotsContainer = d3.select("#scatter-plot-container");
 
@@ -1010,7 +1265,9 @@ clusterIds.forEach((_, clusterId) => {
         .style("border", "1px solid black")
         .style("padding", "3px")
         .style("font-size", "12px")
-        .style("pointer-events", "none");
+        .style("pointer-events", "none")
+        .style("z-index", "9999");  // Ensuring tooltip is above other elements
+
 
       function mapPointsToContours(data, contours, xScale, yScale) {
         const pointToContourMap = [];
@@ -1030,12 +1287,12 @@ clusterIds.forEach((_, clusterId) => {
 
         return pointToContourMap;
       }
-
+      
+      // For each factor in the data, create a scatter plot
       Object.keys(data_org).forEach((factorKey) => {
         const data = data_org[factorKey];
-        const highlightData = data.find(d => d.code === state.city);
-  
-        
+        const highlightData = data.filter(d => state.city_codes.includes(d.code));
+
         const container = plotsContainer
           .append("div")
           .attr("class", "scatter-plot-container")
@@ -1044,22 +1301,24 @@ clusterIds.forEach((_, clusterId) => {
           .style("background-color", "#fff");
           
 
-        
+         
         container.append("h4").text(`${column_descriptions[factorKey]}`);
+        currentCorrelation = correlationMap[factorKey];
+        
         // Highlight the factors with the biggest potential i.e. the ones that differ 20 % of the mean
         if (highlightData) {
-    
-          const averageValue = d3.mean(data, d => d.factor);
           
-          if (highlightData.factor > averageValue * 1.2) {
+          const averageValue = d3.mean(data, d => d.factor);
+    
+          if ( currentCorrelation < -0.35 && highlightData.factor > averageValue * 1.2) {
        
             container.style("box-shadow", "0 0 15px 5px rgba(255, 0, 0, 0.5)");
-          } else if (highlightData.factor < averageValue * 0.8) {
+          } else if (currentCorrelation > 0.35 && highlightData.factor < averageValue * 0.8) {
             
             container.style("box-shadow", "0 0 15px 5px rgba(0, 0, 255, 0.5)");
 
-  }
-}
+          }
+        }
 
         const svg = container
           .append("svg")
@@ -1068,12 +1327,42 @@ clusterIds.forEach((_, clusterId) => {
           .append("g")
           .attr("transform", `translate(${margin.left},${margin.top})`);
 
+
+        const min_factor = d3.min(data, (d) => d.factor);
+        const max_factor = d3.max(data, (d) => d.factor);
+        const min_lbm = d3.min(data, (d) => d.lbm);
+        const max_lbm = d3.max(data, (d) => d.lbm);
+
+        const numberOfDigits = Math.floor(Math.log10(max_factor)) + 1;
+
+        let value_adjustment = 0.8;
+
+        for (let i = 0; i < numberOfDigits - 1; i++) {
+          value_adjustment *= 10;
+        }
+
+
+        // Adjust the minimum x value based on the number of digits in the max factor value 
+
+        let new_min_x = 0;
+
+        if (numberOfDigits < 4) {
+          new_min_x = Math.max(0, min_factor) - value_adjustment;
+          if (new_min_x < 0) {
+            new_min_x = 0;
+          }
+        }
+        else {
+          new_min_x = Math.max(0, min_factor) - value_adjustment;
+        }
+
+        // Use the domain to scale the x and y axis based on the minimum values in the lbm and factor data
         const xScale = d3.scaleLinear()
-          .domain(d3.extent(data, (d) => d.factor))
+          .domain([new_min_x, max_factor + value_adjustment / 2]) 
           .range([0, width]);
 
         const yScale = d3.scaleLinear()
-          .domain(d3.extent(data, (d) => d.lbm))
+          .domain([Math.max(0, min_lbm) - 0.1, max_lbm + 0.3])     
           .range([height, 0]);
 
         const density = d3.contourDensity()
@@ -1110,7 +1399,7 @@ clusterIds.forEach((_, clusterId) => {
                 .attr("cx", xScale(point.factor))
                 .attr("cy", yScale(point.lbm))
                 .attr("r", 5)
-                .attr("fill", "red")
+                .attr("fill", color(point.cluster))  // Maybe I could add here a check if it the point is in the city list, to not change into cluster color
                 .attr("stroke", "black");
             });
           })
@@ -1122,18 +1411,20 @@ clusterIds.forEach((_, clusterId) => {
           .on("mouseout", () => {
             tooltip.style("display", "none");
             svg.selectAll("circle").remove();
-            const highlightData = data.find(d => d.code === state.city);
+            const highlightData = data.filter(d => state.city_codes.includes(d.code));
 
             if (highlightData) {
-              svg.append("circle")
-                .attr("cx", xScale(highlightData.factor))
-                .attr("cy", yScale(highlightData.lbm))
+
+              highlightData.forEach(city => {
+                svg.append("circle")
+                .attr("cx", xScale(city.factor))
+                .attr("cy", yScale(city.lbm))
                 .attr("r", 5)
-                .attr("fill", "orange")
+                .attr("fill", city.code === state.favorite ? "green" : "orange")
                 .attr("stroke", "black")
                 .on("mouseover", (event) => {
                   tooltip.style("display", "block")
-                    .html(`Name: ${highlightData.name}<br>LBM: ${highlightData.lbm}<br>${column_descriptions[factorKey]}: ${highlightData.factor}`);
+                    .html(`Name: ${city.name}<br>LBM: ${city.lbm}<br>${column_descriptions[factorKey]}: ${city.factor}`);
                 })
                 .on("mousemove", (event) => {
                   
@@ -1143,6 +1434,7 @@ clusterIds.forEach((_, clusterId) => {
                 .on("mouseout", () => {
                   tooltip.style("display", "none");
                 });
+              });
             }
           });
 
@@ -1169,153 +1461,157 @@ clusterIds.forEach((_, clusterId) => {
           .attr("text-anchor", "middle")
           .text("LBM");
 
-        if (state.city) {
-          const highlightData = data.find(d => d.code === state.city);
+        if (state.city.length > 0) {
+          const highlightData = data.filter(d => state.city_codes.includes(d.code));
           const selectedCity = d3.select("#selected-city");
-          selectedCity.text(highlightData.name);
+          selectedCity.text("");
 
           if (highlightData) {
-            svg.append("circle")
-              .attr("cx", xScale(highlightData.factor))
-              .attr("cy", yScale(highlightData.lbm))
+            highlightData.forEach(city => {
+
+              svg.append("circle")
+              .attr("cx", xScale(city.factor))
+              .attr("cy", yScale(city.lbm))
               .attr("r", 5)
-              .attr("fill", "orange")
-              .attr("stroke", "black")
+              .attr("fill", city.code === state.favorite ? "green" : "orange")
+                .attr("stroke", "black")
               .on("mouseover", (event) => {
                 tooltip.style("display", "block")
-                  .html(`Name: ${highlightData.name}<br>LBM: ${highlightData.lbm}<br>${factorKey}: ${highlightData.factor}`);
+                  .html(`Name: ${city.name}<br>LBM: ${city.lbm}<br>${column_descriptions[factorKey]}: ${city.factor}`);
               })
               .on("mousemove", (event) => {
+                
                 tooltip.style("left", `${event.pageX + 10}px`)
                   .style("top", `${event.pageY - 20}px`);
               })
               .on("mouseout", () => {
                 tooltip.style("display", "none");
               });
+            });
           }       
         }
       });
     }
 
+    // Create the Dropdowns
+    function createDropdowns() {
+    const container = document.getElementById("dropdown-container");
+    const table = document.createElement("table");
+    table.style.width = "100%"; 
+    table.style.textAlign = "center"; 
 
+    const titleRow = document.createElement("tr");
 
-    // Search functionality
-    const searchInput = document.getElementById("factor-search");
-    const suggestionsBox = document.getElementById("suggestions");
-    searchInput.addEventListener("input", seeSuggestions);
+    const dropdownRow = document.createElement("tr");
 
-    function seeSuggestions() {
+    const buttonRow = document.createElement("tr");
 
+    // Iterate through the grouped factors
+    Object.entries(groupedFactors).forEach(([groupName, factors], index) => {
+        //add title
+        const titleCell = document.createElement("td");
+        const groupTitle = document.createElement("h4");
+        groupTitle.textContent = groupName;
+        titleCell.appendChild(groupTitle);
+        titleCell.style.textAlign = "center";
+        titleRow.appendChild(titleCell);
 
-      const query = searchInput.value.trim().toLowerCase();
-      suggestionsBox.innerHTML = ""; // Clear current suggestions
-      if (query) {
+        // add dropdown
+        const dropdownCell = document.createElement("td");
+        const select = document.createElement("select");
+        select.classList.add("dropdown");
 
-        const matches = Object.entries(column_descriptions).filter(([, value]) =>
-          value.toLowerCase().includes(query)
-        );
+        const placeholder = document.createElement("option");
+        placeholder.textContent = `Select a factor`;
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        select.appendChild(placeholder);
 
-
-        matches.forEach(([key, value]) => {
-
-          const suggestionItem = document.createElement("div");
-          suggestionItem.textContent = `${value}`;
-          suggestionItem.classList.add("suggestion-item");
-
-          suggestionItem.addEventListener("click", () => {
-            searchInput.value = suggestionItem.textContent;
-            suggestionsBox.style.display = 'none';
-          });
-
-
-          suggestionsBox.appendChild(suggestionItem);
-
+        // add options for the dropdown
+        factors.forEach(factor => {
+            const option = document.createElement("option");
+            option.value = factor.key;
+            option.textContent = factor.description;
+            select.appendChild(option);
         });
+        dropdownCell.appendChild(select);
+        dropdownCell.style.textAlign = "center"; 
+        dropdownRow.appendChild(dropdownCell);
 
-        suggestionsBox.style.display = 'block';
+        // add button
+        const buttonCell = document.createElement("td");
+        const addButton = document.createElement("button");
+        addButton.textContent = "Add Factor";
+        addButton.addEventListener('click', () => addFactorToPlots(select.value));
+        buttonCell.appendChild(addButton);
+        buttonCell.style.textAlign = "center"; 
+        buttonRow.appendChild(buttonCell);
+    });
 
-      }
-    }
+    table.appendChild(titleRow);
+    table.appendChild(dropdownRow);
+    table.appendChild(buttonRow);
 
-
-    function findKeyByValue(dictionary, targetValue) {
-      return Object.keys(dictionary).find(key => dictionary[key] === targetValue) || null;
-    }
-
-    const addButton = document.getElementById('add-button');
-    addButton.addEventListener('click', addFactorToPlots);
-
-    async function addFactorToPlots() {
-
-      try {
-        const match = await findKeyByValue(column_descriptions, searchInput.value)
-
-        if (match) {
-          if (factor_watch_list.includes(match)) {
-            alert("Factor is already on the list");
-          } else {
-            if (collumns_file.includes(match)) {
-              factor_watch_list.push(match);
-              updateFactorList();
+    container.appendChild(table);
+}
+    
+    async function addFactorToPlots(selectedFactorKey) {
+    try {
+        if (selectedFactorKey) {
+            if (factor_watch_list.includes(selectedFactorKey)) {
+                alert("Factor is already on the list");
+            } else {
+                if (collumns_file.includes(selectedFactorKey)) {
+                    factor_watch_list.push(selectedFactorKey); // ad Faktor to Watchlist 
+                    updateFactorList();
+                } else {
+                    alert("The current granularity level does not have this factor");
+                }
             }
-            else {
-              alert("The current granularity level does not have this factor");
-            }
-          }    
-          searchInput.value = "";  
         }
-      }
-      catch (error) {
-        console.error("Error updating factor list:", error);
-      }
+    } catch (error) {
+        console.error("Error adding factor:", error);
     }
-
+}
     async function updateFactorList() {
-      const factorList = document.getElementById("factor-list");
-      factorList.innerHTML = ""; // Clear the current list
+    const factorList = document.getElementById("factor-list");
+    factorList.innerHTML = ""; 
 
-      d3.select("#scatter-plot-container").html(""); // Clear the container
       data_final = {};
 
-      try {
-
+    try {
         if (new_factors) {
-          factor_watch_list = await getCorrelations(); // Wait for getCorrelations to complete
+            factor_watch_list = await getCorrelations(); 
         }
 
         new_factors = false;
         loadScatterData();
 
         factor_watch_list.forEach(factor => {
-          const li = document.createElement("li");
-          li.textContent = `${column_descriptions[factor]}`;
+            const li = document.createElement("li");
+            li.textContent = `${column_descriptions[factor]}`;
 
-          const removeButton = document.createElement("span");
-          removeButton.textContent = " ×";
-          removeButton.style.color = "red";
-          removeButton.style.cursor = "pointer";
-          removeButton.style.marginLeft = "10px";
+            const removeButton = document.createElement("span");
+            removeButton.textContent = " ×";
+            removeButton.style.color = "red";
+            removeButton.style.cursor = "pointer";
+            removeButton.style.marginLeft = "10px";
 
-          // Add event listener to remove the factor
-          removeButton.addEventListener("click", () => {
-            factor_watch_list.splice(factor_watch_list.indexOf(factor), 1); // Remove the factor
-            updateFactorList(); // Update the displayed list
-          });
+             // Add event listener to remove the factor
+            removeButton.addEventListener("click", () => {
+                factor_watch_list.splice(factor_watch_list.indexOf(factor), 1); // Faktor entfernen
+                updateFactorList(); 
+            });
 
-          li.appendChild(removeButton);
-          factorList.appendChild(li);
+            li.appendChild(removeButton);
+            factorList.appendChild(li);
         });
-      } catch (error) {
+    } catch (error) {
         console.error("Error updating factor list:", error);
-      }
     }
+}
 
-
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".search-container")) {
-        suggestionsBox.innerHTML = "";
-      }
-    });
+document.addEventListener("DOMContentLoaded", createDropdowns);
 
   </script>
   <div class="container">
