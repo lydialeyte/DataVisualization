@@ -775,16 +775,6 @@ function loadLineChart() {
                        .range([height, 0]);
       //console.log("yScale domain:", yScale.domain());
       const yAxis = d3.axisLeft(yScale);  
-        
-      // Add dashed horizontal line at y=0
-      //g.append("line")
-      //       .attr("x1", 0)
-      //        .attr("x2", width)
-      //        .attr("y1", yScale(0))
-      //        .attr("y2", yScale(0))
-      //        .attr("stroke", "grey")
-      //        .attr("stroke-width", 1)
-      //        .attr("stroke-dasharray", "4 2");
   
       // Axes
       g.append("g")
@@ -794,22 +784,13 @@ function loadLineChart() {
         .call(d3.axisLeft(yScale));
       g.append("g").call(yAxis);
   
-      // Create an empty object to store line paths
-      //const linePaths = {};
-  
-      // Add lines for each cluster
-      //const color = d3.scaleOrdinal(d3.schemeCategory10); // Distinct colors per cluster
-  
       clusters.forEach((clusterData, clusterId) => {
         const cumulativeTrends = xLabels.map(label => ({
           x: label,
           y: parseFloat(clusterData[0][label]) || 0 // Directly use the value for each label
         }));
-  
         //console.log(`Cluster ${clusterId} cumulative trends:`, cumulativeTrends); // Debugging
-  
         const normalizedClusterId = clusterId?.trim();
-      
         // Draw the line using cumulative trends
         const path = g.append("path")
                       .datum(cumulativeTrends)
@@ -853,12 +834,14 @@ function loadLineChart() {
                           .attr("stroke", null)
                           .attr("stroke-width", null)
                           .attr("opacity", 1);
+                        
                         // Reset cluster highlighting
                         Object.values(linePaths).forEach(path => {
                           path.attr("stroke-width", 2).attr("opacity", 1);
                         });
+                        
                         // remove individual cluster lines 
-                        d3.selectAll(cumulativeTrends)
+                        d3.selectAll(itemPath)
                            .remove();
                       });
                     /*.on("mouseover", () => {
@@ -871,28 +854,27 @@ function loadLineChart() {
       });
   
       // Add labels
-      g.append("text")
+      g.append("text") //title
         .attr("x", width / 2)
         .attr("y", -5)
         .attr("text-anchor", "middle")
         .attr("font-size", "16px")
         .text("Normalized LBM Scores Over Time by Cluster");
-  
-      g.append("text")
+      g.append("text") //y-axis
         .attr("x", -height / 2)
         .attr("y", -35)
         .attr("transform", "rotate(-90)")
         .attr("text-anchor", "middle")
         .attr("font-size", "12px")
         .text("Normalized LBM Score");
-  
-      g.append("text")
+      g.append("text") //x-axis
         .attr("x", width / 2)
         .attr("y", height + 40)
         .attr("text-anchor", "middle")
         .attr("font-size", "12px")
         .text("Years");
-  
+
+      //add legend 
       const legendContainer = d3.select("#legend")
         .html("") // Clear any existing legend
         .style("display", "flex")
@@ -957,9 +939,10 @@ function highlightCluster(clusterId) {
       } else {
         console.warn(`No path found for cluster: ${clusterId}`);
       }
-    }
+}
 
-    function highlightMapPoints(clusterId, layer) {
+    
+function highlightMapPoints(clusterId, layer) {
       console.log(`Highlighting map points for cluster: ${clusterId}`);
 
       // Reset styles for all points
@@ -982,7 +965,7 @@ function highlightCluster(clusterId) {
         .attr("stroke", color(clusterId)) // Add a highlight stroke
         .attr("stroke-width", 7)
         .attr("opacity", 1); // Ensure visibility
-    }
+}
 
     /*const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
