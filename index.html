@@ -562,8 +562,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
-                        .style("left", `${event.pageX + 10}px`)
-                        .style("top", `${event.pageY + 10}px`)
+                        .style("left", `${event.pageX + 10/currentZoomLevel}px`)
+                        .style("top", `${event.pageY + 10/currentZoomLevel}px`)
                         .style("display", "block")
                         .style("position", "fixed")
                         .style("background", "white")
@@ -573,8 +573,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   })
                   .on("mousemove", (event) => {
                     d3.select("#tooltip")
-                      .style("left", `${event.pageX + 10}px`)
-                      .style("top", `${event.pageY + 10}px`);
+                      .style("left", `${event.pageX + 10/currentZoomLevel}px`)
+                      .style("top", `${event.pageY + 10/currentZoomLevel}px`);
                   })
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
@@ -590,7 +590,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     const regionId = d.properties[layer.idKey];
                     const cluster = layer.clusterMap[regionId]?.trim();
                     if (cluster !== undefined && cluster !== null) {
-                      highlightCluster(cluster);
+                      highlightClusterLine(cluster);
                     }
                     if (state.city.length >= 5) {
                       alert("You can only select up to 5 regions.");
@@ -672,8 +672,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
-                        .style("left", `${event.pageX + 10}px`)
-                        .style("top", `${event.pageY + 10}px`)
+                        .style("left", `${event.pageX + 10/currentZoomLevel}px`)
+                        .style("top", `${event.pageY + 10/currentZoomLevel}px`)
                         .style("display", "block")
                         .style("position", "fixed")
                         .style("background", "white")
@@ -683,8 +683,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   })
                   .on("mousemove", (event) => {
                     d3.select("#tooltip")
-                      .style("left", `${event.pageX + 10}px`)
-                      .style("top", `${event.pageY + 10}px`);
+                      .style("left", `${event.pageX + 10/currentZoomLevel}px`)
+                      .style("top", `${event.pageY + 10/currentZoomLevel}px`);
                   })
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
@@ -699,7 +699,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     layerGroup.selectAll("path").attr("fill", fillColor); //get all regions back to basic color
                     layerGroup.selectAll("path").filter(region => region.properties[layer.idKey] === regionId).attr("fill", highlightColor);// give the correct region the highlight color 
                     if (cluster !== undefined && cluster !== null) {
-                      highlightCluster(cluster);
+                      highlightClusterLine(cluster);
                     }
                     if (state.city.length >= 5) {
                       alert("You can only select up to 5 regions.");
@@ -834,8 +834,8 @@ function loadLineChart() {
                         .y(d => yScale(d.y)))
                         .on("click", () => {
                           console.log('cluster line click triggered'); 
-                          highlightMapPoints(normalizedClusterId, currentLayer, circleHighlightWidth); // highlight corresponding regions on geographical map
-                          highlightCluster(normalizedClusterId, clusterLineWidth, clusterHighlightWidth); // highlight the cluster line while making the others transparant 
+                          highlightAllPointsOnMap(normalizedClusterId, currentLayer, circleHighlightWidth); // highlight corresponding regions on geographical map
+                          highlightClusterLine(normalizedClusterId, clusterLineWidth, clusterHighlightWidth); // highlight the cluster line while making the others transparant 
                           //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
                           clusters.forEach((clusterData, clusterId) => {
                             if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
@@ -866,7 +866,7 @@ function loadLineChart() {
                                                     
                                                     const clickedRegionId = d3.select(event.currentTarget).attr("region-id"); //highlight the region of the line on the map
                                                     //console.log(clickedRegionId); 
-                                                    highlightRegionOnMap(clickedRegionId, clusterId, currentLayer, circleHighlightWidth); 
+                                                    highlightOneRegionOnMap(clickedRegionId, clusterId, currentLayer, circleHighlightWidth); 
                                                   });
                               });
                           }});
@@ -951,7 +951,7 @@ function updateLineChart() {
 }
 
 
-function highlightCluster(clusterId, standardLineWidth, HighlightLineWidth) { //to highlight the line of one cluster
+function highlightClusterLine(clusterId, standardLineWidth, HighlightLineWidth) { //to highlight the line of one cluster
       console.log(`Attempting to highlight cluster: ${clusterId}`);
       // Reset all lines to their default style and make them transparant 
       Object.values(linePaths).forEach(path => {
@@ -969,7 +969,7 @@ function highlightCluster(clusterId, standardLineWidth, HighlightLineWidth) { //
 }
 
     
-function highlightMapPoints(clusterId, layer, highlightWidth) { //to highlight all points from a single cluster
+function highlightAllPointsOnMap(clusterId, layer, highlightWidth) { //to highlight all points from a single cluster
       console.log(`Highlighting map points for cluster: ${clusterId}`);
 
       d3.selectAll("#geo-map circle") // Reset styles for all points and make then a bit transparant
@@ -981,28 +981,21 @@ function highlightMapPoints(clusterId, layer, highlightWidth) { //to highlight a
         .filter(function (d) {
           const regionId = d.properties[layer.idKey]; // Retrieve region ID based on the layer's idKey
           const cluster = layer.clusterMap[regionId]?.trim(); // Get cluster from clusterMap
-          //console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
-          //console.log(`Region Data:`, d.properties);
-
           return cluster === clusterId; // Match the cluster ID
         })
         .attr("r", highlightRadius / currentZoomLevel)
         .attr("opacity", 1); // Ensure visibility
 }
 
-function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) { //to highlight a single point
+function highlightOneRegionOnMap(regionId, clusterId, layer, highlightWidth) { //to highlight a single point
       console.log('highlighting individual region on map for region ID: ${regionId}');
 
       d3.selectAll("#geo-map circle") //reset the map highlighting and make then a bit transparant
         .attr("r", radius / currentZoomLevel)
-        //.attr("stroke", null)
-        //.attr("stroke-width", null)
         .attr("opacity", 0.5);
     
       d3.selectAll("#geo-map circle") // Highlight the corresponding region
         .filter(d => d.properties && d.properties[layer.idKey] === regionId)
-        //.attr("stroke", color(clusterId))
-        //.attr("stroke-width", highlightWidth)
         .attr("r", highlightRadius / currentZoomLevel)
         .attr("opacity", 1);
     
