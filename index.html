@@ -562,8 +562,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
-                        .style("left", `${event.pageX + 10/currentZoomLevel}px`)
-                        .style("top", `${event.pageY + 10/currentZoomLevel}px`)
+                        .style("left", `${event.pageX + 10}px`) 
+                        .style("top", `${event.pageY + 10}px`) 
                         .style("display", "block")
                         .style("position", "fixed")
                         .style("background", "white")
@@ -573,8 +573,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   })
                   .on("mousemove", (event) => {
                     d3.select("#tooltip")
-                      .style("left", `${event.pageX + 10/currentZoomLevel}px`)
-                      .style("top", `${event.pageY + 10/currentZoomLevel}px`);
+                      .style("left", `${event.pageX + 10}px`) 
+                      .style("top", `${event.pageY + 10}px`) ;
                   })
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
@@ -672,8 +672,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                     `;
                     d3.select("#tooltip")
                         .html(tooltipContent)
-                        .style("left", `${event.pageX + 10/currentZoomLevel}px`)
-                        .style("top", `${event.pageY + 10/currentZoomLevel}px`)
+                        .style("left", `${event.pageX + 10}px`) 
+                        .style("top", `${event.pageY + 10}px`) 
                         .style("display", "block")
                         .style("position", "fixed")
                         .style("background", "white")
@@ -683,8 +683,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                   })
                   .on("mousemove", (event) => {
                     d3.select("#tooltip")
-                      .style("left", `${event.pageX + 10/currentZoomLevel}px`)
-                      .style("top", `${event.pageY + 10/currentZoomLevel}px`);
+                      .style("left", `${event.pageX + 10}px`) 
+                      .style("top", `${event.pageY + 10}px`) ;
                   })
                   .on("mouseout", () => {
                     d3.select("#tooltip").style("display", "none");
