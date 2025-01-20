@@ -970,8 +970,9 @@ function highlightMapPoints(clusterId, layer, highlightWidth) {
       console.log(`Highlighting map points for cluster: ${clusterId}`);
 
       d3.selectAll("#geo-map circle") // Reset styles for all points and make then a bit transparant
-        .attr("stroke", null)
-        .attr("stroke-width", null)
+        .attr("r", 3)
+        //.attr("stroke", null)
+        //.attr("stroke-width", null)
         .attr("opacity", 0.5);
       
       // Highlight points belonging to the clicked cluster
@@ -984,8 +985,9 @@ function highlightMapPoints(clusterId, layer, highlightWidth) {
 
           return cluster === clusterId; // Match the cluster ID
         })
-        .attr("stroke", color(clusterId)) // Add a highlight stroke
-        .attr("stroke-width", highlightWidth)
+        .attr("r", 6)
+        //.attr("stroke", color(clusterId)) // Add a highlight stroke
+        //.attr("stroke-width", highlightWidth)
         .attr("opacity", 1); // Ensure visibility
 }
 
@@ -993,14 +995,16 @@ function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) {
       console.log('highlighting individual region on map for region ID: ${regionId}');
     
       d3.selectAll("#geo-map circle") //reset the map highlighting and make then a bit transparant
-        .attr("stroke", null)
-        .attr("stroke-width", null)
+        .attr("r", 3)
+        //.attr("stroke", null)
+        //.attr("stroke-width", null)
         .attr("opacity", 0.5);
     
       d3.selectAll("#geo-map circle") // Highlight the corresponding region
         .filter(d => d.properties && d.properties[layer.idKey] === regionId)
-        .attr("stroke", color(clusterId))
-        .attr("stroke-width", highlightWidth)
+        //.attr("stroke", color(clusterId))
+        //.attr("stroke-width", highlightWidth)
+        .attr("r", 3)
         .attr("opacity", 1);
     
       console.log(`Region ${regionId} highlighted on the map.`);
