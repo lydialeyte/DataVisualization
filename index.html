@@ -781,6 +781,7 @@ function loadLineChart() {
             // Remove all individual cluster lines
             console.log('background click triggered'); 
             g.selectAll(".individual-line").remove();
+          });
             
         // Axes
         g.append("g")
@@ -872,7 +873,6 @@ function loadLineChart() {
               .attr("stroke", null)
               .attr("stroke-width", null)
               .attr("opacity", 1);*/
-          });
         
         // Add labels
         g.append("text") //title
