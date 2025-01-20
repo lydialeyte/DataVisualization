@@ -718,6 +718,12 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
 //create the line chart
 function loadLineChart() {
       let clusterFile;
+
+      //some settings
+      const clusterLineWidth = 4; 
+      const hoverLineWidth = 5; 
+      const individualLineWitdh = 2; 
+      const clusterHighlightWidth = 7; 
   
       if (state.granularity === "buurt") {
         clusterFile = "data/clustered_BU_1.csv";
@@ -784,7 +790,7 @@ function loadLineChart() {
             // Reset cluster highlighting
             Object.values(linePaths).forEach(path => {
               console.log('trying to reset cluster highlighting')
-              path.attr("stroke-width", 2).attr("opacity", 1);
+              path.attr("stroke-width", clusterLineWidth).attr("opacity", 1);
             });
             //reset circles in geographical map
             d3.selectAll("#geo-map circle")
@@ -813,7 +819,7 @@ function loadLineChart() {
                         .datum(cumulativeTrends)
                         .attr("fill", "none")
                         .attr("stroke", color(normalizedClusterId))
-                        .attr("stroke-width", 2)
+                        .attr("stroke-width", clusterLineWidth)
                         .attr("d", d3.line()
                         .x(d => xScale(d.x))
                         .y(d => yScale(d.y)))
@@ -835,7 +841,7 @@ function loadLineChart() {
                                                   .datum(cumulativeTrends)
                                                   .attr("fill", "none")
                                                   .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
-                                                  .attr("stroke-width", 1) // Thinner line for individual items
+                                                  .attr("stroke-width", individualLineWitdh) // Thinner line for individual items
                                                   .attr("class", `individual-line`) //add the line to a cluster, so it can be removed when clicking on the background
                                                   .attr("d", d3.line()
                                                   .x(d => xScale(d.x))
@@ -845,8 +851,11 @@ function loadLineChart() {
                           });
                         })
                         .on("mouseover", () => {
-                          d3.select(path.node()).attr("stroke-width", 3); // Highlight on hover
-                        });
+                          d3.select(path.node()).attr("stroke-width", hoverLineWidth); // Highlight on hover
+                        })
+                        .on("mouseout", () => {
+                          d3.select(path.node()).attr("stroke-width", clusterLineWidth);
+                        }); 
           
           // Store the path for interactivity
           linePaths[normalizedClusterId] = path;
