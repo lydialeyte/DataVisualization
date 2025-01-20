@@ -719,13 +719,13 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
 function loadLineChart() {
       //settings
       const clusterLineWidth = 3; 
-      const hoverLineWidth = 5; 
-      const individualLineWitdh = 1.5; 
+      const clusterHoverWidth = 5; 
       const clusterHighlightWidth = 7; 
+      
+      const individualLineWitdh = 1.5; 
+      const individualLineOpacity = 0.2; 
 
       const circleHighlightWidth = 7; 
-
-      const individualLineOpacity = 0.3; 
 
       // start 
       let clusterFile;
@@ -868,7 +868,7 @@ function loadLineChart() {
                           }});
                         })
                         .on("mouseover", () => {
-                          d3.select(path.node()).attr("stroke-width", hoverLineWidth); // Highlight on hover
+                          d3.select(path.node()).attr("stroke-width", clusterHoverWidth); // Highlight on hover
                         })
                         .on("mouseout", () => {
                           d3.select(path.node()).attr("stroke-width", clusterLineWidth);
