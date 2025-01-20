@@ -770,7 +770,18 @@ function loadLineChart() {
                          .range([height, 0]);
         //console.log("yScale domain:", yScale.domain());
         const yAxis = d3.axisLeft(yScale);  
-        
+
+        //add a clickable background
+        g.append("rect")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("fill", "transparent") 
+          .attr("pointer-events", "all") // Ensure it captures click events
+          .on("click", () => {
+            // Remove all individual cluster lines
+            console.log('background click triggered'); 
+            g.selectAll(".individual-line").remove();
+            
         // Axes
         g.append("g")
                 .attr("transform", `translate(0, ${height})`)
@@ -850,18 +861,7 @@ function loadLineChart() {
           // Store the path for interactivity
           linePaths[normalizedClusterId] = path;
         });
-
-        //add a clickable background
-        g.append("rect")
-          .attr("width", width)
-          .attr("height", height)
-          .attr("fill", "transparent") 
-          .attr("pointer-events", "all") // Ensure it captures click events
-          .on("click", () => {
-            // Remove all individual cluster lines
-            console.log('background click triggered'); 
-            g.selectAll(".individual-line").remove();
-            
+        
             // Optionally reset cluster highlighting
             /*Object.values(linePaths).forEach(path => {
               path.attr("stroke-width", 2).attr("opacity", 1);
