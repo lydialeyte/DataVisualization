@@ -854,8 +854,8 @@ function loadLineChart() {
                                                   .on("click", (event, d) => {
                                                     console.log('individual line click triggered'); 
                                                     const clickedRegionId = d3.select(event.currentTarget).attr("region-id");
-                                                    console.log(d.clickedRegionId); 
-                                                    highlightRegionOnMap(clickedRegionId, currentLayer, circleHighlightWidth); //call a highlightfunction with the correct regionID
+                                                    console.log(clickedRegionId); 
+                                                    highlightRegionOnMap(clickedRegionId, clusterId, currentLayer, circleHighlightWidth); //call a highlightfunction with the correct regionID
                                                   });
                               });
                           }});
@@ -982,7 +982,7 @@ function highlightMapPoints(clusterId, layer, highlightWidth) {
         .attr("opacity", 1); // Ensure visibility
 }
 
-function highlightRegionOnMap(regionId, layer, highlightWidth) {
+function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) {
       console.log('highlighting individual region on map for region ID: ${regionId}');
     
       d3.selectAll("#geo-map circle") //reset the map highlighting and make then a bit transparant
