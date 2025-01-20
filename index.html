@@ -272,7 +272,7 @@ Once you've gained insight into livability patterns, proceed to examine how soci
     const linePaths = {};
     const descriptions = Object.values(column_descriptions);
     
-    const currentZoomLevel = 1; //to track the current zoom level throughout all functions
+    let currentZoomLevel = 1; //to track the current zoom level throughout all functions
     
     // Initial Map Load
     loadData();
