@@ -730,8 +730,7 @@ function loadLineChart() {
   
     d3.csv(clusterFile).then(data => {
       console.log("line chart cluster data loaded"); 
-      //console.log("Cluster Data Loaded:", data);
-
+      
     // Extract years and scores
     const xLabels = ['2002', '2008', '2012', '2014', '2016', '2018', '2020', '2022'];
 
@@ -742,63 +741,63 @@ function loadLineChart() {
     const clusters = d3.group(data, d => d.cluster);
 
     // Create Line Chart
-    // Create Line Chart
     const lineGraph = d3.select("#line-graph");
     lineGraph.selectAll("*").remove(); // Remove all previous elements
     const lineSvg = lineGraph.append("svg")
-    .attr("width", 600)
-    .attr("height", 500);
+                             .attr("width", 600)
+                             .attr("height", 500);
 
     const margin = { top: 20, right: 20, bottom: 50, left: 50 };
     const width = 600 - margin.left - margin.right;
     const height = 480 - margin.top - margin.bottom;
 
     const g = lineSvg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+                     .attr("transform", `translate(${margin.left},${margin.top})`);
 
      // Define a linear scale for the x-axis based on the year values
     const xScale = d3.scaleLinear()
       .domain([d3.min(xYears), d3.max(xYears)]) // Use the range of years
       .range([0, width]);
+      
     // Define the x-axis using the linear scale
     const xAxis = d3.axisBottom(xScale)
         .tickValues(xYears) // Only place ticks for the specified years
         .tickFormat(d3.format("d")); // Format ticks as integers
 
     const yScale = d3.scaleLinear()
-      .domain([
-      d3.min(data.flatMap(d => {
-          return xLabels.map(label => parseFloat(d[label]) || 0);
-        }))-0.2, 
-        
-        d3.max(data.flatMap(d => {
-          return xLabels.map(label => parseFloat(d[label]) || 0);
-        }))+0.2
-      ])
-      .range([height, 0]);
-
-    console.log("yScale domain:", yScale.domain());
+                     .domain([
+                       d3.min(data.flatMap(d => {
+                         return xLabels.map(label => parseFloat(d[label]) || 0);
+                       }))-0.2, 
+                       d3.max(data.flatMap(d => {
+                         return xLabels.map(label => parseFloat(d[label]) || 0);
+                       }))+0.2
+                     ])
+                     .range([height, 0]);
+    //console.log("yScale domain:", yScale.domain());
+    const yAxis = d3.axisLeft(yScale);  
+      
     // Add dashed horizontal line at y=0
-    g.append("line")
-            .attr("x1", 0)
-            .attr("x2", width)
-            .attr("y1", yScale(0))
-            .attr("y2", yScale(0))
-            .attr("stroke", "grey")
-            .attr("stroke-width", 1)
-            .attr("stroke-dasharray", "4 2");
-
+    //g.append("line")
+    //       .attr("x1", 0)
+    //        .attr("x2", width)
+    //        .attr("y1", yScale(0))
+    //        .attr("y2", yScale(0))
+    //        .attr("stroke", "grey")
+    //        .attr("stroke-width", 1)
+    //        .attr("stroke-dasharray", "4 2");
 
     // Axes
     g.append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(xAxis);
+            .attr("transform", `translate(0, ${height})`)
+            .call(xAxis)//;
 
-    g.append("g")
-      .call(d3.axisLeft(yScale));
+    //g.append("g")
+      .call(d3.axisLeft(yScale))//;
 
-      const yAxis = d3.axisLeft(yScale);
-      g.append("g").call(yAxis);
+    
+    //g.append("g")
+      .call(yAxis);
 
     // Create an empty object to store line paths
     //const linePaths = {};
@@ -873,22 +872,14 @@ function loadLineChart() {
               d3.selectAll(cumulativeTrends)
                 .remove(); // Reset on hover out
             });
-
-  
           });
   }
 });
-
-
-
-
     });
 
   // Store the path for interactivity
   linePaths[normalizedClusterId] = path;
 });
-
-
 
     // Add labels
     g.append("text")
