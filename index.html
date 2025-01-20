@@ -842,7 +842,7 @@ function loadLineChart() {
                                                   .attr("fill", "none")
                                                   .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
                                                   .attr("stroke-width", individualLineWitdh) // Thinner line for individual items
-                                                  .attr("opacity", 0.5);
+                                                  .attr("opacity", 0.5)
                                                   .attr("class", `individual-line`) //add the line to a cluster, so it can be removed when clicking on the background
                                                   .attr("d", d3.line()
                                                     .x(d => xScale(d.x))
