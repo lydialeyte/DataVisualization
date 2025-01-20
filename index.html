@@ -271,7 +271,9 @@ Once you've gained insight into livability patterns, proceed to examine how soci
 };
     const linePaths = {};
     const descriptions = Object.values(column_descriptions);
-
+    
+    const currentZoomLevel = 1; //to track the current zoom level throughout all functions
+    
     // Initial Map Load
     loadData();
     updateFactorList();
@@ -396,7 +398,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
       //zoom behaviour 
       const g = svg.append("g"); //create a group for zooming
   
-      let prevZoomLevel = 1; //to track the previous zoom level
+      let prevcurrentZoomLevel = 1; //to track the previous zoom level
       
       function throttle(func, limit) { //to limit how often the zoom handler runs: reduce CPU load and improve responsiveness
         let inThrottle;
@@ -408,19 +410,19 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
           }
         };
       }
-  
+      
       const zoom = d3.zoom()
                      .scaleExtent([1, 30]) // Limit zoom scale 
                      .translateExtent([[0, 0], [width, height]]) // Limit pan (ensure pan does not go out of bounds)
                      .on("zoom", throttle((event) => { // work via throttle to reduce CPU load
-                       const zoomLevel = event.transform.k;
+                       currentZoomLevel = event.transform.k; //update the current zoom level
                        
                        g.attr("transform", event.transform); //zoom
-                       g.selectAll("path").attr("stroke-width", 1 / event.transform.k); // keep line width constant
-                       g.selectAll("circle").attr("r", radius / event.transform.k); // keep circle radius constant
+                       g.selectAll("path").attr("stroke-width", 1 / currentZoomLevel); // keep line width constant
+                       g.selectAll("circle").attr("r", radius / currentZoomLevel); // keep circle radius constant
 
-                       if ((prevZoomLevel < zoomThreshold1 && zoomLevel >= zoomThreshold1) || (prevZoomLevel >= zoomThreshold1 && zoomLevel < zoomThreshold1)) { //when the zoomlevel increases or decreases past the first zoom threshold the shown layer is updated
-                        if(zoomLevel < zoomThreshold1){
+                       if ((prevcurrentZoomLevel < zoomThreshold1 && currentZoomLevel >= zoomThreshold1) || (prevcurrentZoomLevel >= zoomThreshold1 && currentZoomLevel < zoomThreshold1)) { //when the currentZoomLevel increases or decreases past the first zoom threshold the shown layer is updated
+                        if(currentZoomLevel < zoomThreshold1){
                           showLayer("municipality");
                           newGranularity = "gemeente";
                           d3.select("#granularity-display").text(`Granularity: municipality`); // Update the text in the granularity display
@@ -429,8 +431,8 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                           newGranularity = "wijk"; 
                           d3.select("#granularity-display").text(`Granularity: district`); // Update the text in the granularity display
                         }
-                        } else if ((prevZoomLevel < zoomThreshold2 && zoomLevel >= zoomThreshold2) || (prevZoomLevel >= zoomThreshold2 && zoomLevel < zoomThreshold2)) { //when the zoomlevel increases or decreases past the second zoom threshold the shown layer is updated
-                          if(zoomLevel < zoomThreshold2){
+                        } else if ((prevcurrentZoomLevel < zoomThreshold2 && currentZoomLevel >= zoomThreshold2) || (prevcurrentZoomLevel >= zoomThreshold2 && currentZoomLevel < zoomThreshold2)) { //when the currentZoomLevel increases or decreases past the second zoom threshold the shown layer is updated
+                          if(currentZoomLevel < zoomThreshold2){
                             showLayer("district");
                             newGranularity = "wijk"; 
                             d3.select("#granularity-display").text(`Granularity: district`); // Update the text in the granularity display
@@ -473,7 +475,7 @@ function renderMap(GeoDataGemeente, GeoDataWijk, GeoDataBuurt, clusterMapGemeent
                             renderCityList();
                             loadScatterData();
                         }
-                       prevZoomLevel = zoomLevel;
+                       prevcurrentZoomLevel = currentZoomLevel;
                      }, 50)); //throttle limit
   
       svg.call(zoom); //apply zoom behaviour to the svg
@@ -985,7 +987,7 @@ function highlightMapPoints(clusterId, layer, highlightWidth) {
 
           return cluster === clusterId; // Match the cluster ID
         })
-        .attr("r", 6)
+        .attr("r", 6 / currentZoomLevel)
         //.attr("stroke", color(clusterId)) // Add a highlight stroke
         //.attr("stroke-width", highlightWidth)
         .attr("opacity", 1); // Ensure visibility
@@ -993,7 +995,9 @@ function highlightMapPoints(clusterId, layer, highlightWidth) {
 
 function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) {
       console.log('highlighting individual region on map for region ID: ${regionId}');
-    
+  
+      currentZoomLevel = event.transform.k; //needed to keep the circle radius constant throughout zooming
+  
       d3.selectAll("#geo-map circle") //reset the map highlighting and make then a bit transparant
         .attr("r", 3)
         //.attr("stroke", null)
@@ -1004,7 +1008,7 @@ function highlightRegionOnMap(regionId, clusterId, layer, highlightWidth) {
         .filter(d => d.properties && d.properties[layer.idKey] === regionId)
         //.attr("stroke", color(clusterId))
         //.attr("stroke-width", highlightWidth)
-        .attr("r", 3)
+        .attr("r", 3 / currentZoomLevel)
         .attr("opacity", 1);
     
       console.log(`Region ${regionId} highlighted on the map.`);
