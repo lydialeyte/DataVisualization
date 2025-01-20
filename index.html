@@ -853,7 +853,7 @@ function loadLineChart() {
                                                     .y(d => yScale(d.y)))
                                                   .on("click", (event, d) => {
                                                     console.log('individual line click triggered'); 
-                                                    const clickedRegionId = d3.select(this).attr("data-region-id");
+                                                    const clickedRegionId = d3.select(this).attr("region-id");
                                                     console.log(d.clickedRegionId); 
                                                     highlightRegionOnMap(clickedRegionId, currentLayer, circleHighlightWidth); //call a highlightfunction with the correct regionID
                                                   });
