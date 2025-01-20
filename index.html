@@ -826,21 +826,20 @@ function loadLineChart() {
                         .x(d => xScale(d.x))
                         .y(d => yScale(d.y)))
                         .on("click", () => {
-                          console.log('line click triggered'); 
+                          console.log('cluster line click triggered'); 
                           highlightMapPoints(normalizedClusterId, currentLayer, circleHighlightWidth); // highlight corresponding regions on geographical map
                           highlightCluster(normalizedClusterId, clusterLineWidth, clusterHighlightWidth); // highlight the cluster line while making the others transparant 
                           //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
                           clusters.forEach((clusterData, clusterId) => {
                             if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
-                              //console.log("cluster id of the clicked: ", clusterId);
+                              console.log("cluster number of the clicked line: ", clusterId);
                               clusterData.forEach(item => {
-                                //console.log('trying to draw individual lines'); 
+                                console.log('trying to draw individual lines'); 
                                 const cumulativeTrends = xLabels.map(label => ({
                                   x: label,
                                   y: parseFloat(item[`lbm_${label}`]) || 0 // Directly use the value for each label
                                 }));
-                                console.log(item); 
-                                const regionId = item.ID; //check that this is the correct thing: item.ID needs to contain the region ID
+                                const regionId = item.ID; 
                                 const itemPath = g.append("path")
                                                   .datum({ trends: cumulativeTrends, regionId})
                                                   .attr("fill", "none")
@@ -852,7 +851,9 @@ function loadLineChart() {
                                                     .x(d => xScale(d.x))
                                                     .y(d => yScale(d.y)))
                                                   .on("click", (event, d) => {
-                                                    highlightRegionOnMap(d.regionId, circleHighlightWidth); //call a highlightfunction with the correct regionID
+                                                    console.log('individual line click triggered'); 
+                                                    console.log(d.regionId); 
+                                                    highlightRegionOnMap(d.regionId, currentLayer, circleHighlightWidth); //call a highlightfunction with the correct regionID
                                                   });
                               });
                             }
@@ -991,7 +992,7 @@ function highlightMapPoints(clusterId, layer, highlightWidth) {
         .attr("opacity", 1); // Ensure visibility
 }
 
-function highlightRegionOnMap(regionId, highlightWidth) {
+function highlightRegionOnMap(regionId, layer, highlightWidth) {
       console.log('highlighting individual region on map for region ID: ${regionId}');
     
       d3.selectAll("#geo-map circle") //reset the map highlighting and make then a bit transparant
@@ -1000,7 +1001,7 @@ function highlightRegionOnMap(regionId, highlightWidth) {
         .attr("opacity", 0.5);
     
       d3.selectAll("#geo-map circle") // Highlight the corresponding region
-        .filter(d => d.properties && d.properties[currentLayer.idKey] === regionId)
+        .filter(d => d.properties && d.properties[layer.idKey] === regionId)
         .attr("stroke", color(clusterId))
         .attr("stroke-width", highlightWidth)
         .attr("opacity", 1);
