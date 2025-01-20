@@ -790,14 +790,10 @@ function loadLineChart() {
     // Axes
     g.append("g")
             .attr("transform", `translate(0, ${height})`)
-            .call(xAxis)//;
-
-    //g.append("g")
-      .call(d3.axisLeft(yScale))//;
-
-    
-    //g.append("g")
-      .call(yAxis);
+            .call(xAxis);
+    g.append("g")
+      .call(d3.axisLeft(yScale));
+    g.append("g").call(yAxis);
 
     // Create an empty object to store line paths
     //const linePaths = {};
@@ -811,45 +807,42 @@ function loadLineChart() {
         y: parseFloat(clusterData[0][label]) || 0 // Directly use the value for each label
       }));
 
+    console.log(`Cluster ${clusterId} cumulative trends:`, cumulativeTrends); // Debugging
+
+    const normalizedClusterId = clusterId?.trim();
   
-  
-
-  console.log(`Cluster ${clusterId} cumulative trends:`, cumulativeTrends); // Debugging
-
-  const normalizedClusterId = clusterId?.trim();
-
-  // Draw the line using cumulative trends
-  const path = g.append("path")
-    .datum(cumulativeTrends)
-    .attr("fill", "none")
-    .attr("stroke", color(normalizedClusterId))
-    .attr("stroke-width", 2)
-    .attr("d", d3.line()
-      .x(d => xScale(d.x))
-      .y(d => yScale(d.y)))
-      .on("mouseout", () => {
-        //resent the circles
-        d3.selectAll("#geo-map circle")
-        .attr("stroke", null)
-        .attr("stroke-width", null)
-        .attr("opacity", 1);
-        // Reset cluster highlighting
-        Object.values(linePaths).forEach(path => {
-          path.attr("stroke-width", 2).attr("opacity", 1);
-        });
-      })
-    .on("click", () => {
-      highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
-      highlightCluster(normalizedClusterId);
-      //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
-      clusters.forEach((clusterData, clusterId) => {
-        
-        if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
-          console.log("cluster id of the clicked: ", clusterId);
-          console.log(`Cluster ${clusterId} data:`, clusterData);
-          clusterData.forEach((item, index) => {
-  console.log(`Item ${index} in cluster ${clusterId}:`, item);
-});
+    // Draw the line using cumulative trends
+    const path = g.append("path")
+      .datum(cumulativeTrends)
+      .attr("fill", "none")
+      .attr("stroke", color(normalizedClusterId))
+      .attr("stroke-width", 2)
+      .attr("d", d3.line()
+        .x(d => xScale(d.x))
+        .y(d => yScale(d.y)))
+        .on("mouseout", () => {
+          //resent the circles
+          d3.selectAll("#geo-map circle")
+          .attr("stroke", null)
+          .attr("stroke-width", null)
+          .attr("opacity", 1);
+          // Reset cluster highlighting
+          Object.values(linePaths).forEach(path => {
+            path.attr("stroke-width", 2).attr("opacity", 1);
+          });
+        })
+      .on("click", () => {
+        highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
+        highlightCluster(normalizedClusterId);
+        //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
+        clusters.forEach((clusterData, clusterId) => {
+          
+          if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
+            console.log("cluster id of the clicked: ", clusterId);
+            console.log(`Cluster ${clusterId} data:`, clusterData);
+            clusterData.forEach((item, index) => {
+    console.log(`Item ${index} in cluster ${clusterId}:`, item);
+  });
 
           clusterData.forEach(item => {
           const cumulativeTrends = xLabels.map(label => ({
