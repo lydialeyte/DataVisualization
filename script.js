@@ -1,23 +1,23 @@
 const questions = [
     {
-        question: "What do you think has the most impact on livability score?",
-        choices: ["Distance to amenenties", "Housing offer", "Companies in the area", "Nearby green areas"],
-        answer: "Distance to amenenties"
+        question: "What factor most strongly impacts the livability score?",
+        choices: ["Distance to amenities", "Housing availability", "Number of local companies", "Proximity to green spaces"],
+        answer: "Distance to amenities"
     },
     {
-        question: "Based on teh graphs, where people over timw have decided to live?",
-        choices: ["Main cities", "Where companies are located", "Rural areas", "Capital"],
+        question: "Based on the graphs, where have people increasingly chosen to live over time?",
+        choices: ["Main cities", "Areas with high company density", "Rural areas", "Capital cities"],
         answer: "Main cities"
     },
     {
-        question: "What is the largest planet in our solar system?",
-        choices: ["Earth", "Mars", "Jupiter", "Saturn"],
-        answer: "Jupiter"
+        question: "Which region cluster shows the fastest improvement in livability?",
+        choices: ["Urban areas", "Suburban districts", "Rural neighborhoods", "Industrial hubs"],
+        answer: "Urban areas"
     },
     {
-        question: "What is the boiling point of water?",
-        choices: ["100°C", "90°C", "80°C", "110°C"],
-        answer: "100°C"
+        question: "What socioeconomic factor correlates strongly with higher livability?",
+        choices: ["Higher average income", "More green spaces", "Lower housing density", "Proximity to public transport"],
+        answer: "Higher average income"
     }
 ];
 
@@ -28,12 +28,16 @@ function loadQuestion() {
     const quizContainer = document.getElementById("quiz-container");
     
     quizContainer.innerHTML = `
-        <h2>${question.question}</h2>
+        <div style="margin-bottom: 20px;">
+            <h2 style="font-size: 1.5rem; color: #333;">${question.question}</h2>
+        </div>
         ${question.choices.map((choice, index) => `
-            <label>
-                <input type="radio" name="answer" value="${choice}">
-                ${choice}
-            </label><br>
+            <div style="margin: 10px 0;">
+                <label style="font-size: 1rem; color: #555;">
+                    <input type="radio" name="answer" value="${choice}" style="margin-right: 10px;">
+                    ${choice}
+                </label>
+            </div>
         `).join('')}
     `;
 
@@ -58,9 +62,9 @@ document.getElementById("next-button").addEventListener("click", () => {
     const resultContainer = document.getElementById("result-container");
     
     if (selectedAnswer.value === questions[currentQuestionIndex].answer) {
-        resultContainer.innerHTML += `<p>Q${currentQuestionIndex + 1}: Correct!</p>`;
+        resultContainer.innerHTML += `<p style="color: green; font-size: 1rem; margin: 10px 0;">Q${currentQuestionIndex + 1}: Correct! Your understanding aligns with the data. This highlights the importance of factors such as accessibility and population trends identified in the visualizations.</p>`;
     } else {
-        resultContainer.innerHTML += `<p>Q${currentQuestionIndex + 1}: Incorrect! Correct answer is ${questions[currentQuestionIndex].answer}.</p>`;
+        resultContainer.innerHTML += `<p style="color: red; font-size: 1rem; margin: 10px 0;">Q${currentQuestionIndex + 1}: Incorrect! The correct answer is "${questions[currentQuestionIndex].answer}". Insights from the data show that understanding socioeconomic and accessibility factors is crucial for improving livability.</p>`;
     }
 
     currentQuestionIndex++;
@@ -71,14 +75,10 @@ document.getElementById("next-button").addEventListener("click", () => {
         document.getElementById("quiz-container").style.display = 'none';
         document.getElementById("next-button").style.display = 'none';
         resultContainer.style.display = 'block';
-        resultContainer.innerHTML += `<h3>Quiz Complete!</h3>`;
+        resultContainer.innerHTML += `<h3 style="font-size: 1.5rem; color: #333;">Quiz Complete!</h3><p style="font-size: 1rem; color: #555;">Great job exploring insights from the visualizations.</p><div style="margin-top: 20px; font-size: 1rem; color: #555;">Based on the data you've explored, here are steps to formulate actionable policies:<ul style="margin-top: 10px; padding-left: 20px;"><li><strong>Address Accessibility:</strong> Invest in improving proximity to essential services like schools, supermarkets, and healthcare centers in less accessible regions.</li><li><strong>Promote Sustainable Urban Growth:</strong> Focus on urban areas with fast-improving livability scores to expand infrastructure while preserving green spaces.</li><li><strong>Support Socioeconomic Advancement:</strong> Implement programs to boost average income levels and housing availability in regions with lower livability scores.</li><li><strong>Tailor Local Initiatives:</strong> Use granular insights (municipality, district, or neighborhood) to address specific regional needs effectively.</li></ul></div>`;
         
-        // Show final results
-        //resultContainer.innerHTML += `<p>Your results:</p>${resultContainer.innerHTML}`;
-        
-        // Reset for next attempt
-        currentQuestionIndex = 0; // Reset for future attempts if needed
-        //setTimeout(() => location.reload(), 5000); // Reload after some time
+        // Reset for the next attempt
+        currentQuestionIndex = 0;
     }
 });
 
