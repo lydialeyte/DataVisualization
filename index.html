@@ -816,17 +816,17 @@ function loadLineChart() {
                                 x: label,
                                 y: parseFloat(item[`lbm_${label}`]) || 0 // Directly use the value for each label
                               }));
-                              g.append("path")
-                                .datum(cumulativeTrends)
-                                .attr("fill", "none")
-                                .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
-                                .attr("stroke-width", 1) // Thinner line for individual items
-                                .attr("class", `individual-line cluster-${normalizedClusterId}`) //add a class to be able to remove the lines
-                                .attr("d", d3.line()
-                                  .x(d => xScale(d.x))
-                                  .y(d => yScale(d.y)))
+                              const itemPath = g.append("path")
+                                                .datum(cumulativeTrends)
+                                                .attr("fill", "none")
+                                                .attr("stroke", color(normalizedClusterId)) // Use consistent color for all items in the cluster
+                                                .attr("stroke-width", 1) // Thinner line for individual items
+                                                .attr("d", d3.line()
+                                                .x(d => xScale(d.x))
+                                                .y(d => yScale(d.y)))
                             });
-                        }});
+                          }
+                        });
                       })
                       .on("mouseout", () => {
                         //reset the circles on the map
@@ -841,7 +841,8 @@ function loadLineChart() {
                         });
                         
                         // remove individual cluster lines 
-                        g.selectAll(`.cluster-${normalizedClusterId}`).remove();
+                        d3.selectAll(itemPath)
+                           .remove();
                       });
                     /*.on("mouseover", () => {
                             d3.select(path.node())
