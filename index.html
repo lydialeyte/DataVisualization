@@ -819,20 +819,6 @@ function loadLineChart() {
                       .attr("d", d3.line()
                       .x(d => xScale(d.x))
                       .y(d => yScale(d.y)))
-                      .on("mouseout", () => {
-                        //reset the circles on the map
-                        d3.selectAll("#geo-map circle")
-                          .attr("stroke", null)
-                          .attr("stroke-width", null)
-                          .attr("opacity", 1);
-                        // Reset cluster highlighting
-                        Object.values(linePaths).forEach(path => {
-                          path.attr("stroke-width", 2).attr("opacity", 1);
-                        });
-                        // remove individual cluster lines 
-                        d3.selectAll(cumulativeTrends)
-                           .remove();
-                      })
                       .on("click", () => {
                         highlightMapPoints(normalizedClusterId, currentLayer); // Call map highlight function
                         highlightCluster(normalizedClusterId);
@@ -841,7 +827,6 @@ function loadLineChart() {
                           if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
                             //console.log("cluster id of the clicked: ", clusterId);
                             //console.log(`Cluster ${clusterId} data:`, clusterData);
-                            
                             //clusterData.forEach((item, index) => {
                               //console.log(`Item ${index} in cluster ${clusterId}:`, item);
                             //});
@@ -858,17 +843,28 @@ function loadLineChart() {
                                                 .attr("d", d3.line()
                                                 .x(d => xScale(d.x))
                                                 .y(d => yScale(d.y)))
-                          /*.on("mouseover", () => {
-                            d3.select(path.node())
-                              .attr("stroke-width", 3); // Highlight on hover
-                          })*/
-                              .on("mouseout", () => {
-                                 // Reset on hover out
-                              });
                             });
                           }
                         });
+                      })
+                      .on("mouseout", () => {
+                        //reset the circles on the map
+                        d3.selectAll("#geo-map circle")
+                          .attr("stroke", null)
+                          .attr("stroke-width", null)
+                          .attr("opacity", 1);
+                        // Reset cluster highlighting
+                        Object.values(linePaths).forEach(path => {
+                          path.attr("stroke-width", 2).attr("opacity", 1);
+                        });
+                        // remove individual cluster lines 
+                        d3.selectAll(cumulativeTrends)
+                           .remove();
                       });
+                    /*.on("mouseover", () => {
+                            d3.select(path.node())
+                              .attr("stroke-width", 3); // Highlight on hover
+                      })*/
         
         // Store the path for interactivity
         linePaths[normalizedClusterId] = path;
