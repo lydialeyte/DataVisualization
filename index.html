@@ -778,9 +778,19 @@ function loadLineChart() {
           .attr("fill", "transparent") 
           .attr("pointer-events", "all") // Ensure it captures click events
           .on("click", () => {
-            // Remove all individual cluster lines
             console.log('background click triggered'); 
+            // Remove all individual cluster lines
             g.selectAll(".individual-line").remove();
+            // Reset cluster highlighting
+            Object.values(linePaths).forEach(path => {
+              console.log('trying to reset cluster highlighting')
+              path.attr("stroke-width", 2).attr("opacity", 1);
+            });
+            //reset circles in geographical map
+            d3.selectAll("#geo-map circle")
+              .attr("stroke", null)
+              .attr("stroke-width", null)
+              .attr("opacity", 1);
           });
             
         // Axes
@@ -814,13 +824,9 @@ function loadLineChart() {
                           //plotIndividualLines(clusterId, clusterFile, xLabels, g, xScale);
                           clusters.forEach((clusterData, clusterId) => {
                             if (clusterId === normalizedClusterId) { // Check if the current cluster matches the clicked one
-                              console.log("cluster id of the clicked: ", clusterId);
-                              console.log(`Cluster ${clusterId} data:`, clusterData);
-                              //clusterData.forEach((item, index) => {
-                                //console.log(`Item ${index} in cluster ${clusterId}:`, item);
-                              //});
+                              //console.log("cluster id of the clicked: ", clusterId);
                               clusterData.forEach(item => {
-                                console.log('trying to draw individual lines'); 
+                                //console.log('trying to draw individual lines'); 
                                 const cumulativeTrends = xLabels.map(label => ({
                                   x: label,
                                   y: parseFloat(item[`lbm_${label}`]) || 0 // Directly use the value for each label
@@ -838,26 +844,9 @@ function loadLineChart() {
                             }
                           });
                         })
-                        /*.on("mouseout", () => {
-                          //reset the circles on the map
-                          d3.selectAll("#geo-map circle")
-                            .attr("stroke", null)
-                            .attr("stroke-width", null)
-                            .attr("opacity", 1);
-                          
-                          // Reset cluster highlighting
-                          Object.values(linePaths).forEach(path => {
-                            path.attr("stroke-width", 2).attr("opacity", 1);
-                          });
-                          
-                          // remove individual cluster lines 
-                          d3.selectAll(itemPath)
-                             .remove();
+                        .on("mouseover", () => {
+                          d3.select(path.node()).attr("stroke-width", 3); // Highlight on hover
                         });
-                      .on("mouseover", () => {
-                              d3.select(path.node())
-                                .attr("stroke-width", 3); // Highlight on hover
-                        })*/
           
           // Store the path for interactivity
           linePaths[normalizedClusterId] = path;
@@ -978,8 +967,8 @@ function highlightMapPoints(clusterId, layer) {
         .filter(function (d) {
           const regionId = d.properties[layer.idKey]; // Retrieve region ID based on the layer's idKey
           const cluster = layer.clusterMap[regionId]?.trim(); // Get cluster from clusterMap
-          console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
-          console.log(`Region Data:`, d.properties);
+          //console.log(`Region ID: ${regionId}, Cluster: ${cluster}`);
+          //console.log(`Region Data:`, d.properties);
 
           return cluster === clusterId; // Match the cluster ID
         })
